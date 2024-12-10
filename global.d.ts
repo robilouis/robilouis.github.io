@@ -243,6 +243,7 @@ interface Publication {
   journalName?: string;
   authors?: string;
   link?: string;
+  fileUrl?: string;
   description?: string;
 }
 
