@@ -91,69 +91,110 @@ const CONFIG = {
     'PostgreSQL',
     'Git',
     'Docker',
+    'Terraform',
   ],
   experiences: [
     {
-      company: 'Company Name',
-      position: 'Position',
-      from: 'September 2021',
+      company: 'alcemy',
+      position: '(Lead) Data Scientist',
+      from: 'May 2023',
       to: 'Present',
-      companyLink: 'https://example.com',
+      companyLink: 'https://alcemy.tech/',
     },
     {
-      company: 'Company Name',
-      position: 'Position',
-      from: 'July 2019',
-      to: 'August 2021',
-      companyLink: 'https://example.com',
+      company: 'Thales (Defence and Mission Systems)',
+      position: 'Data Scientist Intern',
+      from: 'Mar 2022',
+      to: 'Sept 2022',
+      companyLink: 'https://www.thalesgroup.com/',
+    },
+    {
+      company: 'Leiden University',
+      position: 'Lecturer for a Mathematics Refresher course',
+      from: 'Mar 2022',
+      to: 'Sept 2022',
+      companyLink: '',
+    },
+    {
+      company: 'EVS - CNRS Lyon',
+      position: 'Internship in Geomorphology, Data & Image Analysis',
+      from: 'Mar 2022',
+      to: 'Sept 2022',
+      companyLink: '',
+    },
+    {
+      company: 'Lyon Observatory - CRAL',
+      position: 'Internship in Astrophysics, Image Analysis & Signal Processing',
+      from: 'Mar 2022',
+      to: 'Sept 2022',
+      companyLink: '',
+    },
+    {
+      company: 'Universiteit van Amsterdam',
+      position: 'Internship in Soft Matter',
+      from: 'Mar 2022',
+      to: 'Sept 2022',
+      companyLink: '',
     },
   ],
   certifications: [
     {
-      name: 'Lorem ipsum',
-      body: 'Lorem ipsum dolor sit amet',
-      year: 'March 2022',
-      link: 'https://example.com',
+      name: 'Machine Learning in Production',
+      body: 'DeepLearning.AI',
+      year: 'July 2024',
+      link: '',
     },
   ],
   educations: [
     {
-      institution: 'Institution Name',
-      degree: 'Degree',
-      from: '2015',
-      to: '2019',
+      institution: 'Leiden University',
+      degree: 'MSc. Computer Science - Artificial Intelligence',
+      from: 'Sept 2020',
+      to: 'Dec 2022',
     },
     {
-      institution: 'Institution Name',
-      degree: 'Degree',
-      from: '2012',
-      to: '2014',
+      institution: 'École Normale Supérieure de Lyon',
+      degree: 'Master’s degree in Complex Systems',
+      from: 'Sept 2018',
+      to: 'Aug 2020',
+    },
+    {
+      institution: 'École Normale Supérieure de Lyon',
+      degree: 'Bachelor’s degree in Physics',
+      from: 'Sept 2017',
+      to: 'Aug 2018',
+    },
+    {
+      institution: 'Lycée du Parc',
+      degree: 'Classe Préparatoire aux Grandes Écoles MPSI/MP*',
+      from: 'Sept 2014',
+      to: 'Aug 2017',
     },
   ],
   publications: [
     {
-      title: 'Publication Title',
-      conferenceName: '',
-      journalName: 'Journal Name',
-      authors: 'John Doe, Jane Smith',
+      title: 'Towards a Celeste AI Framework: Agent-free Automated 2D Level Generation for Multidirectional Platformers',
+      conferenceName: 'FDG25',
+      journalName: '',
+      authors: 'Louis Robinet, Mike Preuss, and Marcello A. Gómez-Maureira',
       link: 'https://example.com',
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        '',
     },
     {
-      title: 'Publication Title',
-      conferenceName: 'Conference Name',
-      journalName: '',
-      authors: 'John Doe, Jane Smith',
-      link: 'https://example.com',
+      title: 'Self-oscillation and Synchronisation Transitions in Elasto-Active Structures',
+      conferenceName: '',
+      journalName: 'Physical Review Letters 130',
+      authors: 'Ellen Zheng, Martin Brandenbourger, Louis Robinet, Peter Schall, Edan Lerner, and Corentin Coulais',
+      link: 'https://arxiv.org/abs/2106.05721',
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+        '',
     },
   ],
   // Display articles from your medium or dev account. (Optional)
   blog: {
     source: 'dev', // medium | dev
-    username: 'arifszn', // to hide blog section, keep it empty
+    username: '', // to hide blog section, keep it empty
     limit: 2, // How many articles to display. Max is 10.
   },
   googleAnalytics: {
@@ -165,7 +206,7 @@ const CONFIG = {
     snippetVersion: 6,
   },
   themeConfig: {
-    defaultTheme: 'lofi',
+    defaultTheme: 'dracula',
 
     // Hides the switch in the navbar
     // Useful if you want to support a single color mode
