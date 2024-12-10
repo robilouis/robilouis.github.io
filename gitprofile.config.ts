@@ -262,7 +262,7 @@ const CONFIG = {
   },
 
   // Optional Footer. Supports plain text or HTML.
-  footer: `❤️`,
+  footer: `Made with ❤️`,
 
   enablePWA: true,
 };
