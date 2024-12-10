@@ -29,7 +29,7 @@ const CONFIG = {
       },
     },
     external: {
-      header: 'My Projects',
+      header: '',
       // To hide the `External Projects` section, keep it empty.
       projects: [
         {
@@ -80,10 +80,11 @@ const CONFIG = {
   },
   resume: {
     fileUrl:
-      'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', // Empty fileUrl will hide the `Download Resume` button.
+      'Louis_Robinet_CV.pdf', // Empty fileUrl will hide the `Download Resume` button.
   },
   skills: [
     'Python',
+    'Julia',
     'Java',
     'JavaScript',
     'C/C++',
@@ -177,7 +178,7 @@ const CONFIG = {
       conferenceName: 'FDG25',
       journalName: '',
       authors: 'Louis Robinet, Mike Preuss, and Marcello A. Gómez-Maureira',
-      link: 'https://example.com',
+      fileUrl: 'FDG25_Celeste_AI_Framework.pdf',
       description:
         '',
     },
