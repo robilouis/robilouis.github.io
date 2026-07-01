@@ -200,7 +200,7 @@ const CONFIG = {
     snippetVersion: 6,
   },
   themeConfig: {
-    defaultTheme: 'dracula',
+    defaultTheme: 'procyon',
 
     // Hides the switch in the navbar
     // Useful if you want to support a single color mode
@@ -250,15 +250,19 @@ const CONFIG = {
       'procyon',
     ],
 
-    // Custom theme, applied to `procyon` theme
+    // Custom theme, applied to `procyon` theme.
+    // Editorial "paper" palette matching the hub and Le Cabinet.
     customTheme: {
-      primary: '#fc055b',
-      secondary: '#219aaf',
-      accent: '#e8d03a',
-      neutral: '#2A2730',
-      'base-100': '#E3E3ED',
-      '--rounded-box': '3rem',
-      '--rounded-btn': '3rem',
+      primary: '#3f9b93', // teal accent (links, avatar ring, buttons)
+      secondary: '#b46a45', // terracotta
+      accent: '#8a6ea8', // muted violet
+      neutral: '#2a271f', // warm dark ink
+      'base-100': '#fbf8f1', // card / tile (lighter paper)
+      'base-200': '#f3ede1', // intermediate paper
+      'base-300': '#efe9dd', // page background (crème)
+      'base-content': '#1f1d17', // ink text
+      '--rounded-box': '1rem',
+      '--rounded-btn': '0.6rem',
     },
   },
 
