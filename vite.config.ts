@@ -7,6 +7,13 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 // https://vitejs.dev/config/
 export default defineConfig({
   base: CONFIG.base || '/',
+  // The portfolio is one app of a multi-page site: build it self-contained
+  // under its own subpath (dist/me), then the deploy workflow assembles the
+  // root hub and /le-cabinet/ around it (see site/ and .github/workflows).
+  build: {
+    outDir: 'dist/me',
+    emptyOutDir: true,
+  },
   plugins: [
     react(),
     createHtmlPlugin({
@@ -24,9 +31,6 @@ export default defineConfig({
             registerType: 'autoUpdate',
             workbox: {
               navigateFallback: undefined,
-              // Keep the daily "le-cabinet" report out of the precache so it is
-              // always fetched fresh from the network instead of served stale.
-              globIgnores: ['**/le-cabinet/**'],
             },
             includeAssets: ['logo.png'],
             manifest: {
