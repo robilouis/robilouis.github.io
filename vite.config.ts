@@ -24,6 +24,9 @@ export default defineConfig({
             registerType: 'autoUpdate',
             workbox: {
               navigateFallback: undefined,
+              // Keep the daily "le-cabinet" report out of the precache so it is
+              // always fetched fresh from the network instead of served stale.
+              globIgnores: ['**/le-cabinet/**'],
             },
             includeAssets: ['logo.png'],
             manifest: {
