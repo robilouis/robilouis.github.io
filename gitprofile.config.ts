@@ -71,8 +71,7 @@ const CONFIG = {
     email: 'louisrobi@hotmail.fr',
   },
   resume: {
-    fileUrl:
-      'Louis_Robinet_CV.pdf', // Empty fileUrl will hide the `Download Resume` button.
+    fileUrl: 'Louis_Robinet_CV.pdf', // Empty fileUrl will hide the `Download Resume` button.
   },
   skills: [
     'Python',
@@ -117,7 +116,8 @@ const CONFIG = {
     },
     {
       company: 'Lyon Observatory - CRAL',
-      position: 'Internship in Astrophysics, Image Analysis & Signal Processing',
+      position:
+        'Internship in Astrophysics, Image Analysis & Signal Processing',
       from: 'Mar 2022',
       to: 'Sept 2022',
       companyLink: '',
@@ -166,22 +166,23 @@ const CONFIG = {
   ],
   publications: [
     {
-      title: 'Towards a Celeste AI Framework: Agent-free Automated 2D Level Generation for Multidirectional Platformers',
+      title:
+        'Towards a Celeste AI Framework: Agent-free Automated 2D Level Generation for Multidirectional Platformers',
       conferenceName: 'FDG25',
       journalName: '',
       authors: 'Louis Robinet, Mike Preuss, and Marcello A. Gómez-Maureira',
       fileUrl: 'FDG25_Celeste_AI_Framework.pdf',
-      description:
-        '',
+      description: '',
     },
     {
-      title: 'Self-oscillation and Synchronisation Transitions in Elasto-Active Structures',
+      title:
+        'Self-oscillation and Synchronisation Transitions in Elasto-Active Structures',
       conferenceName: '',
       journalName: 'Physical Review Letters 130',
-      authors: 'Ellen Zheng, Martin Brandenbourger, Louis Robinet, Peter Schall, Edan Lerner, and Corentin Coulais',
+      authors:
+        'Ellen Zheng, Martin Brandenbourger, Louis Robinet, Peter Schall, Edan Lerner, and Corentin Coulais',
       link: 'https://arxiv.org/abs/2106.05721',
-      description:
-        '',
+      description: '',
     },
   ],
   // Display articles from your medium or dev account. (Optional)
