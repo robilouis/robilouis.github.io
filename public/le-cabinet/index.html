@@ -873,6 +873,16 @@
         'Huit trouvailles posées comme des planches, fenêtre ' + windowLabel + ', triées par pertinence.';
       hueLayer.classList.add(hueClass);
 
+      // Match the Android status bar (theme-color) to the ambient hue.
+      var themeColors = {
+        'hue-dawn': '#fbd1cf',
+        'hue-day': '#efe8da',
+        'hue-dusk': '#fbceb0',
+        'hue-night': '#bed1e4',
+      };
+      var themeMeta = document.querySelector('meta[name="theme-color"]');
+      if (themeMeta) themeMeta.setAttribute('content', themeColors[hueClass] || '#efe9dd');
+
       document.getElementById('metaDate').textContent = now.toLocaleDateString('fr-FR', {
         weekday: 'long',
         year: 'numeric',
