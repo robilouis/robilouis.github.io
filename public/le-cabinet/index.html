@@ -9,99 +9,1023 @@
 
     <meta name="description" content="Le Cabinet — rapport quotidien de veille IA de Louis Robinet." />
     <meta property="og:title" content="Le Cabinet — Veille IA" />
-    <meta property="og:description" content="Rapport quotidien de veille IA." />
+    <meta property="og:description" content="Huit trouvailles IA/Data du jour, triées et curatées." />
     <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
       :root {
-        --bg: #0e0e14;
-        --panel: #171722;
-        --text: #e8e8f0;
-        --muted: #9a9ab0;
-        --accent: #7c6cff;
-        --border: #26263a;
+        --page: #efe9dd;
+        --tile: #fbf8f1;
+        --ink: #1f1d17;
+        --ink-soft: #6b6452;
+        --hairline: rgba(31, 29, 23, 0.08);
+        --dot-pro: oklch(0.66 0.07 195);
+        --dot-fun: oklch(0.68 0.09 40);
+        --dot-cv: oklch(0.64 0.08 300);
+        --dot-wild: oklch(0.65 0.08 130);
+        --radius: 16px;
+        --shadow: 0 6px 18px rgba(60, 50, 30, 0.08);
       }
+
       * {
         box-sizing: border-box;
       }
+
       html,
       body {
         margin: 0;
         padding: 0;
       }
+
       body {
+        background: var(--page);
+        color: var(--ink);
+        font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
         min-height: 100vh;
-        background: radial-gradient(circle at 20% 0%, #1a1a2e 0%, var(--bg) 55%);
-        color: var(--text);
-        font-family:
-          ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica,
-          Arial, sans-serif;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .hue-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 520px;
+        opacity: 0.72;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      .hue-dawn {
+        background: linear-gradient(155deg, oklch(0.89 0.075 16), oklch(0.87 0.065 350));
+      }
+      .hue-day {
+        background: linear-gradient(155deg, oklch(0.93 0.02 78), oklch(0.93 0.018 68));
+      }
+      .hue-dusk {
+        background: linear-gradient(155deg, oklch(0.87 0.09 52), oklch(0.85 0.08 36));
+      }
+      .hue-night {
+        background: linear-gradient(155deg, oklch(0.82 0.055 252), oklch(0.79 0.05 268));
+      }
+
+      .grain {
+        position: fixed;
+        inset: 0;
+        opacity: 0.045;
+        mix-blend-mode: multiply;
+        pointer-events: none;
+        z-index: 5;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      .wrap {
+        position: relative;
+        z-index: 1;
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 48px 24px 96px;
+      }
+
+      header {
+        position: relative;
+        margin-bottom: 36px;
+      }
+
+      .kicker {
+        font-family: 'JetBrains Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        font-size: 11.5px;
+        color: var(--ink-soft);
+        margin: 0 0 14px;
+      }
+
+      h1.title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 42px;
+        line-height: 1.08;
+        margin: 0 0 12px;
+        max-width: 640px;
+      }
+
+      .subtitle {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+        margin: 0 0 18px;
+        max-width: 560px;
+      }
+
+      .meta-line {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--ink-soft);
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .meta-line .dot-sep {
+        opacity: 0.5;
+      }
+
+      .ring-wrap {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 74px;
+        height: 74px;
+      }
+
+      .ring-wrap svg {
+        width: 74px;
+        height: 74px;
+        transform: rotate(-90deg);
+      }
+
+      .ring-track {
+        fill: none;
+        stroke: var(--hairline);
+        stroke-width: 5;
+      }
+
+      .ring-progress {
+        fill: none;
+        stroke: var(--dot-pro);
+        stroke-width: 5;
+        stroke-linecap: round;
+        transition: stroke-dashoffset 0.6s ease;
+      }
+
+      .ring-label {
+        position: absolute;
+        inset: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 2rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        color: var(--ink);
       }
-      main {
-        max-width: 640px;
-        width: 100%;
-        background: var(--panel);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 2.5rem;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+      .masonry {
+        column-count: 2;
+        column-gap: 20px;
       }
-      .eyebrow {
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        font-size: 0.75rem;
-        color: var(--accent);
-        margin: 0 0 0.75rem;
+
+      @media (max-width: 640px) {
+        .masonry {
+          column-count: 1;
+        }
+        h1.title {
+          font-size: 32px;
+        }
+        .ring-wrap {
+          display: none;
+        }
       }
-      h1 {
-        margin: 0 0 0.5rem;
-        font-size: 2rem;
-        line-height: 1.15;
+
+      .card {
+        break-inside: avoid;
+        margin-bottom: 20px;
+        background: var(--tile);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 22px;
+        cursor: pointer;
+        transition:
+          opacity 0.25s ease,
+          filter 0.25s ease,
+          transform 0.15s ease;
       }
-      p {
-        color: var(--muted);
-        line-height: 1.6;
+
+      .card:hover {
+        transform: translateY(-2px);
       }
-      .meta {
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border);
-        font-size: 0.85rem;
-        color: var(--muted);
+
+      .card.is-read {
+        opacity: 0.66;
+        filter: saturate(0.82);
+      }
+
+      .card.hero {
+        column-span: all;
+      }
+
+      .card-top {
         display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .cat-dot {
+        width: 7px;
+        height: 7px;
+        min-width: 7px;
+        border-radius: 50%;
+      }
+
+      .cat-dot.pro {
+        background: var(--dot-pro);
+      }
+      .cat-dot.fun {
+        background: var(--dot-fun);
+      }
+      .cat-dot.cv {
+        background: var(--dot-cv);
+      }
+      .cat-dot.wild {
+        background: var(--dot-wild);
+      }
+
+      .cat-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--ink-soft);
+      }
+
+      .card-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 17px;
+        line-height: 1.3;
+        margin: 0 0 8px;
+      }
+
+      .card.hero .card-title {
+        font-size: 24px;
+      }
+
+      .card-teaser {
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+        margin: 0 0 16px;
+      }
+
+      .card-foot {
+        display: flex;
+        align-items: center;
         justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: var(--ink-soft);
       }
-      a {
-        color: var(--accent);
+
+      .pips {
+        display: flex;
+        gap: 4px;
+      }
+
+      .pip {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--hairline);
+      }
+
+      .pip.on {
+        background: var(--ink-soft);
+      }
+
+      .open-link {
+        color: var(--ink-soft);
+      }
+
+      .cabinet-piece {
+        display: flex;
+        justify-content: center;
+        margin: 44px 0;
+      }
+
+      .cabinet-piece .card {
+        max-width: 460px;
+        width: 100%;
+        margin-bottom: 0;
+        transform: rotate(-1.1deg);
+        background: oklch(0.96 0.018 130);
+        border: 1.5px dashed oklch(0.66 0.07 195);
+        position: relative;
+        padding-top: 30px;
+      }
+
+      .pin {
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: oklch(0.65 0.08 130);
+        box-shadow: 0 3px 6px rgba(60, 50, 30, 0.25);
+      }
+
+      .quiz-section {
+        margin-top: 44px;
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 18px;
+        padding: 26px;
+      }
+
+      .quiz-kicker {
+        font-family: 'JetBrains Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin: 0 0 12px;
+      }
+
+      .quiz-q {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 19px;
+        margin: 0 0 16px;
+      }
+
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .quiz-opt {
+        text-align: left;
+        border: 1px solid var(--hairline);
+        background: var(--tile);
+        border-radius: 10px;
+        padding: 12px 14px;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        color: var(--ink);
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          border-color 0.2s ease;
+      }
+
+      .quiz-opt:hover:not(:disabled) {
+        border-color: var(--ink-soft);
+      }
+
+      .quiz-opt:disabled {
+        cursor: default;
+      }
+
+      .quiz-opt.correct {
+        border-color: oklch(0.6 0.09 160);
+        background: oklch(0.94 0.04 160);
+      }
+
+      .quiz-opt.wrong {
+        border-color: oklch(0.62 0.12 28);
+        background: oklch(0.94 0.05 28);
+      }
+
+      .quiz-explain {
+        margin-top: 14px;
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+      }
+
+      .quiz-done {
+        font-size: 13.5px;
+        color: var(--ink-soft);
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(28, 24, 16, 0.46);
+        backdrop-filter: blur(3px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        z-index: 20;
+      }
+
+      .modal-overlay.open {
+        display: flex;
+      }
+
+      .modal-card {
+        background: var(--tile);
+        border-radius: 20px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+        max-width: 560px;
+        width: 100%;
+        max-height: 84vh;
+        overflow-y: auto;
+        padding: 32px;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: var(--hairline);
+        font-size: 16px;
+        line-height: 1;
+        cursor: pointer;
+        color: var(--ink);
+      }
+
+      .modal-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
+
+      .modal-title {
+        font-family: 'Fraunces', serif;
+        font-weight: 600;
+        font-size: 25px;
+        line-height: 1.25;
+        margin: 0 0 16px;
+      }
+
+      .modal-summary {
+        font-size: 14.5px;
+        line-height: 1.65;
+        color: var(--ink);
+        margin: 0 0 20px;
+      }
+
+      .modal-takeaways-title {
+        font-family: 'JetBrains Mono', monospace;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 11px;
+        color: var(--ink-soft);
+        margin: 0 0 10px;
+      }
+
+      .modal-takeaways {
+        margin: 0 0 22px;
+        padding-left: 18px;
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .modal-takeaways li {
+        margin-bottom: 6px;
+      }
+
+      .modal-link {
+        display: inline-block;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        color: var(--ink);
         text-decoration: none;
+        border-bottom: 1px solid var(--ink);
+        padding-bottom: 2px;
       }
-      a:hover {
-        text-decoration: underline;
+
+      footer.page-footer {
+        margin-top: 56px;
+        text-align: center;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11.5px;
+        color: var(--ink-soft);
+      }
+
+      footer.page-footer a {
+        color: var(--ink-soft);
       }
     </style>
   </head>
   <body>
-    <main>
-      <p class="eyebrow">Le Cabinet</p>
-      <h1>Veille IA — rapport quotidien</h1>
-      <p>
-        Cette page héberge le rapport de veille IA généré quotidiennement. Le
-        contenu est actualisé automatiquement chaque jour.
-      </p>
-      <p>
-        Le premier rapport arrive bientôt. En attendant, vous pouvez retourner au
-        <a href="/">portfolio</a>.
-      </p>
-      <div class="meta">
-        <span>Louis Robinet</span>
-        <span>Placeholder — en attente du premier rapport</span>
+    <div class="hue-layer" id="hueLayer"></div>
+    <div class="grain"></div>
+
+    <div class="wrap">
+      <header>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 74 74">
+            <circle class="ring-track" cx="37" cy="37" r="32"></circle>
+            <circle class="ring-progress" id="ringProgress" cx="37" cy="37" r="32"></circle>
+          </svg>
+          <div class="ring-label" id="ringLabel">0/8</div>
+        </div>
+        <p class="kicker">Le Cabinet · veille du matin</p>
+        <h1 class="title" id="greetingTitle">Bonjour.</h1>
+        <p class="subtitle" id="subtitleText">
+          Huit trouvailles posées comme des planches, fenêtre du matin, triées par pertinence.
+        </p>
+        <div class="meta-line">
+          <span id="metaDate"></span>
+          <span class="dot-sep">·</span>
+          <span id="metaDay"></span>
+        </div>
+      </header>
+
+      <div class="masonry" id="masonry"></div>
+
+      <div class="cabinet-piece" id="cabinetPiece"></div>
+
+      <section class="quiz-section" id="quizSection">
+        <p class="quiz-kicker">Le quiz du jour</p>
+        <p class="quiz-q" id="quizQuestion"></p>
+        <div class="quiz-options" id="quizOptions"></div>
+        <p class="quiz-explain" id="quizExplain" style="display: none"></p>
+      </section>
+
+      <footer class="page-footer">
+        <a href="/">← retour au portfolio</a>
+      </footer>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-card">
+        <button class="modal-close" id="modalClose" aria-label="Fermer">×</button>
+        <div class="modal-top">
+          <span class="cat-dot" id="modalDot"></span>
+          <span class="cat-label" id="modalLabel"></span>
+        </div>
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-summary" id="modalSummary"></p>
+        <p class="modal-takeaways-title">À retenir</p>
+        <ul class="modal-takeaways" id="modalTakeaways"></ul>
+        <a class="modal-link" id="modalLink" href="#" target="_blank" rel="noopener">Lire le papier →</a>
       </div>
-    </main>
+    </div>
+
+    <script>
+      var DATA = {
+        cards: [
+          {
+            tag: 'pro',
+            tagLabel: 'MLOps · Data Eng',
+            flames: 3,
+            title:
+              'Trustworthy Self-Composable Big-Data-as-a-Service: un framework LLM multi-agents pour le data engineering et le MLOps',
+            teaser: "Un orchestrateur LLM qui prend en main tout le cycle de vie ML, de l'ingestion au drift.",
+            summary:
+              "Les plateformes Big-Data-as-a-Service doivent enchaîner ingestion, nettoyage, feature engineering, entraînement, déploiement et monitoring, et aujourd'hui chaque étape est automatisée séparément, sans vue d'ensemble. Résultat : les agents data science et systèmes AutoML actuels optimisent des îlots, mais personne ne gère l'orchestration de bout en bout, la gouvernance des artefacts, ni l'adaptation au drift. Ce papier propose un framework multi-agent orchestré par un LLM central qui découpe le cycle de vie BDaaS en agents spécialisés : ingestion, nettoyage, feature engineering, entraînement AutoML, évaluation, déploiement MLOps, monitoring et détection de drift. La couche d'orchestration LLM ne se contente pas de dispatcher les tâches : elle valide les sorties intermédiaires, maintient le contexte du workflow, et peut recomposer dynamiquement la pipeline si un agent échoue ou si les données changent. Le cœur du papier, c'est la confiance : checkpoints de validation à chaque étape, human-in-the-loop pour les décisions sensibles, gouvernance des artefacts, et boucles de feedback sensibles au drift. Concrètement, si un agent de monitoring détecte une dérive de distribution en production, le système peut redéclencher automatiquement le pipeline de feature engineering et de ré-entraînement, sous contrôle humain. C'est une proposition d'architecture plus qu'un benchmark chiffré à grande échelle, la contribution est surtout dans la manière de composer les responsabilités entre agents et dans les mécanismes de gouvernance. Pour une équipe data qui gère aujourd'hui son MLOps avec un patchwork d'outils, ça donne un plan directeur pour faire dialoguer ces briques via un orchestrateur LLM plutôt que du code de glue statique. Ça touche aussi à la gouvernance de données : les checkpoints de validation et la traçabilité des artefacts sont exactement ce que demandent les audits de conformité sur les pipelines IA. La limite : orchestrer autant d'agents avec un LLM central crée un point de défaillance et de coût non négligeable, le papier ne détaille pas encore la latence bout-en-bout en charge réelle.",
+            takeaways: [
+              'Le framework découpe tout le cycle de vie BDaaS (ingestion à drift detection) en agents spécialisés coordonnés par un LLM orchestrateur central.',
+              'La confiance repose sur des checkpoints de validation, du human-in-the-loop et une gouvernance des artefacts, pas seulement sur la performance du modèle final.',
+              "C'est une architecture proposée, pas encore un benchmark de charge en production : le coût d'orchestration LLM à grande échelle reste une inconnue.",
+            ],
+            url: 'https://arxiv.org/abs/2606.17915',
+          },
+          {
+            tag: 'pro',
+            tagLabel: 'RAG · Retrieval',
+            flames: 3,
+            title: 'SAG : SQL-Retrieval Augmented Generation avec hyperarêtes dynamiques',
+            teaser: "Et si le meilleur graphe RAG n'était pas un graphe du tout, mais du SQL ?",
+            summary:
+              "Le RAG classique par similarité vectorielle plafonne dès qu'il faut du raisonnement multi-sauts ou respecter des contraintes structurées, un problème bien connu de quiconque a déployé du RAG sur des questions complexes. Ajouter un knowledge graph aide, mais introduit de la fragmentation sémantique, un coût de maintenance élevé, et surtout des mises à jour incrémentales douloureuses dès que le corpus bouge. SAG prend le problème à l'envers : au lieu de construire un graphe global statique à l'avance, chaque chunk est transformé en un événement sémantiquement complet accompagné d'un ensemble d'entités d'indexation. À la requête, des jointures SQL relient dynamiquement les événements qui partagent des entités communes, formant des hyperarêtes locales, un index instancié à la volée plutôt qu'un graphe pré-calculé. L'architecture combine trois briques complémentaires : une base SQL pour les relations many-to-many entre événements et entités, un index vectoriel pour la similarité sémantique, et un index plein-texte pour la recherche par mots-clés. Ce mélange permet de traiter à la fois des questions floues et des contraintes précises sans jamais matérialiser un graphe global coûteux à maintenir. Résultat chiffré : Recall@2/5 moyen de 79,3%/88,2% sur trois benchmarks multi-sauts, soit 11,1 et 4,9 points de mieux que HippoRAG 2, un écart net, pas cosmétique. Pour une équipe qui maintient un RAG en prod, l'argument clé est la maintenance : plus besoin de recalculer un graphe entier à chaque ingestion, les jointures SQL s'adaptent nativement à un corpus qui grossit en continu. C'est particulièrement pertinent pour du RAG sur données d'entreprise déjà en base relationnelle où l'infra SQL existe déjà et peut être réutilisée directement. La limite : la qualité de l'extraction d'entités à l'ingestion devient le nouveau goulot d'étranglement, si les entités extraites sont bruitées, les hyperarêtes générées à la volée le seront aussi.",
+            takeaways: [
+              'SAG remplace le graphe de connaissances statique par des hyperarêtes construites à la volée via des jointures SQL entre événements et entités partagées.',
+              'Sur trois benchmarks multi-sauts, SAG dépasse HippoRAG 2 de 11,1 points en Recall@2 et 4,9 points en Recall@5.',
+              "L'architecture combine SQL, index vectoriel et plein-texte, un bon fit si vous avez déjà une base relationnelle en place.",
+            ],
+            url: 'https://arxiv.org/abs/2606.15971',
+          },
+          {
+            tag: 'pro',
+            tagLabel: 'Agents · Mémoire',
+            flames: 3,
+            title: 'Memory is Reconstructed, Not Retrieved : la mémoire en graphe pour agents LLM',
+            teaser: "Et si la mémoire d'agent arrêtait de chercher pour se mettre à raisonner ?",
+            summary:
+              "Les agents LLM à mémoire longue butent toujours sur le même mur : ils retrouvent des bribes de conversations passées, mais peinent à enchaîner plusieurs sauts de raisonnement dessus. Le problème vient du pipeline classique retrieve-then-reason : on récupère d'abord tout ce qui ressemble à la question, puis on espère que le LLM démêle le bon fil, sans jamais revenir en arrière si la piste est mauvaise. MRAgent change de paradigme en modélisant la mémoire comme un graphe Cue-Tag-Content, où des tags associatifs servent de ponts sémantiques entre des indices fins et le contenu mémorisé. Plutôt que de figer la recherche en une seule passe, un mécanisme de reconstruction active injecte le raisonnement du LLM directement dans l'accès mémoire. Concrètement, l'agent explore un chemin, évalue les preuves accumulées, et peut élaguer ou relancer une nouvelle branche de récupération si les indices ne collent pas. C'est un peu comme si la mémoire fonctionnait par associations plutôt que par recherche exacte, ce qui colle davantage à la façon dont un humain retrouve un souvenir. Les auteurs montrent des gains significatifs sur des benchmarks de raisonnement multi-sauts sur historiques longs, avec un coût de calcul réduit par rapport aux approches à graphe statique. Pour qui construit des agents en prod avec des sessions longues, ça veut dire moins d'hallucinations dues à une récupération figée et une meilleure capacité à corriger le tir en cours de route. Ça s'applique directement aux architectures RAG conversationnelles où le contexte évolue : plus besoin de reconstruire tout le graphe à chaque update, l'exploration se fait à la demande. La limite : la reconstruction active ajoute des allers-retours LLM supplémentaires, donc de la latence, à surveiller de près pour des cas d'usage temps réel.",
+            takeaways: [
+              'MRAgent remplace le pipeline rigide retrieve-then-reason par une exploration dynamique du graphe mémoire, guidée par le raisonnement du LLM lui-même.',
+              'La mémoire est structurée en Cue-Tag-Content, où les tags jouent le rôle de ponts associatifs entre indices et contenus, plutôt qu’un simple index vectoriel plat.',
+              'Le gain sur les benchmarks multi-sauts vient au prix d’appels LLM supplémentaires pour piloter l’exploration, donc plus de latence à budgétiser en prod.',
+            ],
+            url: 'https://arxiv.org/abs/2606.06036',
+          },
+          {
+            tag: 'pro',
+            tagLabel: 'Gouvernance · Audit',
+            flames: 2,
+            title: 'From Agent Traces to Trust : traçage de preuves et provenance d’exécution des agents LLM',
+            teaser: 'Votre agent a raison, mais pouvez-vous prouver pourquoi ?',
+            summary:
+              "Plus les agents LLM gagnent en autonomie (planification, appels d'outils, mémoire, collaboration multi-agents), plus il devient difficile de savoir pourquoi ils ont produit telle réponse. C'est un vrai problème de gouvernance : mesurer l'exactitude de la réponse finale ne dit rien sur les preuves mobilisées, la légitimité des appels d'outils, ou l'origine d'une panne. Cette survey propose un cadre unifié autour de deux notions : la provenance d'exécution, le graphe typé de tout ce que l'agent a fait, et le traçage de preuves, sa projection sur les relations preuve-support. Le graphe de provenance relie entre eux : l'ancrage de récupération, le support des affirmations, la sécurité des appels d'outils, et la lignée mémoire, c'est-à-dire quel souvenir a influencé quelle décision. Les auteurs classent les travaux existants selon qu'ils couvrent l'observabilité, le debug, l'audit ou la récupération après échec, et montrent que la plupart des systèmes actuels n'en couvrent qu'un seul aspect. Le message central : sans provenance structurée, un agent qui a raison reste une boîte noire non auditable, même s'il produit la bonne réponse neuf fois sur dix. Pour les data teams qui déploient des agents en environnement réglementé, c'est directement lié aux exigences de traçabilité et d'explicabilité qui arrivent avec les réglementations sur l'IA. Ça rejoint aussi les besoins pratiques de debug : quand un agent en prod part en vrille, avoir un graphe de provenance permet de remonter précisément à l'outil ou au souvenir fautif plutôt que de rejouer toute la trace à l'aveugle. C'est une synthèse, donc pas de nouvelle méthode miracle : c'est une carte des briques existantes et des trous à combler. La limite assumée par les auteurs : la plupart des frameworks de provenance ajoutent un surcoût d'instrumentation non négligeable, et personne n'a encore de standard commun pour l'industrie.",
+            takeaways: [
+              'La provenance d’exécution est un graphe typé de tout ce qu’un agent a fait ; le traçage de preuves en est la projection sur les relations preuve-affirmation.',
+              'L’exactitude de la réponse finale ne suffit pas à auditer un agent : il faut pouvoir remonter à l’ancrage de récupération, aux appels d’outils et à la lignée mémoire.',
+              'Aucun système actuel ne couvre observabilité, debug, audit et récupération à la fois, c’est une checklist utile pour évaluer sa propre stack d’agents.',
+            ],
+            url: 'https://arxiv.org/abs/2606.04990',
+          },
+          {
+            tag: 'pro',
+            tagLabel: 'Multi-agents · RL',
+            flames: 2,
+            title: 'Reinforcement Learning for LLM-based Multi-Agent Systems through Orchestration Traces',
+            teaser: "Entraîner par RL non pas un agent, mais la façon dont une équipe d'agents s'organise.",
+            summary:
+              "Quand les agents LLM passent d'exécutants isolés à des équipes coordonnées, le vrai problème d'optimisation n'est plus quelle action prendre mais comment le travail se répartit entre agents. Ce papier s'attaque directement à ça : optimiser par reinforcement learning non pas les actions individuelles, mais les décisions d'orchestration, qui spawn un sous-agent, qui délègue à qui, comment on agrège les résultats, quand on arrête. L'unité d'analyse est la trace d'orchestration : un graphe d'interaction temporel dont les événements sont le spawn de sous-agents, la délégation, la communication, l'usage d'outils, le retour de résultats, l'agrégation et l'arrêt. Plutôt qu'une récompense unique en fin de tâche, les auteurs définissent huit familles de récompenses, incluant des récompenses d'orchestration dédiées : accélération par parallélisme, correction de la répartition des sous-tâches, qualité de l'agrégation finale. Concrètement, un agent orchestrateur apprend à juger s'il vaut mieux paralléliser deux sous-tâches ou les traiter séquentiellement, et si le découpage choisi produit effectivement un gain net une fois l'agrégation prise en compte. C'est une manière de sortir du réglage à la main des frameworks multi-agents pour laisser le système apprendre quand la coordination vaut le coût qu'elle engendre. Les résultats montrent que le RL guidé par ces récompenses d'orchestration améliore la vitesse et la qualité d'agrégation par rapport à des stratégies de délégation fixes. Pour qui construit des systèmes multi-agents en prod, ça offre un cadre pour arrêter de deviner combien de sous-agents lancer et sur quel critère les arrêter. Ça s'applique aussi à la maîtrise des coûts : une bonne récompense de parallélisme peut directement se traduire par une baisse de la latence et du nombre d'appels API redondants. La limite : entraîner du RL sur des traces d'orchestration demande de simuler énormément d'exécutions multi-agents, ce qui reste coûteux et encore mal standardisé d'un framework à l'autre.",
+            takeaways: [
+              'L’unité d’optimisation est la trace d’orchestration : spawn, délégation, communication, agrégation et arrêt, pas seulement les actions individuelles des agents.',
+              'Huit familles de récompenses sont proposées, dont des récompenses spécifiques au parallélisme, à la correction du découpage des sous-tâches et à la qualité de l’agrégation.',
+              'Le RL d’orchestration remplace le réglage manuel du nombre de sous-agents par un apprentissage de quand la coordination vaut réellement son coût.',
+            ],
+            url: 'https://arxiv.org/abs/2605.02801',
+          },
+          {
+            tag: 'fun',
+            tagLabel: 'Game AI · RL',
+            flames: 2,
+            title: 'Augmenting Game AI with Deep Reinforcement Learning',
+            teaser: 'EA plaide pour du RL dans les PNJ, et liste tout ce qui coince encore.',
+            summary:
+              "L'immersion dans un jeu vidéo ne tient pas qu'aux graphismes : la crédibilité des personnages non-joueurs pèse tout autant, et ils restent aujourd'hui largement scriptés à la main. Coder à la main un comportement crédible devient vite intraitable dès que la complexité comportementale augmente, chaque nouveau cas particulier demande une règle de plus, jusqu'à l'explosion combinatoire. Ce papier, signé par l'équipe SEED d'Electronic Arts, ne présente pas une nouvelle méthode mais un plaidoyer argumenté pour généraliser le RL comme moteur de comportement des PNJ, en s'appuyant sur des cas déjà en production chez EA. L'idée centrale : au lieu de scripter des arbres de comportement, on laisse un agent RL apprendre en interagissant avec le jeu, ou en imitant des données de joueurs réels, pour produire des comportements plus organiques. Les auteurs listent les verrous qui empêchent aujourd'hui un déploiement large : robustesse face aux exploits des joueurs, contrôlabilité fine par les designers, coût d'entraînement, et difficulté à garantir un comportement amusant plutôt que juste optimal. Un point clé soulevé : un agent RL entraîné pour gagner n'est pas la même chose qu'un agent RL entraîné pour être un adversaire intéressant, optimiser la victoire seule tue souvent le plaisir de jeu. Les exemples cités montrent des gains en crédibilité comportementale par rapport aux systèmes scriptés, mais sans chiffres de benchmark unifiés, le papier reste une feuille de route plutôt qu'une évaluation. Pour un data scientist côté jeu vidéo ou simulation, ça rejoint des problématiques transférables : reward shaping pour éviter les comportements dégénérés, et contrôlabilité d'un agent appris par des équipes produit non-ML. Ça résonne aussi avec les agents LLM en production : le même écueil, un agent qui optimise la mauvaise métrique, se retrouve dès qu'on déploie un système appris face à des utilisateurs réels. La limite assumée : sans outils de contrôle et de debug matures pour les designers non-ML, le RL restera cantonné à des cas de niche dans les studios.",
+            takeaways: [
+              'Le papier plaide pour remplacer les PNJ scriptés par des agents RL, mais liste plus de verrous ouverts (contrôlabilité, robustesse, coût) que de solutions.',
+              'Un agent RL optimisé pour gagner n’est pas forcément un agent RL amusant à affronter, le reward shaping doit viser l’engagement, pas la performance brute.',
+              'Le vrai goulot d’étranglement pour l’adoption en studio n’est pas la performance du RL, mais l’absence d’outils de contrôle pour les designers non-ML.',
+            ],
+            url: 'https://arxiv.org/abs/2606.20210',
+          },
+          {
+            tag: 'fun',
+            tagLabel: 'Robotique · Imitation',
+            flames: 2,
+            title: 'HumanoidUMI : démonstrations sans robot pour la manipulation corps-entier des humanoïdes',
+            teaser: 'Apprendre à un robot humanoïde à bouger tout le corps sans jamais toucher un robot.',
+            summary:
+              "Entraîner un humanoïde à des comportements corps entier demande énormément de démonstrations de qualité, et la téléopération classique est un goulot d'étranglement : matériel coûteux, opérateurs experts rares, collecte lente. HumanoidUMI contourne le problème en s'inspirant de l'Universal Manipulation Interface : plus besoin d'un robot physique pendant la collecte, un humain porte un dispositif VR léger et des pinces inspirées d'UMI pour démontrer la tâche directement. Le système capture des trajectoires de points-clés humains épars, des observations depuis une caméra au poignet, et les actions de la pince, sans jamais passer par un robot réel pendant cette phase. Ces démonstrations entraînent une politique de haut niveau qui prédit les futurs points-clés ; ces points sont ensuite retargetés vers des références corps-entier natives au robot, puis exécutés par un contrôleur bas niveau dédié. La séparation entre quoi faire, appris depuis l'humain, et comment le corps du robot l'exécute, un contrôleur robot dédié, est la clé qui permet de sauter l'étape robot pendant toute la collecte de données. Les expériences sur cinq scénarios réels montrent que cette approche produit des compétences de manipulation corps-entier transférables, sans jamais avoir eu besoin de téléopérer un robot pour les collecter. C'est un gain d'échelle direct : un humain équipé d'un casque VR peut générer des dizaines de démonstrations en une session, quand la téléopération robotique demande un setup lourd par tâche. Pour les équipes qui travaillent sur des politiques vision-language-action, ça confirme une tendance forte : la donnée humaine à bas coût peut remplacer une bonne partie de la collecte robot coûteuse si le retargeting est bien conçu. Ça touche aussi aux pipelines de données pour l'IA embarquée en général, la leçon séparer la politique haut niveau du contrôleur bas niveau se transpose à d'autres domaines. La limite : le retargeting humain-vers-robot reste imparfait dès que la morphologie diverge trop, donc l'approche marche mieux sur des tâches proches de la gestuelle humaine standard.",
+            takeaways: [
+              'HumanoidUMI collecte des démonstrations corps-entier sans robot physique, via un casque VR léger et des pinces inspirées d’UMI portées par un humain.',
+              'L’architecture sépare une politique haut niveau (prédiction de points-clés appris depuis l’humain) d’un contrôleur bas niveau robot-natif qui exécute le mouvement.',
+              'Ça valide à nouveau que la donnée humaine à bas coût peut remplacer une bonne partie de la téléopération robotique si le retargeting est solide.',
+            ],
+            url: 'https://arxiv.org/abs/2606.27239',
+          },
+          {
+            tag: 'wild',
+            tagLabel: 'Science des matériaux · Aimants',
+            flames: 2,
+            wildcard: true,
+            title: 'Modelling magnetic material properties with uncertainty-aware neural networks',
+            teaser: 'Le ML sait prédire un aimant permanent, la vraie question est de savoir quand il se trompe.',
+            summary:
+              "La découverte de nouveaux matériaux, ici des aimants permanents, passe de plus en plus par du machine learning pour explorer des espaces de composition et de structure bien trop vastes pour l'expérimentation seule. Le problème, c'est que les données de haute qualité restent rares dans ce domaine, et qu'on demande souvent au modèle de prédire hors de la distribution qu'il a vue à l'entraînement, un terrain miné pour la confiance qu'on peut accorder à ses prédictions. Les auteurs se concentrent donc sur la quantification d'incertitude plutôt que sur la seule précision brute : ils comparent modèles classiques et modernes pour prédire les propriétés magnétiques intrinsèques, en jugeant la qualité de leurs estimations d'incertitude autant que leurs prédictions elles-mêmes. Deux stratégies concrètes sont testées : une perte de log-vraisemblance négative gaussienne, où le modèle apprend directement à prédire sa propre variance, et une approximation bayésienne par dropout, où l'on active le dropout à l'inférence pour obtenir une distribution de prédictions. Dans une seconde étude, ces mêmes briques d'incertitude sont transférées à une tâche plus complexe : prédire la coercivité, la résistance d'un aimant à la démagnétisation, à partir d'informations microstructurales, via un graph neural network. Le résultat principal n'est pas quel modèle est le plus précis, mais quel modèle sait honnêtement dire quand il ne sait pas, un critère souvent oublié en ML appliqué aux sciences des matériaux. Ça compte concrètement pour la recherche de nouveaux aimants sans terres rares : un modèle qui prédit une propriété prometteuse mais avec une incertitude énorme ne devrait pas déclencher une synthèse coûteuse en labo. Le parallèle avec le monde data/LLM est direct : c'est exactement le même problème que la calibration de confiance d'un LLM ou d'un modèle de scoring, savoir quand ne pas faire confiance à sa propre sortie est aussi précieux que la sortie elle-même. Ça illustre aussi comment des techniques ML génériques voyagent sans mal d'un domaine à l'autre, du NLP à la métallurgie. La limite : l'étude reste bornée à un nombre restreint de familles de matériaux magnétiques, donc la généralisation des méthodes d'incertitude testées à d'autres classes de matériaux reste à vérifier.",
+            takeaways: [
+              'L’étude ne cherche pas le modèle le plus précis pour prédire les propriétés magnétiques, mais celui qui quantifie le mieux son incertitude, surtout hors distribution.',
+              'Deux techniques sont comparées : perte de log-vraisemblance négative gaussienne et approximation bayésienne par dropout, y compris sur un graph neural network pour la coercivité.',
+              'Le principe se transpose directement au ML/LLM en production : savoir quand ne pas faire confiance à une prédiction est aussi précieux que la prédiction elle-même.',
+            ],
+            url: 'https://arxiv.org/abs/2606.11870',
+          },
+        ],
+        quiz: [
+          {
+            q: 'Quel mécanisme le framework Big-Data-as-a-Service utilise-t-il pour réagir à une dérive de données en production ?',
+            options: [
+              'Il arrête automatiquement toute la pipeline sans notification',
+              'Des boucles de feedback sensibles au drift qui peuvent redéclencher feature engineering et ré-entraînement',
+              "Il ignore le drift tant que l'accuracy reste stable",
+              'Il notifie uniquement un dashboard externe sans action automatique',
+            ],
+            correct: 1,
+            explain:
+              'Le framework intègre des boucles de feedback drift-aware qui peuvent recomposer dynamiquement le pipeline sous contrôle humain.',
+          },
+          {
+            q: 'Quel est l’avantage principal de SAG par rapport à un knowledge graph RAG classique ?',
+            options: [
+              'Il n’utilise aucune base de données',
+              'Il construit les liens entre données à la volée via SQL plutôt qu’un graphe global statique à maintenir',
+              'Il élimine complètement le besoin de recherche vectorielle',
+              'Il fonctionne uniquement sur des données non structurées',
+            ],
+            correct: 1,
+            explain:
+              'SAG évite la fragmentation et le coût de maintenance d’un graphe statique en instanciant des hyperarêtes locales à la requête, via des jointures SQL.',
+          },
+          {
+            q: 'Dans MRAgent, à quoi servent les tags du graphe Cue-Tag-Content ?',
+            options: [
+              'Ils indexent les contenus par date de création',
+              'Ils servent de ponts sémantiques entre indices fins et contenus mémorisés',
+              "Ils compressent la mémoire pour réduire l'espace de stockage",
+              'Ils remplacent entièrement les embeddings vectoriels',
+            ],
+            correct: 1,
+            explain:
+              "Les tags associatifs relient les cues (indices) aux contenus mémorisés, permettant une exploration guidée plutôt qu'une recherche par similarité pure.",
+          },
+          {
+            q: 'Que désigne la provenance d’exécution selon la survey sur la confiance des agents LLM ?',
+            options: [
+              'Le score de confiance final donné par le LLM',
+              'Le graphe typé de toutes les actions effectuées par l’agent',
+              'La liste des prompts utilisés lors du fine-tuning',
+              "Le temps de réponse moyen de l'agent",
+            ],
+            correct: 1,
+            explain:
+              'La provenance d’exécution est définie comme le graphe typé de l’exécution complète de l’agent, dont le traçage de preuves est une projection.',
+          },
+          {
+            q: 'Que représente une trace d’orchestration dans le papier sur le RL pour systèmes multi-agents ?',
+            options: [
+              "Le journal des erreurs de l'agent principal",
+              'Un graphe d’interaction temporel des événements de coordination (spawn, délégation, agrégation, arrêt)',
+              'L’historique des prompts envoyés au LLM',
+              'Le score final obtenu par le système multi-agent',
+            ],
+            correct: 1,
+            explain:
+              "La trace d'orchestration capture les événements de coordination entre agents dans le temps, et c'est sur ce graphe que le RL optimise.",
+          },
+          {
+            q: 'Selon les auteurs d’EA, quel est le principal risque d’entraîner un PNJ uniquement pour maximiser sa performance ?',
+            options: [
+              'Il devient trop lent à s’exécuter en jeu',
+              'Il risque de ne plus être un adversaire intéressant ou amusant pour le joueur',
+              'Il ne peut plus interagir avec d’autres PNJ',
+              'Il consomme plus de mémoire GPU que les systèmes scriptés',
+            ],
+            correct: 1,
+            explain:
+              "Le papier souligne qu'optimiser uniquement la victoire peut produire un comportement optimal mais peu engageant, ce qui casse l'immersion recherchée.",
+          },
+          {
+            q: 'Comment HumanoidUMI collecte-t-il les données de démonstration ?',
+            options: [
+              'Via téléopération d’un robot humanoïde réel par un expert',
+              'Via un casque VR léger et des pinces inspirées d’UMI portés directement par un humain, sans robot',
+              'En simulant intégralement les trajectoires en environnement virtuel',
+              'En rejouant des vidéos YouTube de mouvements humains',
+            ],
+            correct: 1,
+            explain:
+              'Le principe central est justement d’éviter tout robot physique pendant la collecte : un humain équipé de VR et de pinces UMI génère les démonstrations.',
+          },
+          {
+            q: 'Pourquoi la quantification d’incertitude est-elle centrale dans l’étude sur les matériaux magnétiques ?',
+            options: [
+              'Parce que le temps de calcul est le seul critère qui compte',
+              'Parce que les données sont rares et les prédictions souvent hors distribution, rendant la confiance du modèle critique',
+              'Parce que les aimants permanents n’ont aucune propriété mesurable',
+              'Parce que la loi impose de publier une incertitude avec chaque résultat',
+            ],
+            correct: 1,
+            explain:
+              'La rareté des données et le besoin fréquent de prédire hors distribution rendent l’évaluation de la fiabilité du modèle aussi importante que sa précision brute.',
+          },
+        ],
+      };
+
+      function pad(n) {
+        return String(n).length < 2 ? '0' + n : String(n);
+      }
+
+      function dateKey(d) {
+        return 'cabinet:' + d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+      }
+
+      function dayOfYear(d) {
+        var start = new Date(d.getFullYear(), 0, 0);
+        var diff = d - start;
+        return Math.floor(diff / 86400000);
+      }
+
+      var now = new Date();
+      var hour = now.getHours();
+      var storageKey = dateKey(now);
+
+      function loadState() {
+        try {
+          var raw = localStorage.getItem(storageKey);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return { read: [], quiz: null };
+      }
+
+      function saveState(state) {
+        try {
+          localStorage.setItem(storageKey, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      var state = loadState();
+
+      // Header text + ambient hue
+      var hueLayer = document.getElementById('hueLayer');
+      var greetingTitle = document.getElementById('greetingTitle');
+      var subtitleText = document.getElementById('subtitleText');
+      var windowLabel, hueClass, greeting;
+
+      if (hour < 6) {
+        greeting = 'Encore debout.';
+        windowLabel = 'nuit';
+        hueClass = 'hue-night';
+      } else if (hour < 8) {
+        greeting = 'Bonjour.';
+        windowLabel = 'aube';
+        hueClass = 'hue-dawn';
+      } else if (hour < 17) {
+        greeting = 'Bonjour.';
+        windowLabel = 'plein jour';
+        hueClass = 'hue-day';
+      } else if (hour < 20) {
+        greeting = 'Bon après-midi.';
+        windowLabel = 'crépuscule';
+        hueClass = 'hue-dusk';
+      } else {
+        greeting = 'Bonsoir.';
+        windowLabel = 'nuit';
+        hueClass = 'hue-night';
+      }
+
+      greetingTitle.textContent = greeting;
+      subtitleText.textContent =
+        'Huit trouvailles posées comme des planches, fenêtre ' + windowLabel + ', triées par pertinence.';
+      hueLayer.classList.add(hueClass);
+
+      document.getElementById('metaDate').textContent = now.toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      document.getElementById('metaDay').textContent = 'jour ' + dayOfYear(now) + ' de veille';
+
+      // Cards
+      var masonry = document.getElementById('masonry');
+      var cabinetPiece = document.getElementById('cabinetPiece');
+      var heroAssigned = false;
+
+      DATA.cards.forEach(function (card, i) {
+        var isRead = state.read.indexOf(i) !== -1;
+        var el = document.createElement('div');
+        el.className = 'card';
+        if (isRead) el.classList.add('is-read');
+
+        var isHero = !card.wildcard && !heroAssigned;
+        if (isHero) {
+          heroAssigned = true;
+          el.classList.add('hero');
+        }
+
+        var pipsHtml = '';
+        for (var p = 1; p <= 3; p++) {
+          pipsHtml += '<span class="pip' + (p <= card.flames ? ' on' : '') + '"></span>';
+        }
+
+        el.innerHTML =
+          '<div class="card-top"><span class="cat-dot ' +
+          card.tag +
+          '"></span><span class="cat-label">' +
+          card.tagLabel +
+          '</span></div>' +
+          '<h3 class="card-title">' +
+          card.title +
+          '</h3>' +
+          '<p class="card-teaser">' +
+          card.teaser +
+          '</p>' +
+          '<div class="card-foot"><span class="pips">' +
+          pipsHtml +
+          '</span><span class="open-link">ouvrir →</span></div>';
+
+        el.addEventListener('click', function () {
+          if (state.read.indexOf(i) === -1) {
+            state.read.push(i);
+            saveState(state);
+            el.classList.add('is-read');
+            updateRing();
+          }
+          openModal(card);
+        });
+
+        if (card.wildcard) {
+          var wrapDiv = document.createElement('div');
+          var pin = document.createElement('div');
+          pin.className = 'pin';
+          el.prepend(pin);
+          var pieceLabel = document.createElement('p');
+          pieceLabel.className = 'cat-label';
+          pieceLabel.style.marginBottom = '10px';
+          pieceLabel.textContent = 'La pièce du cabinet · ' + card.tagLabel;
+          el.querySelector('.card-top').replaceWith(pieceLabel);
+          cabinetPiece.appendChild(el);
+        } else {
+          masonry.appendChild(el);
+        }
+      });
+
+      // Progress ring
+      var ringProgress = document.getElementById('ringProgress');
+      var ringLabel = document.getElementById('ringLabel');
+      var circumference = 2 * Math.PI * 32;
+      ringProgress.style.strokeDasharray = circumference;
+
+      function updateRing() {
+        var total = DATA.cards.length;
+        var readCount = state.read.length;
+        var offset = circumference * (1 - readCount / total);
+        ringProgress.style.strokeDashoffset = offset;
+        ringLabel.textContent = readCount + '/' + total;
+      }
+      updateRing();
+
+      // Modal
+      var modalOverlay = document.getElementById('modalOverlay');
+      var modalDot = document.getElementById('modalDot');
+      var modalLabel = document.getElementById('modalLabel');
+      var modalTitle = document.getElementById('modalTitle');
+      var modalSummary = document.getElementById('modalSummary');
+      var modalTakeaways = document.getElementById('modalTakeaways');
+      var modalLink = document.getElementById('modalLink');
+
+      function openModal(card) {
+        modalDot.className = 'cat-dot ' + card.tag;
+        modalLabel.textContent = card.tagLabel;
+        modalTitle.textContent = card.title;
+        modalSummary.textContent = card.summary;
+        modalTakeaways.innerHTML = card.takeaways.map(function (t) {
+          return '<li>' + t + '</li>';
+        }).join('');
+        modalLink.href = card.url;
+        modalOverlay.classList.add('open');
+      }
+
+      function closeModal() {
+        modalOverlay.classList.remove('open');
+      }
+
+      document.getElementById('modalClose').addEventListener('click', closeModal);
+      modalOverlay.addEventListener('click', function (e) {
+        if (e.target === modalOverlay) closeModal();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      // Quiz
+      var quizIndex = dayOfYear(now) % DATA.quiz.length;
+      var quiz = DATA.quiz[quizIndex];
+      document.getElementById('quizQuestion').textContent = quiz.q;
+      var quizOptionsEl = document.getElementById('quizOptions');
+      var quizExplainEl = document.getElementById('quizExplain');
+
+      function renderQuiz() {
+        quizOptionsEl.innerHTML = '';
+        var answered = state.quiz !== null && state.quiz !== undefined;
+
+        quiz.options.forEach(function (opt, idx) {
+          var btn = document.createElement('button');
+          btn.className = 'quiz-opt';
+          btn.textContent = opt;
+
+          if (answered) {
+            btn.disabled = true;
+            if (idx === quiz.correct) btn.classList.add('correct');
+            else if (idx === state.quiz) btn.classList.add('wrong');
+          } else {
+            btn.addEventListener('click', function () {
+              state.quiz = idx;
+              saveState(state);
+              renderQuiz();
+            });
+          }
+
+          quizOptionsEl.appendChild(btn);
+        });
+
+        if (answered) {
+          quizExplainEl.style.display = 'block';
+          quizExplainEl.textContent = quiz.explain;
+        } else {
+          quizExplainEl.style.display = 'none';
+        }
+      }
+
+      renderQuiz();
+    </script>
   </body>
 </html>
