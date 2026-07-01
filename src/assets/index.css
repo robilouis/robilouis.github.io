@@ -28,11 +28,27 @@
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Editorial serif for headings, matching the hub and Le Cabinet. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.card-title {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
 }
 
 code {
