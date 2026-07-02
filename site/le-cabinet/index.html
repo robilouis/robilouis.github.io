@@ -102,6 +102,48 @@
         padding: 48px 24px 96px;
       }
 
+      .topbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 20px;
+      }
+
+      .lang-switch {
+        display: inline-flex;
+        gap: 2px;
+        padding: 3px;
+        background: rgba(255, 255, 255, 0.5);
+        border: 1px solid var(--hairline);
+        border-radius: 999px;
+        box-shadow: var(--shadow);
+      }
+
+      .lang-btn {
+        border: none;
+        background: transparent;
+        color: var(--ink-soft);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 5px 13px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+
+      .lang-btn:hover:not(.active) {
+        color: var(--ink);
+      }
+
+      .lang-btn.active {
+        background: var(--tile);
+        color: var(--ink);
+        box-shadow: 0 1px 3px rgba(60, 50, 30, 0.14);
+      }
+
       header {
         position: relative;
         margin-bottom: 36px;
@@ -529,6 +571,13 @@
     <div class="grain"></div>
 
     <div class="wrap">
+      <div class="topbar">
+        <div class="lang-switch" id="langSwitch" role="group" aria-label="Langue / Language">
+          <button class="lang-btn" data-lang="fr" type="button">FR</button>
+          <button class="lang-btn" data-lang="en" type="button">EN</button>
+        </div>
+      </div>
+
       <header>
         <div class="ring-wrap">
           <svg viewBox="0 0 74 74">
@@ -537,7 +586,7 @@
           </svg>
           <div class="ring-label" id="ringLabel">0/8</div>
         </div>
-        <p class="kicker">Le Cabinet · veille du matin</p>
+        <p class="kicker" id="kicker">Le Cabinet · veille du matin</p>
         <h1 class="title" id="greetingTitle">Bonjour.</h1>
         <p class="subtitle" id="subtitleText">
           Huit trouvailles posées comme des planches, fenêtre du matin, triées par pertinence.
@@ -554,14 +603,14 @@
       <div class="cabinet-piece" id="cabinetPiece"></div>
 
       <section class="quiz-section" id="quizSection">
-        <p class="quiz-kicker">Le quiz du jour</p>
+        <p class="quiz-kicker" id="quizKicker">Le quiz du jour</p>
         <p class="quiz-q" id="quizQuestion"></p>
         <div class="quiz-options" id="quizOptions"></div>
         <p class="quiz-explain" id="quizExplain" style="display: none"></p>
       </section>
 
       <footer class="page-footer">
-        <a href="/">← retour au portfolio</a>
+        <a href="/" id="footerLink">← retour au hub</a>
       </footer>
     </div>
 
@@ -574,7 +623,7 @@
         </div>
         <h2 class="modal-title" id="modalTitle"></h2>
         <p class="modal-summary" id="modalSummary"></p>
-        <p class="modal-takeaways-title">À retenir</p>
+        <p class="modal-takeaways-title" id="modalTakeawaysTitle">À retenir</p>
         <ul class="modal-takeaways" id="modalTakeaways"></ul>
         <a class="modal-link" id="modalLink" href="#" target="_blank" rel="noopener">Lire le papier →</a>
       </div>
@@ -617,37 +666,113 @@
 
       var state = loadState();
 
+      // ---- Localisation (FR / EN) ----
+      function loadLang() {
+        try {
+          var v = localStorage.getItem('cabinet:lang');
+          if (v === 'fr' || v === 'en') return v;
+        } catch (e) {}
+        return 'fr';
+      }
+      function saveLang(l) {
+        try {
+          localStorage.setItem('cabinet:lang', l);
+        } catch (e) {}
+      }
+      var lang = loadLang();
+
+      // Renvoie la valeur localisée d'un champ ({ fr, en }) ou le champ tel quel.
+      function L(field) {
+        if (field && typeof field === 'object' && !Array.isArray(field)) {
+          return field[lang] !== undefined ? field[lang] : field.fr;
+        }
+        return field;
+      }
+
+      var UI = {
+        fr: {
+          locale: 'fr-FR',
+          kicker: 'Le Cabinet · veille du matin',
+          greetings: {
+            night: 'Encore debout.',
+            dawn: 'Bonjour.',
+            day: 'Bonjour.',
+            dusk: 'Bon après-midi.',
+            evening: 'Bonsoir.',
+          },
+          dayOfWatch: function (n) {
+            return 'jour ' + n + ' de veille';
+          },
+          open: 'ouvrir →',
+          takeawaysTitle: 'À retenir',
+          readPaper: 'Lire le papier →',
+          quizKicker: 'Le quiz du jour',
+          cabinetPiece: 'La pièce du cabinet · ',
+          footer: '← retour au hub',
+          unavailable: 'Rapport du jour indisponible pour le moment. Réessayez dans un instant.',
+          subtitles: [
+            'Huit papiers cueillis ce matin, épinglés encore chauds, du plus net au plus fou.',
+            'La récolte du jour : huit trouvailles triées sur le volet, la pièce rare tout au fond.',
+            'Huit lectures posées sur l’établi, dépoussiérées et rangées par ordre d’envie.',
+            'Huit trouvailles remontées du flux, essorées de leur hype, classées par ce qui compte.',
+            'Le cabinet a ouvert : huit pièces exposées, une curiosité rangée à part.',
+            'Huit papiers passés au tamis de la nuit, gardés pour leur éclat, servis du plus utile au plus insolite.',
+          ],
+        },
+        en: {
+          locale: 'en-GB',
+          kicker: 'Le Cabinet · morning watch',
+          greetings: {
+            night: 'Still up.',
+            dawn: 'Good morning.',
+            day: 'Good morning.',
+            dusk: 'Good afternoon.',
+            evening: 'Good evening.',
+          },
+          dayOfWatch: function (n) {
+            return 'day ' + n + ' of the watch';
+          },
+          open: 'open →',
+          takeawaysTitle: 'Key takeaways',
+          readPaper: 'Read the paper →',
+          quizKicker: 'Quiz of the day',
+          cabinetPiece: 'The cabinet piece · ',
+          footer: '← back to the hub',
+          unavailable: 'Today’s report is unavailable for now. Try again in a moment.',
+          subtitles: [
+            'Eight papers picked this morning, pinned while still warm, from the sharpest to the wildest.',
+            'Today’s harvest: eight hand-picked finds, the rare piece tucked at the very back.',
+            'Eight reads laid on the workbench, dusted off and shelved in order of appetite.',
+            'Eight finds pulled from the stream, wrung of their hype, sorted by what matters.',
+            'The cabinet is open: eight pieces on display, one curiosity set apart.',
+            'Eight papers sifted overnight, kept for their shine, served from the most useful to the most offbeat.',
+          ],
+        },
+      };
+
       // Header text + ambient hue
       var hueLayer = document.getElementById('hueLayer');
       var greetingTitle = document.getElementById('greetingTitle');
       var subtitleText = document.getElementById('subtitleText');
-      var windowLabel, hueClass, greeting;
+      var slot, hueClass;
 
       if (hour < 6) {
-        greeting = 'Encore debout.';
-        windowLabel = 'nuit';
+        slot = 'night';
         hueClass = 'hue-night';
       } else if (hour < 8) {
-        greeting = 'Bonjour.';
-        windowLabel = 'aube';
+        slot = 'dawn';
         hueClass = 'hue-dawn';
       } else if (hour < 17) {
-        greeting = 'Bonjour.';
-        windowLabel = 'plein jour';
+        slot = 'day';
         hueClass = 'hue-day';
       } else if (hour < 20) {
-        greeting = 'Bon après-midi.';
-        windowLabel = 'crépuscule';
+        slot = 'dusk';
         hueClass = 'hue-dusk';
       } else {
-        greeting = 'Bonsoir.';
-        windowLabel = 'nuit';
+        slot = 'evening';
         hueClass = 'hue-night';
       }
 
-      greetingTitle.textContent = greeting;
-      subtitleText.textContent =
-        'Huit trouvailles posées comme des planches, fenêtre ' + windowLabel + ', triées par pertinence.';
       hueLayer.classList.add(hueClass);
 
       // Match the Android status bar (theme-color) to the ambient hue.
@@ -660,95 +785,42 @@
       var themeMeta = document.querySelector('meta[name="theme-color"]');
       if (themeMeta) themeMeta.setAttribute('content', themeColors[hueClass] || '#efe9dd');
 
-      document.getElementById('metaDate').textContent = now.toLocaleDateString('fr-FR', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      });
-      document.getElementById('metaDay').textContent = 'jour ' + dayOfYear(now) + ' de veille';
-
-      function renderContent() {
-      // Cards
-      var masonry = document.getElementById('masonry');
-      var cabinetPiece = document.getElementById('cabinetPiece');
-      var heroAssigned = false;
-
-      DATA.cards.forEach(function (card, i) {
-        var isRead = state.read.indexOf(i) !== -1;
-        var el = document.createElement('div');
-        el.className = 'card';
-        if (isRead) el.classList.add('is-read');
-
-        var isHero = !card.wildcard && !heroAssigned;
-        if (isHero) {
-          heroAssigned = true;
-          el.classList.add('hero');
-        }
-
-        var pipsHtml = '';
-        for (var p = 1; p <= 3; p++) {
-          pipsHtml += '<span class="pip' + (p <= card.flames ? ' on' : '') + '"></span>';
-        }
-
-        el.innerHTML =
-          '<div class="card-top"><span class="cat-dot ' +
-          card.tag +
-          '"></span><span class="cat-label">' +
-          card.tagLabel +
-          '</span></div>' +
-          '<h3 class="card-title">' +
-          card.title +
-          '</h3>' +
-          '<p class="card-teaser">' +
-          card.teaser +
-          '</p>' +
-          '<div class="card-foot"><span class="pips">' +
-          pipsHtml +
-          '</span><span class="open-link">ouvrir →</span></div>';
-
-        el.addEventListener('click', function () {
-          if (state.read.indexOf(i) === -1) {
-            state.read.push(i);
-            saveState(state);
-            el.classList.add('is-read');
-            updateRing();
-          }
-          openModal(card);
+      // Applique tous les libellés statiques (dépendants de la langue).
+      function applyStaticStrings() {
+        var u = UI[lang];
+        var day = dayOfYear(now);
+        document.documentElement.lang = lang;
+        document.getElementById('kicker').textContent = u.kicker;
+        greetingTitle.textContent = u.greetings[slot];
+        subtitleText.textContent = u.subtitles[day % u.subtitles.length];
+        document.getElementById('metaDate').textContent = now.toLocaleDateString(u.locale, {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
         });
+        document.getElementById('metaDay').textContent = u.dayOfWatch(day);
+        document.getElementById('quizKicker').textContent = u.quizKicker;
+        document.getElementById('modalTakeawaysTitle').textContent = u.takeawaysTitle;
+        document.getElementById('modalLink').textContent = u.readPaper;
+        document.getElementById('footerLink').textContent = u.footer;
+      }
 
-        if (card.wildcard) {
-          var wrapDiv = document.createElement('div');
-          var pin = document.createElement('div');
-          pin.className = 'pin';
-          el.prepend(pin);
-          var pieceLabel = document.createElement('p');
-          pieceLabel.className = 'cat-label';
-          pieceLabel.style.marginBottom = '10px';
-          pieceLabel.textContent = 'La pièce du cabinet · ' + card.tagLabel;
-          el.querySelector('.card-top').replaceWith(pieceLabel);
-          cabinetPiece.appendChild(el);
-        } else {
-          masonry.appendChild(el);
-        }
-      });
-
-      // Progress ring
+      // ---- Progress ring ----
       var ringProgress = document.getElementById('ringProgress');
       var ringLabel = document.getElementById('ringLabel');
       var circumference = 2 * Math.PI * 32;
       ringProgress.style.strokeDasharray = circumference;
 
       function updateRing() {
+        if (!DATA) return;
         var total = DATA.cards.length;
         var readCount = state.read.length;
-        var offset = circumference * (1 - readCount / total);
-        ringProgress.style.strokeDashoffset = offset;
+        ringProgress.style.strokeDashoffset = circumference * (1 - readCount / total);
         ringLabel.textContent = readCount + '/' + total;
       }
-      updateRing();
 
-      // Modal
+      // ---- Modal (câblée une seule fois) ----
       var modalOverlay = document.getElementById('modalOverlay');
       var modalDot = document.getElementById('modalDot');
       var modalLabel = document.getElementById('modalLabel');
@@ -761,10 +833,12 @@
         modalDot.className = 'cat-dot ' + card.tag;
         modalLabel.textContent = card.tagLabel;
         modalTitle.textContent = card.title;
-        modalSummary.textContent = card.summary;
-        modalTakeaways.innerHTML = card.takeaways.map(function (t) {
-          return '<li>' + t + '</li>';
-        }).join('');
+        modalSummary.textContent = L(card.summary);
+        modalTakeaways.innerHTML = L(card.takeaways)
+          .map(function (t) {
+            return '<li>' + t + '</li>';
+          })
+          .join('');
         modalLink.href = card.url;
         modalOverlay.classList.add('open');
       }
@@ -781,18 +855,90 @@
         if (e.key === 'Escape') closeModal();
       });
 
-      // Quiz
-      var quizIndex = dayOfYear(now) % DATA.quiz.length;
-      var quiz = DATA.quiz[quizIndex];
-      document.getElementById('quizQuestion').textContent = quiz.q;
-      var quizOptionsEl = document.getElementById('quizOptions');
-      var quizExplainEl = document.getElementById('quizExplain');
+      // ---- Rendu des cartes ----
+      function renderCards() {
+        var masonry = document.getElementById('masonry');
+        var cabinetPiece = document.getElementById('cabinetPiece');
+        var u = UI[lang];
+        masonry.innerHTML = '';
+        cabinetPiece.innerHTML = '';
+        var heroAssigned = false;
 
+        DATA.cards.forEach(function (card, i) {
+          var isRead = state.read.indexOf(i) !== -1;
+          var el = document.createElement('div');
+          el.className = 'card';
+          if (isRead) el.classList.add('is-read');
+
+          var isHero = !card.wildcard && !heroAssigned;
+          if (isHero) {
+            heroAssigned = true;
+            el.classList.add('hero');
+          }
+
+          var pipsHtml = '';
+          for (var p = 1; p <= 3; p++) {
+            pipsHtml += '<span class="pip' + (p <= card.flames ? ' on' : '') + '"></span>';
+          }
+
+          el.innerHTML =
+            '<div class="card-top"><span class="cat-dot ' +
+            card.tag +
+            '"></span><span class="cat-label">' +
+            card.tagLabel +
+            '</span></div>' +
+            '<h3 class="card-title">' +
+            card.title +
+            '</h3>' +
+            '<p class="card-teaser">' +
+            L(card.teaser) +
+            '</p>' +
+            '<div class="card-foot"><span class="pips">' +
+            pipsHtml +
+            '</span><span class="open-link">' +
+            u.open +
+            '</span></div>';
+
+          el.addEventListener('click', function () {
+            if (state.read.indexOf(i) === -1) {
+              state.read.push(i);
+              saveState(state);
+              el.classList.add('is-read');
+              updateRing();
+            }
+            openModal(card);
+          });
+
+          if (card.wildcard) {
+            var pin = document.createElement('div');
+            pin.className = 'pin';
+            el.prepend(pin);
+            var pieceLabel = document.createElement('p');
+            pieceLabel.className = 'cat-label';
+            pieceLabel.style.marginBottom = '10px';
+            pieceLabel.textContent = u.cabinetPiece + card.tagLabel;
+            el.querySelector('.card-top').replaceWith(pieceLabel);
+            cabinetPiece.appendChild(el);
+          } else {
+            masonry.appendChild(el);
+          }
+        });
+
+        updateRing();
+      }
+
+      // ---- Quiz ----
       function renderQuiz() {
+        var quizIndex = dayOfYear(now) % DATA.quiz.length;
+        var quiz = DATA.quiz[quizIndex];
+        var options = L(quiz.options);
+        document.getElementById('quizQuestion').textContent = L(quiz.q);
+        var quizOptionsEl = document.getElementById('quizOptions');
+        var quizExplainEl = document.getElementById('quizExplain');
         quizOptionsEl.innerHTML = '';
         var answered = state.quiz !== null && state.quiz !== undefined;
 
-        quiz.options.forEach(function (opt, idx) {
+        options.forEach(function (opt, idx) {
           var btn = document.createElement('button');
           btn.className = 'quiz-opt';
           btn.textContent = opt;
@@ -814,14 +960,39 @@
 
         if (answered) {
           quizExplainEl.style.display = 'block';
-          quizExplainEl.textContent = quiz.explain;
+          quizExplainEl.textContent = L(quiz.explain);
         } else {
           quizExplainEl.style.display = 'none';
         }
       }
 
-      renderQuiz();
+      function renderContent() {
+        renderCards();
+        renderQuiz();
       }
+
+      // ---- Sélecteur de langue ----
+      var langSwitch = document.getElementById('langSwitch');
+      function updateLangButtons() {
+        var btns = langSwitch.querySelectorAll('.lang-btn');
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].classList.toggle('active', btns[i].getAttribute('data-lang') === lang);
+        }
+      }
+      langSwitch.addEventListener('click', function (e) {
+        var btn = e.target.closest ? e.target.closest('.lang-btn') : null;
+        if (!btn) return;
+        var next = btn.getAttribute('data-lang');
+        if (next === lang) return;
+        lang = next;
+        saveLang(lang);
+        updateLangButtons();
+        applyStaticStrings();
+        if (DATA) renderContent();
+      });
+
+      updateLangButtons();
+      applyStaticStrings();
 
       // Charge le contenu du jour puis rend la page.
       fetch('content.json', { cache: 'no-store' })
@@ -837,7 +1008,9 @@
           var masonry = document.getElementById('masonry');
           if (masonry)
             masonry.innerHTML =
-              '<p style="color:var(--ink-soft);font-size:14px;padding:8px 0">Rapport du jour indisponible pour le moment. Réessayez dans un instant.</p>';
+              '<p style="color:var(--ink-soft);font-size:14px;padding:8px 0">' +
+              UI[lang].unavailable +
+              '</p>';
           console.error('le-cabinet: échec du chargement de content.json', err);
         });
     </script>
