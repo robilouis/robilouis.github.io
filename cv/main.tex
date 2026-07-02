@@ -1,0 +1,204 @@
+%%%%%%%%%%%%%%%%%
+% This is an example CV created using altacv.cls (v1.1.3, 30 April 2017) written by
+% LianTze Lim (liantze@gmail.com), based on the 
+% Cv created by BusinessInsider at http://www.businessinsider.my/a-sample-resume-for-marissa-mayer-2016-7/?r=US&IR=T
+% 
+%% It may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%    http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2003/12/01 or later.
+%%%%%%%%%%%%%%%%
+
+%% If you want to use \orcid or the
+%% academicons icons, add "academicons"
+%% to the \documentclass options. 
+%% Then compile with XeLaTeX or LuaLaTeX.
+% \documentclass[10pt,a4paper,academicons]{altacv}
+
+%% Use the "normalphoto" option if you want a normal photo instead of cropped to a circle
+% \documentclass[10pt,a4paper,normalphoto]{altacv}
+
+\documentclass[10pt,a4paper]{altacv}
+
+%% AltaCV uses the fontawesome and academicon fonts
+%% and packages. 
+%% See texdoc.net/pkg/fontawecome and http://texdoc.net/pkg/academicons for full list of symbols.
+%% When using the "academicons" option,
+%% Compile with LuaLaTeX for best results. If you
+%% want to use XeLaTeX, you may need to install
+%% Academicons.ttf in your operating system's font %% folder.
+
+
+% Change the page layout if you need to
+\geometry{left=1cm,right=9cm,marginparwidth=6.8cm,marginparsep=1.2cm,top=1cm,bottom=1cm}
+
+% Change the font if you want to.
+
+% If using pdflatex:
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[default]{lato}
+
+% If using xelatex or lualatex:
+% \setmainfont{Lato}
+
+% Change the colours if you want to
+\definecolor{VividPurple}{HTML}{73025C}
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{555555}
+\definecolor{bb}{HTML}{000000}
+\colorlet{heading}{bb}
+\colorlet{accent}{VividPurple}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+
+% Change the bullets for itemize and rating marker
+% for \cvskill if you want to
+\renewcommand{\itemmarker}{{\small\textbullet}}
+\renewcommand{\ratingmarker}{\faCirucle}
+
+%% sample.bib contains your publications
+\addbibresource{sample.bib}
+
+\begin{document}
+\name{Louis Robinet}
+\tagline{Tech Lead Data \& AI}
+
+\photo{2.5cm}{loulou_pro.jpg}
+\personalinfo{%
+  % Not all of these are required!
+  % You can add your own with \printinfo{symbol}{detail}
+  \email{louisrobi@hotmail.fr} \hspace{1.35cm} 
+  \mailaddress{58 rue Bistour, 26100 Romans-sur-Isère}
+  
+  \hspace{0.02cm}\location{France} \hspace{3.1cm} 
+  \phone{+33635399149}
+}
+
+%% Make the header extend all the way to the right, if you want.
+\begin{fullwidth}
+\makecvheader
+\end{fullwidth}
+
+%% Provide the file name containing the sidebar contents as an optional parameter to \cvsection.
+%% You can always just use \marginpar{...} if you do
+%% not need to align the top of the contents to any
+%% \cvsection title in the "main" bar.
+\cvsection[page1sidebar]{Education}
+
+\cvevent{MSc. Computer Science - Artificial Intelligence}{Leiden University}{Sept 2020 - Dec 2022}{Leiden, NL}
+\begin{itemize}
+\item Specialization in Artificial Intelligence
+\item Overview on state-of-the-art techniques applied to domains such as sports, robotics, video games, etc.
+\item Thesis: Procedural Content Generation applied to Video Games level generation in \textit{Celeste}
+
+\end{itemize}
+
+\divider
+
+\cvevent{Master's degree in Complex Systems}{École Normale Supérieure de Lyon}{Sept 2018 -- Aug 2020}{Lyon, FR}
+\begin{itemize}
+\item Interdisciplinary program
+\item Emphasis on Computer Science, Physics, Mathematics, and Complex Networks
+
+\end{itemize}
+
+\divider
+
+\cvevent{Bachelor's degree in Physics}{École Normale Supérieure de Lyon}{Sept 2017 -- Aug 2018}{Lyon, FR}
+
+\begin{itemize}
+\item Specialized courses in Physics and Chemistry
+\item Experimented-based coursework
+\end{itemize}
+\divider
+
+\cvevent{Classe Préparatoire aux Grandes Écoles MPSI/MP*}{Lycée du Parc}{Sept 2014 -- Aug 2017}{Lyon, FR}
+
+\begin{itemize}
+\item Intensive program preparing for the national french competitive exam for entry to engineering schools and ENS
+\item Combines courses from the fields of Mathematics, Physics, Computer Science and Engineering Sciences
+\end{itemize}
+\divider
+
+
+% \divider
+
+% \cvevent{Product Engineer}{Google}{23 June 1999 -- 2001}{Palo Alto, CA}
+
+% \begin{itemize}
+% \item Joined the company as employe \#20 and female employee \#1
+% \item Developed targeted advertisement in order to use user's search queries and show them related ads
+% \end{itemize}
+
+\addnextpagesidebar[-1ex]{page2sidebar}
+
+
+\cvsection{Work experience}
+
+\cvevent{Tech Lead Data \& AI}{Elsys Design}{June 2026 - Ongoing}{Valence, FR}
+
+\begin{itemize}
+\item Leading data \& AI initiatives across R\&D teams, from technical direction to hands-on delivery.
+\item Setting up data-audit methodologies and data/AI best practices, and building the technical-commercial (pre-sales) service offering.
+\end{itemize}
+
+\divider
+
+\cvevent{Freelance Data Architect/Scientist - R\&D}{Freelance}{February 2025 - June 2026}{Full remote - based in FR}
+
+\begin{itemize}
+\item Worked with several recurrent customers on diversified projects: \textbf{Campus} (running training app), \textbf{Tellent} (hiring benchmarking), \textbf{alcemy} (optimization in cement industry).
+\item Built and maintained big-data pipelines from scratch, deployed ML models in production, and delivered R\&D, codebase refactoring, and ad-hoc analysis to solve existing data problems.
+\end{itemize}
+
+\cvevent{(Lead) Data Scientist}{alcemy}{May 2023 - December 2025}{Berlin, GER (full remote)}
+
+\begin{itemize}
+\item Built and maintained the data-integration platform ingesting production data from 30--40 industrial clients (thousands of files, \textasciitilde1M data points daily) into a cloud system.
+\item Refactored a manual client-onboarding process into config-driven pipelines, cutting the code to integrate a new client by \textasciitilde10x (thousands to hundreds of lines).
+\item Delivered production ML across the client base: hundreds of prediction \& optimization models (6--10 per client), from setup to experiments on imbalanced/limited/biased data; built monitoring for data health \& quality.
+\item Lead of a 3-person team: technical scoping \& estimation, knowledge transfer, and enablement across the whole pipeline (since May 2024).
+\end{itemize}
+
+\divider
+
+\cvevent{Data Scientist Intern}{Thales (Defence and Mission Systems)}{Mar 2022 -- Sept 2022}{Bordeaux, FR}
+
+\begin{itemize}
+\item Data exploration, Machine Learning algorithms, and statistical modeling on fighter-jet usage data, hands-on the large-scale Dataiku data-science platform.
+\end{itemize}
+\divider
+
+\cvevent{Lecturer for a Mathematics Refresher course}{Leiden University}{Nov 2021 -- Nov 2022}{Leiden, NL}
+
+\begin{itemize}
+\item Lectures about linear algebra, statistics, and probabilities for Leiden University \textit{MSc.} students
+\end{itemize}
+\divider
+
+\cvevent{Internship in Geomorphology, Data \& Image Analysis}{EVS - CNRS Lyon}{Jan 2020 -- July 2020}{Lyon, FR}
+
+\begin{itemize}
+\item Detection and characterization of river styles from satellite images, combining Python development, machine learning, and hydrogeomorphology
+\end{itemize}
+\divider
+
+\cvevent{Internship in Astrophysics, Image Analysis \& Signal Processing}{Lyon Observatory - CRAL}{Apr 2019 -- Aug 2019}{Saint-Genis-Laval, FR}
+
+\begin{itemize}
+\item Simulations of space observations: Python development, data analysis, and theoretical astrophysics
+\end{itemize}
+\divider
+
+\cvevent{Internship in Soft Matter}{Universiteit van Amsterdam}{May 2018 -- Aug 2018}{Science Park 904 - Amsterdam, NL}
+
+\begin{itemize}
+\item Studying the buckling of self-assembled colloidal structures through image analysis and particle tracking, at the Machine Materials Lab with Dr. Corentin Coulais
+\end{itemize}
+
+
+\end{document}
