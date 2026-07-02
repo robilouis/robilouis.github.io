@@ -286,7 +286,7 @@ const CONFIG = {
   },
 
   // Optional Footer. Supports plain text or HTML.
-  footer: `Made with ❤️`,
+  footer: `<a class="link link-hover" href="/">← Hub</a>&nbsp;&nbsp;·&nbsp;&nbsp;Made with ❤️`,
 
   enablePWA: true,
 };
