@@ -2,206 +2,213 @@
   "cards": [
     {
       "tag": "pro",
-      "tagLabel": "MLOps · Data Eng",
+      "tagLabel": "Mémoire d'agents",
       "flames": 3,
-      "title": "Trustworthy Self-Composable Big-Data-as-a-Service: un framework LLM multi-agents pour le data engineering et le MLOps",
-      "teaser": "Un orchestrateur LLM qui prend en main tout le cycle de vie ML, de l'ingestion au drift.",
-      "summary": "Les plateformes Big-Data-as-a-Service doivent enchaîner ingestion, nettoyage, feature engineering, entraînement, déploiement et monitoring, et aujourd'hui chaque étape est automatisée séparément, sans vue d'ensemble. Résultat : les agents data science et systèmes AutoML actuels optimisent des îlots, mais personne ne gère l'orchestration de bout en bout, la gouvernance des artefacts, ni l'adaptation au drift. Ce papier propose un framework multi-agent orchestré par un LLM central qui découpe le cycle de vie BDaaS en agents spécialisés : ingestion, nettoyage, feature engineering, entraînement AutoML, évaluation, déploiement MLOps, monitoring et détection de drift. La couche d'orchestration LLM ne se contente pas de dispatcher les tâches : elle valide les sorties intermédiaires, maintient le contexte du workflow, et peut recomposer dynamiquement la pipeline si un agent échoue ou si les données changent. Le cœur du papier, c'est la confiance : checkpoints de validation à chaque étape, human-in-the-loop pour les décisions sensibles, gouvernance des artefacts, et boucles de feedback sensibles au drift. Concrètement, si un agent de monitoring détecte une dérive de distribution en production, le système peut redéclencher automatiquement le pipeline de feature engineering et de ré-entraînement, sous contrôle humain. C'est une proposition d'architecture plus qu'un benchmark chiffré à grande échelle, la contribution est surtout dans la manière de composer les responsabilités entre agents et dans les mécanismes de gouvernance. Pour une équipe data qui gère aujourd'hui son MLOps avec un patchwork d'outils, ça donne un plan directeur pour faire dialoguer ces briques via un orchestrateur LLM plutôt que du code de glue statique. Ça touche aussi à la gouvernance de données : les checkpoints de validation et la traçabilité des artefacts sont exactement ce que demandent les audits de conformité sur les pipelines IA. La limite : orchestrer autant d'agents avec un LLM central crée un point de défaillance et de coût non négligeable, le papier ne détaille pas encore la latence bout-en-bout en charge réelle.",
+      "title": "Exploring Cross-Scenario Generality of Agentic Memory Systems: Diagnostics and a Strong Baseline",
+      "teaser": "Et si la meilleure mémoire d'agent était juste un fichier texte ?",
+      "summary": "Les agents LLM accumulent des historiques qui débordent vite la fenêtre de contexte, d'où la floraison de systèmes de mémoire dédiés. Problème : chaque système est réglé pour un scénario précis, et rien ne prouve qu'il généralise aux trajectoires hétérogènes rencontrées en production. Les auteurs benchmarkent huit systèmes de mémoire plus un harness agentique sur cinq scénarios : QA mono-tour, chat multi-sessions, QA sur trajectoires d'agent, tests de stress mémoire et tâches long-horizon. Surprise : le meilleur classement cross-tâches n'est pas obtenu par une architecture sophistiquée, mais par un harness qui auto-gère un simple stockage en fichiers texte plat via des tool calls. Ils formalisent cette intuition dans AutoMEM, une mémoire agentique où l'agent lit et écrit lui-même ses souvenirs par une interface d'outils. AutoMEM décroche la meilleure généralité cross-scénario, là où les mémoires spécialisées s'effondrent hors de leur domaine d'origine. Message concret : la structure imposée (graphes, résumés hiérarchiques) aide dans un cas et nuit dans un autre. Pour un agent en production qui jongle entre chat, tâches longues et QA, mieux vaut une mémoire souple auto-gérée qu'un système ad hoc. Ça simplifie la stack : moins de composants, plus de contrôle laissé au LLM. Reste que fichier texte plus tool calls scale mal quand la mémoire explose : pas d'index sémantique, coût de relecture qui grimpe.",
       "takeaways": [
-        "Le framework découpe tout le cycle de vie BDaaS (ingestion à drift detection) en agents spécialisés coordonnés par un LLM orchestrateur central.",
-        "La confiance repose sur des checkpoints de validation, du human-in-the-loop et une gouvernance des artefacts, pas seulement sur la performance du modèle final.",
-        "C'est une architecture proposée, pas encore un benchmark de charge en production : le coût d'orchestration LLM à grande échelle reste une inconnue."
+        "Avant d'adopter un système de mémoire, testez-le hors de son scénario d'origine : la plupart généralisent mal.",
+        "Un harness agentique auto-gérant un stockage texte plat bat des architectures mémoire spécialisées au classement cross-tâches.",
+        "La structure (graphe, hiérarchie) est un pari : bénéfique dans un contexte, pénalisante dans un autre, ne l'imposez pas par défaut."
       ],
-      "url": "https://arxiv.org/abs/2606.17915"
+      "url": "https://arxiv.org/abs/2606.04315",
+      "wildcard": false
+    },
+    {
+      "tag": "pro",
+      "tagLabel": "Agents · Tool Use",
+      "flames": 3,
+      "title": "When the Tool Decides: LLM Agents Defer Blindly to Graph Neural Network Tools, and Stronger Backbones Defer More",
+      "teaser": "Votre agent n'utilise pas son outil : il lui obéit aveuglément.",
+      "summary": "On suppose qu'un agent LLM exerce son jugement quand il appelle un outil, qu'il décide quand et à quel point s'y fier. Ce papier teste l'hypothèse et la démonte. Les auteurs exposent un GNN gelé comme outil explicite à un agent LLM en style ReAct, sur une tâche de prédiction sur graphe, puis mesurent si l'agent utilise vraiment l'outil ou se contente d'obéir. Verdict : les prédictions de l'agent coïncident avec la sortie brute du GNN 97,6 à 99,2 % du temps. L'agent se transforme en perroquet du GNN : il adopte la sortie de l'outil telle quelle et court-circuite son propre raisonnement. Pire, tester des backbones de capacité croissante (Qwen2.5 de 0,5B à 7B) montre que la déférence n'est pas un défaut des petits modèles ; parmi ceux capables d'appeler l'outil, l'accord augmente avec la capacité. Un oracle par nœud qui choisit la meilleure action bat le perroquet de loin, car la précision du perroquet reste plafonnée par le GNN gelé. Pour quiconque construit des agents multi-outils en production, c'est un signal d'alarme : appeler un outil ne veut pas dire raisonner dessus. Les métriques d'usage d'outils peuvent masquer une abdication totale du jugement. L'étude porte sur un cas précis (GNN sur graphe) ; reste à voir si la déférence persiste avec des outils plus bruités ou contestables, mais l'intuition dérange.",
+      "takeaways": [
+        "Un fort taux d'appel d'outil n'est pas une preuve de raisonnement : l'agent peut simplement recopier sa sortie (97-99 % du temps ici).",
+        "La déférence aveugle croît avec la capacité du modèle : ce n'est pas un bug de petit modèle qu'on corrige en scalant.",
+        "Évaluez toujours l'agent contre un oracle meilleure-action : si l'outil est plafonné, l'agent l'est aussi."
+      ],
+      "url": "https://arxiv.org/abs/2606.14476",
+      "wildcard": false
+    },
+    {
+      "tag": "pro",
+      "tagLabel": "RAG · Enterprise",
+      "flames": 3,
+      "title": "Don't Retrieve, Navigate: Distilling Enterprise Knowledge into Navigable Agent Skills for QA and RAG",
+      "teaser": "Et si l'agent explorait la carte du corpus au lieu de piocher à l'aveugle ?",
+      "summary": "Le RAG classique traite le LLM en consommateur passif de résultats de recherche : il ne voit jamais comment le corpus est organisé, ni ce qu'il n'a pas encore récupéré. D'où sa difficulté à faire marche arrière ou à combiner des preuves éparpillées. Corpus2Skill distille hors-ligne un corpus documentaire en un répertoire hiérarchique de skills. Le pipeline clusterise itérativement les documents, génère des résumés écrits par LLM à chaque niveau, et matérialise le tout en un arbre de fichiers de compétences navigables. Au moment de servir, l'agent reçoit une vue d'ensemble du corpus, plonge dans les branches thématiques via des résumés de plus en plus fins, puis récupère les documents complets par identifiant. Comme la hiérarchie est explicitement visible, l'agent peut raisonner sur où chercher, rebrousser chemin depuis une piste stérile, et croiser des preuves entre branches. Résultat : la méthode bat la recherche dense, RAPTOR et le RAG agentique sur WixQA et sur un macro-F1 moyenné sur 10 jeux de données. Pour un RAG d'entreprise où la connaissance est structurée (wikis, docs produit, procédures), donner à l'agent la carte plutôt que des chunks isolés change la donne. Le coût de compilation est amorti hors-ligne, ce qui colle aux contraintes de latence en production. Reste que l'arbre de skills doit être recompilé quand le corpus évolue ; sur des bases très volatiles, la maintenance de la hiérarchie peut coûter cher.",
+      "takeaways": [
+        "Donnez à l'agent une carte navigable du corpus (arbre de résumés hiérarchiques) plutôt que des chunks isolés : il peut backtracker et croiser les preuves.",
+        "La distillation du corpus en skills se fait hors-ligne, donc sans pénaliser la latence au moment de servir.",
+        "Corpus2Skill bat recherche dense, RAPTOR et RAG agentique sur WixQA et un macro-F1 sur 10 datasets : pertinent pour les bases d'entreprise structurées."
+      ],
+      "url": "https://arxiv.org/abs/2604.14572",
+      "wildcard": false
     },
     {
       "tag": "pro",
       "tagLabel": "RAG · Retrieval",
-      "flames": 3,
-      "title": "SAG : SQL-Retrieval Augmented Generation avec hyperarêtes dynamiques",
-      "teaser": "Et si le meilleur graphe RAG n'était pas un graphe du tout, mais du SQL ?",
-      "summary": "Le RAG classique par similarité vectorielle plafonne dès qu'il faut du raisonnement multi-sauts ou respecter des contraintes structurées, un problème bien connu de quiconque a déployé du RAG sur des questions complexes. Ajouter un knowledge graph aide, mais introduit de la fragmentation sémantique, un coût de maintenance élevé, et surtout des mises à jour incrémentales douloureuses dès que le corpus bouge. SAG prend le problème à l'envers : au lieu de construire un graphe global statique à l'avance, chaque chunk est transformé en un événement sémantiquement complet accompagné d'un ensemble d'entités d'indexation. À la requête, des jointures SQL relient dynamiquement les événements qui partagent des entités communes, formant des hyperarêtes locales, un index instancié à la volée plutôt qu'un graphe pré-calculé. L'architecture combine trois briques complémentaires : une base SQL pour les relations many-to-many entre événements et entités, un index vectoriel pour la similarité sémantique, et un index plein-texte pour la recherche par mots-clés. Ce mélange permet de traiter à la fois des questions floues et des contraintes précises sans jamais matérialiser un graphe global coûteux à maintenir. Résultat chiffré : Recall@2/5 moyen de 79,3%/88,2% sur trois benchmarks multi-sauts, soit 11,1 et 4,9 points de mieux que HippoRAG 2, un écart net, pas cosmétique. Pour une équipe qui maintient un RAG en prod, l'argument clé est la maintenance : plus besoin de recalculer un graphe entier à chaque ingestion, les jointures SQL s'adaptent nativement à un corpus qui grossit en continu. C'est particulièrement pertinent pour du RAG sur données d'entreprise déjà en base relationnelle où l'infra SQL existe déjà et peut être réutilisée directement. La limite : la qualité de l'extraction d'entités à l'ingestion devient le nouveau goulot d'étranglement, si les entités extraites sont bruitées, les hyperarêtes générées à la volée le seront aussi.",
+      "flames": 2,
+      "title": "Rethinking Agentic RAG: Toward LLM-Driven Logical Retrieval Beyond Embeddings",
+      "teaser": "Rendre la main au LLM : des requêtes logiques plutôt que des embeddings.",
+      "summary": "Le RAG agentique fait dialoguer le LLM avec le système de recherche sur plusieurs tours, en raffinant les requêtes au fil des résultats. Les auteurs plaident pour aller plus loin : déléguer davantage de contrôle au LLM tout en gardant une interface de récupération légère. Leur cadre, LogicalRAG, laisse le LLM formuler ses intentions de recherche sous forme d'expressions logiques, tandis que le backend se réduit à un simple système à index inversé. La motivation est fine : les embeddings capturent bien la sémantique abstraite mais ratent des détails lexicaux critiques comme les noms propres ou les entités rares apparaissant dans la requête. Les requêtes logiques réintroduisent ces contraintes lexicales explicites. Résultat : le cadre égale une forte baseline agentique hybride, tout en réduisant nettement le coût de construction et de service. Bonus notable : ancrer la recherche dans des requêtes logiques réduit substantiellement les hallucinations dans les réponses générées. Pour un pipeline RAG en production, c'est séduisant : moins d'infra puisqu'il n'y a pas d'index vectoriel lourd, coût maîtrisé, et des réponses plus fidèles sur les requêtes à entités précises. C'est utile quand vos utilisateurs cherchent des références exactes plutôt que des concepts flous. Reste que les requêtes logiques supposent un LLM assez bon pour les formuler correctement ; sur des corpus très sémantiques et peu lexicaux, l'index inversé seul pourrait montrer ses limites.",
       "takeaways": [
-        "SAG remplace le graphe de connaissances statique par des hyperarêtes construites à la volée via des jointures SQL entre événements et entités partagées.",
-        "Sur trois benchmarks multi-sauts, SAG dépasse HippoRAG 2 de 11,1 points en Recall@2 et 4,9 points en Recall@5.",
-        "L'architecture combine SQL, index vectoriel et plein-texte, un bon fit si vous avez déjà une base relationnelle en place."
+        "Les embeddings ratent les détails lexicaux (noms propres, entités rares) : des requêtes logiques sur index inversé les rattrapent.",
+        "LogicalRAG égale une baseline agentique hybride forte tout en réduisant le coût de construction et de service.",
+        "Ancrer la récupération dans des requêtes logiques réduit substantiellement les hallucinations : un vrai gain de fidélité."
       ],
-      "url": "https://arxiv.org/abs/2606.15971"
+      "url": "https://arxiv.org/abs/2605.27123",
+      "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Agents · Mémoire",
-      "flames": 3,
-      "title": "Memory is Reconstructed, Not Retrieved : la mémoire en graphe pour agents LLM",
-      "teaser": "Et si la mémoire d'agent arrêtait de chercher pour se mettre à raisonner ?",
-      "summary": "Les agents LLM à mémoire longue butent toujours sur le même mur : ils retrouvent des bribes de conversations passées, mais peinent à enchaîner plusieurs sauts de raisonnement dessus. Le problème vient du pipeline classique retrieve-then-reason : on récupère d'abord tout ce qui ressemble à la question, puis on espère que le LLM démêle le bon fil, sans jamais revenir en arrière si la piste est mauvaise. MRAgent change de paradigme en modélisant la mémoire comme un graphe Cue-Tag-Content, où des tags associatifs servent de ponts sémantiques entre des indices fins et le contenu mémorisé. Plutôt que de figer la recherche en une seule passe, un mécanisme de reconstruction active injecte le raisonnement du LLM directement dans l'accès mémoire. Concrètement, l'agent explore un chemin, évalue les preuves accumulées, et peut élaguer ou relancer une nouvelle branche de récupération si les indices ne collent pas. C'est un peu comme si la mémoire fonctionnait par associations plutôt que par recherche exacte, ce qui colle davantage à la façon dont un humain retrouve un souvenir. Les auteurs montrent des gains significatifs sur des benchmarks de raisonnement multi-sauts sur historiques longs, avec un coût de calcul réduit par rapport aux approches à graphe statique. Pour qui construit des agents en prod avec des sessions longues, ça veut dire moins d'hallucinations dues à une récupération figée et une meilleure capacité à corriger le tir en cours de route. Ça s'applique directement aux architectures RAG conversationnelles où le contexte évolue : plus besoin de reconstruire tout le graphe à chaque update, l'exploration se fait à la demande. La limite : la reconstruction active ajoute des allers-retours LLM supplémentaires, donc de la latence, à surveiller de près pour des cas d'usage temps réel.",
+      "tagLabel": "Multi-agents · RAG",
+      "flames": 2,
+      "title": "Experience as a Compass: Multi-agent RAG with Evolving Orchestration and Agent Prompts",
+      "teaser": "Un système multi-agents qui réécrit sa propre organisation en apprenant.",
+      "summary": "Le RAG multi-agents s'attaque aux requêtes dures qui nécessitent plusieurs étapes et plusieurs sources. Mais les approches existantes reposent sur des comportements d'agents figés et une orchestration fixe, d'où une performance fragile. Deux limites sont pointées : l'absence d'orchestration continûment adaptative, et l'absence d'apprentissage au niveau comportemental des agents individuels. HERA propose un cadre hiérarchique qui fait co-évoluer l'orchestration multi-agents et les prompts spécifiques à chaque rôle. Au niveau global, il optimise des topologies d'agents propres à chaque requête via un échantillonnage guidé par la récompense et l'accumulation d'expérience. Au niveau local, une Role-Aware Prompt Evolution affine les comportements par attribution de crédit et adaptation sur deux axes. Résultat : une amélioration moyenne de 38,69 % sur des baselines récentes, avec une généralisation robuste et une bonne efficacité en tokens. Les analyses topologiques révèlent une auto-organisation émergente, où l'exploration éparse fait émerger des réseaux multi-agents compacts et à forte utilité. Pour qui bâtit des systèmes multi-agents, le message est clair : ne figez ni la topologie ni les prompts, laissez le système apprendre quelle configuration marche pour quel type de requête, comme un playbook qui se remplit avec l'expérience. Reste que l'accumulation d'expérience et l'échantillonnage guidé par récompense ajoutent une boucle de tuning : c'est moins plug-and-play qu'un pipeline statique.",
       "takeaways": [
-        "MRAgent remplace le pipeline rigide retrieve-then-reason par une exploration dynamique du graphe mémoire, guidée par le raisonnement du LLM lui-même.",
-        "La mémoire est structurée en Cue-Tag-Content, où les tags jouent le rôle de ponts associatifs entre indices et contenus, plutôt qu’un simple index vectoriel plat.",
-        "Le gain sur les benchmarks multi-sauts vient au prix d’appels LLM supplémentaires pour piloter l’exploration, donc plus de latence à budgétiser en prod."
+        "Figer topologie et prompts rend un système multi-agents fragile : HERA les fait co-évoluer et gagne +38,69 % en moyenne.",
+        "L'expérience accumulée sert de boussole pour choisir la topologie d'agents adaptée à chaque requête.",
+        "Une exploration éparse fait émerger des réseaux multi-agents compacts et efficaces en tokens : la complexité n'est pas toujours utile."
       ],
-      "url": "https://arxiv.org/abs/2606.06036"
+      "url": "https://arxiv.org/abs/2604.00901",
+      "wildcard": false
     },
     {
-      "tag": "pro",
-      "tagLabel": "Gouvernance · Audit",
+      "tag": "cv",
+      "tagLabel": "Robotique · VLA",
       "flames": 2,
-      "title": "From Agent Traces to Trust : traçage de preuves et provenance d’exécution des agents LLM",
-      "teaser": "Votre agent a raison, mais pouvez-vous prouver pourquoi ?",
-      "summary": "Plus les agents LLM gagnent en autonomie (planification, appels d'outils, mémoire, collaboration multi-agents), plus il devient difficile de savoir pourquoi ils ont produit telle réponse. C'est un vrai problème de gouvernance : mesurer l'exactitude de la réponse finale ne dit rien sur les preuves mobilisées, la légitimité des appels d'outils, ou l'origine d'une panne. Cette survey propose un cadre unifié autour de deux notions : la provenance d'exécution, le graphe typé de tout ce que l'agent a fait, et le traçage de preuves, sa projection sur les relations preuve-support. Le graphe de provenance relie entre eux : l'ancrage de récupération, le support des affirmations, la sécurité des appels d'outils, et la lignée mémoire, c'est-à-dire quel souvenir a influencé quelle décision. Les auteurs classent les travaux existants selon qu'ils couvrent l'observabilité, le debug, l'audit ou la récupération après échec, et montrent que la plupart des systèmes actuels n'en couvrent qu'un seul aspect. Le message central : sans provenance structurée, un agent qui a raison reste une boîte noire non auditable, même s'il produit la bonne réponse neuf fois sur dix. Pour les data teams qui déploient des agents en environnement réglementé, c'est directement lié aux exigences de traçabilité et d'explicabilité qui arrivent avec les réglementations sur l'IA. Ça rejoint aussi les besoins pratiques de debug : quand un agent en prod part en vrille, avoir un graphe de provenance permet de remonter précisément à l'outil ou au souvenir fautif plutôt que de rejouer toute la trace à l'aveugle. C'est une synthèse, donc pas de nouvelle méthode miracle : c'est une carte des briques existantes et des trous à combler. La limite assumée par les auteurs : la plupart des frameworks de provenance ajoutent un surcoût d'instrumentation non négligeable, et personne n'a encore de standard commun pour l'industrie.",
+      "title": "TBD-VLA: Temporal Block Diffusion Vision Language Action Model",
+      "teaser": "Fusionner autorégression et diffusion pour des robots plus rapides et plus fluides.",
+      "summary": "Les modèles Vision-Language-Action discrets génèrent l'action comme une prédiction du prochain token sur un espace d'actions discrétisé, chaque token étant conditionné autorégressivement sur le contexte précédent. Efficace, mais lent à l'inférence et largement aveugle à la structure temporelle des trajectoires d'action. TBD-VLA est un cadre VLA discret à base de tokens qui intègre du block diffusion pour générer les actions de façon temporelle. Il découpe la séquence d'actions en blocs temporels, applique une diffusion discrète masquée à l'intérieur de chaque bloc, tout en gardant une génération autorégressive entre les blocs. Cette hybridation unifie autorégression temporelle et décodage parallèle des actions. Le gain est double : forte cohérence temporelle et vitesse d'inférence améliorée. La modélisation temporelle explicite permet même une exécution asynchrone des chunks d'action (type Real-Time Chunking) via de l'in-painting temporel. TBD-VLA dépasse nettement les VLA antérieurs, en simulation comme en manipulation réelle. Pour la robotique en boucle réelle, la latence est le nerf de la guerre : un décodage parallèle par blocs qui reste temporellement cohérent est directement exploitable pour du contrôle temps réel, et le pattern autorégressif-entre-blocs plus diffusion-intra-bloc est transposable au-delà de la robotique. Reste que l'approche opère sur des espaces d'actions discrétisés ; la granularité de la discrétisation et la taille des blocs sont des hyperparamètres qui pilotent le compromis vitesse-précision.",
       "takeaways": [
-        "La provenance d’exécution est un graphe typé de tout ce qu’un agent a fait ; le traçage de preuves en est la projection sur les relations preuve-affirmation.",
-        "L’exactitude de la réponse finale ne suffit pas à auditer un agent : il faut pouvoir remonter à l’ancrage de récupération, aux appels d’outils et à la lignée mémoire.",
-        "Aucun système actuel ne couvre observabilité, debug, audit et récupération à la fois, c’est une checklist utile pour évaluer sa propre stack d’agents."
+        "TBD-VLA combine diffusion discrète masquée intra-bloc et autorégression inter-blocs pour gagner en vitesse sans perdre la cohérence temporelle.",
+        "La modélisation temporelle explicite autorise l'exécution asynchrone des chunks d'action (Real-Time Chunking) par in-painting.",
+        "Le modèle bat les VLA antérieurs en simulation et en manipulation réelle : la latence n'est plus le point faible."
       ],
-      "url": "https://arxiv.org/abs/2606.04990"
-    },
-    {
-      "tag": "pro",
-      "tagLabel": "Multi-agents · RL",
-      "flames": 2,
-      "title": "Reinforcement Learning for LLM-based Multi-Agent Systems through Orchestration Traces",
-      "teaser": "Entraîner par RL non pas un agent, mais la façon dont une équipe d'agents s'organise.",
-      "summary": "Quand les agents LLM passent d'exécutants isolés à des équipes coordonnées, le vrai problème d'optimisation n'est plus quelle action prendre mais comment le travail se répartit entre agents. Ce papier s'attaque directement à ça : optimiser par reinforcement learning non pas les actions individuelles, mais les décisions d'orchestration, qui spawn un sous-agent, qui délègue à qui, comment on agrège les résultats, quand on arrête. L'unité d'analyse est la trace d'orchestration : un graphe d'interaction temporel dont les événements sont le spawn de sous-agents, la délégation, la communication, l'usage d'outils, le retour de résultats, l'agrégation et l'arrêt. Plutôt qu'une récompense unique en fin de tâche, les auteurs définissent huit familles de récompenses, incluant des récompenses d'orchestration dédiées : accélération par parallélisme, correction de la répartition des sous-tâches, qualité de l'agrégation finale. Concrètement, un agent orchestrateur apprend à juger s'il vaut mieux paralléliser deux sous-tâches ou les traiter séquentiellement, et si le découpage choisi produit effectivement un gain net une fois l'agrégation prise en compte. C'est une manière de sortir du réglage à la main des frameworks multi-agents pour laisser le système apprendre quand la coordination vaut le coût qu'elle engendre. Les résultats montrent que le RL guidé par ces récompenses d'orchestration améliore la vitesse et la qualité d'agrégation par rapport à des stratégies de délégation fixes. Pour qui construit des systèmes multi-agents en prod, ça offre un cadre pour arrêter de deviner combien de sous-agents lancer et sur quel critère les arrêter. Ça s'applique aussi à la maîtrise des coûts : une bonne récompense de parallélisme peut directement se traduire par une baisse de la latence et du nombre d'appels API redondants. La limite : entraîner du RL sur des traces d'orchestration demande de simuler énormément d'exécutions multi-agents, ce qui reste coûteux et encore mal standardisé d'un framework à l'autre.",
-      "takeaways": [
-        "L’unité d’optimisation est la trace d’orchestration : spawn, délégation, communication, agrégation et arrêt, pas seulement les actions individuelles des agents.",
-        "Huit familles de récompenses sont proposées, dont des récompenses spécifiques au parallélisme, à la correction du découpage des sous-tâches et à la qualité de l’agrégation.",
-        "Le RL d’orchestration remplace le réglage manuel du nombre de sous-agents par un apprentissage de quand la coordination vaut réellement son coût."
-      ],
-      "url": "https://arxiv.org/abs/2605.02801"
-    },
-    {
-      "tag": "fun",
-      "tagLabel": "Game AI · RL",
-      "flames": 2,
-      "title": "Augmenting Game AI with Deep Reinforcement Learning",
-      "teaser": "EA plaide pour du RL dans les PNJ, et liste tout ce qui coince encore.",
-      "summary": "L'immersion dans un jeu vidéo ne tient pas qu'aux graphismes : la crédibilité des personnages non-joueurs pèse tout autant, et ils restent aujourd'hui largement scriptés à la main. Coder à la main un comportement crédible devient vite intraitable dès que la complexité comportementale augmente, chaque nouveau cas particulier demande une règle de plus, jusqu'à l'explosion combinatoire. Ce papier, signé par l'équipe SEED d'Electronic Arts, ne présente pas une nouvelle méthode mais un plaidoyer argumenté pour généraliser le RL comme moteur de comportement des PNJ, en s'appuyant sur des cas déjà en production chez EA. L'idée centrale : au lieu de scripter des arbres de comportement, on laisse un agent RL apprendre en interagissant avec le jeu, ou en imitant des données de joueurs réels, pour produire des comportements plus organiques. Les auteurs listent les verrous qui empêchent aujourd'hui un déploiement large : robustesse face aux exploits des joueurs, contrôlabilité fine par les designers, coût d'entraînement, et difficulté à garantir un comportement amusant plutôt que juste optimal. Un point clé soulevé : un agent RL entraîné pour gagner n'est pas la même chose qu'un agent RL entraîné pour être un adversaire intéressant, optimiser la victoire seule tue souvent le plaisir de jeu. Les exemples cités montrent des gains en crédibilité comportementale par rapport aux systèmes scriptés, mais sans chiffres de benchmark unifiés, le papier reste une feuille de route plutôt qu'une évaluation. Pour un data scientist côté jeu vidéo ou simulation, ça rejoint des problématiques transférables : reward shaping pour éviter les comportements dégénérés, et contrôlabilité d'un agent appris par des équipes produit non-ML. Ça résonne aussi avec les agents LLM en production : le même écueil, un agent qui optimise la mauvaise métrique, se retrouve dès qu'on déploie un système appris face à des utilisateurs réels. La limite assumée : sans outils de contrôle et de debug matures pour les designers non-ML, le RL restera cantonné à des cas de niche dans les studios.",
-      "takeaways": [
-        "Le papier plaide pour remplacer les PNJ scriptés par des agents RL, mais liste plus de verrous ouverts (contrôlabilité, robustesse, coût) que de solutions.",
-        "Un agent RL optimisé pour gagner n’est pas forcément un agent RL amusant à affronter, le reward shaping doit viser l’engagement, pas la performance brute.",
-        "Le vrai goulot d’étranglement pour l’adoption en studio n’est pas la performance du RL, mais l’absence d’outils de contrôle pour les designers non-ML."
-      ],
-      "url": "https://arxiv.org/abs/2606.20210"
-    },
-    {
-      "tag": "fun",
-      "tagLabel": "Robotique · Imitation",
-      "flames": 2,
-      "title": "HumanoidUMI : démonstrations sans robot pour la manipulation corps-entier des humanoïdes",
-      "teaser": "Apprendre à un robot humanoïde à bouger tout le corps sans jamais toucher un robot.",
-      "summary": "Entraîner un humanoïde à des comportements corps entier demande énormément de démonstrations de qualité, et la téléopération classique est un goulot d'étranglement : matériel coûteux, opérateurs experts rares, collecte lente. HumanoidUMI contourne le problème en s'inspirant de l'Universal Manipulation Interface : plus besoin d'un robot physique pendant la collecte, un humain porte un dispositif VR léger et des pinces inspirées d'UMI pour démontrer la tâche directement. Le système capture des trajectoires de points-clés humains épars, des observations depuis une caméra au poignet, et les actions de la pince, sans jamais passer par un robot réel pendant cette phase. Ces démonstrations entraînent une politique de haut niveau qui prédit les futurs points-clés ; ces points sont ensuite retargetés vers des références corps-entier natives au robot, puis exécutés par un contrôleur bas niveau dédié. La séparation entre quoi faire, appris depuis l'humain, et comment le corps du robot l'exécute, un contrôleur robot dédié, est la clé qui permet de sauter l'étape robot pendant toute la collecte de données. Les expériences sur cinq scénarios réels montrent que cette approche produit des compétences de manipulation corps-entier transférables, sans jamais avoir eu besoin de téléopérer un robot pour les collecter. C'est un gain d'échelle direct : un humain équipé d'un casque VR peut générer des dizaines de démonstrations en une session, quand la téléopération robotique demande un setup lourd par tâche. Pour les équipes qui travaillent sur des politiques vision-language-action, ça confirme une tendance forte : la donnée humaine à bas coût peut remplacer une bonne partie de la collecte robot coûteuse si le retargeting est bien conçu. Ça touche aussi aux pipelines de données pour l'IA embarquée en général, la leçon séparer la politique haut niveau du contrôleur bas niveau se transpose à d'autres domaines. La limite : le retargeting humain-vers-robot reste imparfait dès que la morphologie diverge trop, donc l'approche marche mieux sur des tâches proches de la gestuelle humaine standard.",
-      "takeaways": [
-        "HumanoidUMI collecte des démonstrations corps-entier sans robot physique, via un casque VR léger et des pinces inspirées d’UMI portées par un humain.",
-        "L’architecture sépare une politique haut niveau (prédiction de points-clés appris depuis l’humain) d’un contrôleur bas niveau robot-natif qui exécute le mouvement.",
-        "Ça valide à nouveau que la donnée humaine à bas coût peut remplacer une bonne partie de la téléopération robotique si le retargeting est solide."
-      ],
-      "url": "https://arxiv.org/abs/2606.27239"
+      "url": "https://arxiv.org/abs/2606.07895",
+      "wildcard": false
     },
     {
       "tag": "wild",
-      "tagLabel": "Science des matériaux · Aimants",
-      "flames": 2,
-      "wildcard": true,
-      "title": "Modelling magnetic material properties with uncertainty-aware neural networks",
-      "teaser": "Le ML sait prédire un aimant permanent, la vraie question est de savoir quand il se trompe.",
-      "summary": "La découverte de nouveaux matériaux, ici des aimants permanents, passe de plus en plus par du machine learning pour explorer des espaces de composition et de structure bien trop vastes pour l'expérimentation seule. Le problème, c'est que les données de haute qualité restent rares dans ce domaine, et qu'on demande souvent au modèle de prédire hors de la distribution qu'il a vue à l'entraînement, un terrain miné pour la confiance qu'on peut accorder à ses prédictions. Les auteurs se concentrent donc sur la quantification d'incertitude plutôt que sur la seule précision brute : ils comparent modèles classiques et modernes pour prédire les propriétés magnétiques intrinsèques, en jugeant la qualité de leurs estimations d'incertitude autant que leurs prédictions elles-mêmes. Deux stratégies concrètes sont testées : une perte de log-vraisemblance négative gaussienne, où le modèle apprend directement à prédire sa propre variance, et une approximation bayésienne par dropout, où l'on active le dropout à l'inférence pour obtenir une distribution de prédictions. Dans une seconde étude, ces mêmes briques d'incertitude sont transférées à une tâche plus complexe : prédire la coercivité, la résistance d'un aimant à la démagnétisation, à partir d'informations microstructurales, via un graph neural network. Le résultat principal n'est pas quel modèle est le plus précis, mais quel modèle sait honnêtement dire quand il ne sait pas, un critère souvent oublié en ML appliqué aux sciences des matériaux. Ça compte concrètement pour la recherche de nouveaux aimants sans terres rares : un modèle qui prédit une propriété prometteuse mais avec une incertitude énorme ne devrait pas déclencher une synthèse coûteuse en labo. Le parallèle avec le monde data/LLM est direct : c'est exactement le même problème que la calibration de confiance d'un LLM ou d'un modèle de scoring, savoir quand ne pas faire confiance à sa propre sortie est aussi précieux que la sortie elle-même. Ça illustre aussi comment des techniques ML génériques voyagent sans mal d'un domaine à l'autre, du NLP à la métallurgie. La limite : l'étude reste bornée à un nombre restreint de familles de matériaux magnétiques, donc la généralisation des méthodes d'incertitude testées à d'autres classes de matériaux reste à vérifier.",
+      "tagLabel": "Biologie computationnelle",
+      "flames": 1,
+      "title": "Deep Learning for Protein Complex Prediction and Design",
+      "teaser": "Quand GNN et protein language models dessinent l'assemblage des protéines.",
+      "summary": "Modéliser et concevoir la structure des complexes protéiques est un problème central de biologie structurale computationnelle, avec des retombées majeures pour comprendre la fonction cellulaire et développer des thérapies. Après AlphaFold pour les monomères, les complexes formés de plusieurs chaînes en interaction restent un défi ouvert. Cette thèse attaque le problème par deux angles deep learning : des architectures spécifiques au domaine qui capturent la nature hiérarchique des structures protéiques, et des algorithmes de recherche qui explorent efficacement les vastes espaces de séquences. Contribution phare : GLINTER, une méthode à base de réseau de neurones graphes qui prédit les contacts interfaciaux entre protéines en combinant représentations structurales des monomères et signaux co-évolutifs extraits par un transformer. Deuxième brique : ESMPair, qui utilise des protein language models pour apparier les homologues des chaînes individuelles. GLINTER surpasse les méthodes existantes sur cibles hétéro- et homo-dimériques et guide efficacement le docking protéine-protéine. Autrement dit : de meilleurs contacts prédits donnent de meilleurs assemblages 3D. Le lien avec notre métier saute aux yeux : on y retrouve les mêmes briques que dans nos stacks, GNN pour la structure relationnelle, language models (ici sur les acides aminés) pour l'appariement, et recherche dans un espace combinatoire géant. Un bel exemple de transfert des idées LLM et graphes vers un domaine étranger. Reste que c'est une thèse centrée sur des méthodes déjà éprouvées plutôt qu'une percée unique, et que la prédiction de complexes demeure plus dure que celle des monomères.",
       "takeaways": [
-        "L’étude ne cherche pas le modèle le plus précis pour prédire les propriétés magnétiques, mais celui qui quantifie le mieux son incertitude, surtout hors distribution.",
-        "Deux techniques sont comparées : perte de log-vraisemblance négative gaussienne et approximation bayésienne par dropout, y compris sur un graph neural network pour la coercivité.",
-        "Le principe se transpose directement au ML/LLM en production : savoir quand ne pas faire confiance à une prédiction est aussi précieux que la prédiction elle-même."
+        "Les mêmes briques que nos agents, GNN pour le relationnel et language models pour l'appariement, servent à prédire les complexes protéiques.",
+        "GLINTER combine structure des monomères et signaux co-évolutifs (via transformer) pour prédire les contacts d'interface et guider le docking.",
+        "La prédiction de complexes multi-chaînes reste nettement plus dure que celle des monomères façon AlphaFold."
       ],
-      "url": "https://arxiv.org/abs/2606.11870"
+      "url": "https://arxiv.org/abs/2605.11189",
+      "wildcard": true
+    },
+    {
+      "tag": "fun",
+      "tagLabel": "Jeux · PCG",
+      "flames": 1,
+      "title": "PCGRLLM: Large Language Model-Driven Reward Design for Procedural Content Generation Reinforcement Learning",
+      "teaser": "Décrivez le niveau voulu ; le LLM écrit la récompense qui l'apprend.",
+      "summary": "En génération procédurale de contenu par apprentissage par renforcement, la conception de la récompense est le vrai goulot d'étranglement : elle exige beaucoup de connaissance métier et d'effort humain. Mal réglée, elle produit des niveaux injouables ou insipides. PCGRLLM propose un cadre où un LLM génère et raffine itérativement les fonctions de récompense pour des agents RL chargés de produire du contenu de jeu. Le système s'appuie sur un mécanisme de feedback et plusieurs techniques de prompt engineering basées sur le raisonnement. La tâche testée est un story-to-reward : transformer une description narrative en fonction de récompense, dans un environnement 2D. Évalué avec deux LLM de pointe, le cadre démontre sa généralisabilité, le même pipeline s'adaptant à différents objectifs de génération. La boucle de feedback permet de corriger les récompenses qui dérapent au fil des itérations. Au-delà du jeu, l'idée intéresse tout praticien RL : le reward engineering est partout un point douloureux, et déléguer sa rédaction à un LLM avec boucle de feedback est un pattern réutilisable en robotique, en optimisation ou pour des agents. C'est du LLM comme concepteur de récompense, pas comme politique. Reste que le papier date de début 2025 et s'en tient à des environnements 2D simples ; la fiabilité des récompenses générées sur des jeux complexes ou 3D reste à démontrer.",
+      "takeaways": [
+        "PCGRLLM délègue au LLM l'écriture et le raffinement itératif des fonctions de récompense pour des agents RL générateurs de niveaux.",
+        "Une boucle de feedback corrige les récompenses qui dérapent, avec des prompts basés sur le raisonnement.",
+        "Le pattern LLM concepteur de récompense est transposable bien au-delà des jeux : robotique, agents, optimisation."
+      ],
+      "url": "https://arxiv.org/abs/2502.10906",
+      "wildcard": false
     }
   ],
   "quiz": [
     {
-      "q": "Quel mécanisme le framework Big-Data-as-a-Service utilise-t-il pour réagir à une dérive de données en production ?",
+      "q": "Selon l'étude sur AutoMEM, quel type de système de mémoire obtient le meilleur classement cross-scénario ?",
       "options": [
-        "Il arrête automatiquement toute la pipeline sans notification",
-        "Des boucles de feedback sensibles au drift qui peuvent redéclencher feature engineering et ré-entraînement",
-        "Il ignore le drift tant que l'accuracy reste stable",
-        "Il notifie uniquement un dashboard externe sans action automatique"
+        "Un graphe de connaissances hiérarchique",
+        "Un harness agentique auto-gérant des fichiers texte plats via tool calls",
+        "Une base vectorielle avec re-ranking",
+        "Une mémoire épisodique compressée par RL"
       ],
       "correct": 1,
-      "explain": "Le framework intègre des boucles de feedback drift-aware qui peuvent recomposer dynamiquement le pipeline sous contrôle humain."
+      "explain": "Le harness qui laisse l'agent gérer lui-même un stockage texte plat généralise mieux que les architectures spécialisées."
     },
     {
-      "q": "Quel est l’avantage principal de SAG par rapport à un knowledge graph RAG classique ?",
+      "q": "Dans « When the Tool Decides », à quelle fréquence les prédictions de l'agent coïncident-elles avec la sortie brute du GNN ?",
       "options": [
-        "Il n’utilise aucune base de données",
-        "Il construit les liens entre données à la volée via SQL plutôt qu’un graphe global statique à maintenir",
-        "Il élimine complètement le besoin de recherche vectorielle",
-        "Il fonctionne uniquement sur des données non structurées"
+        "50 à 60 % du temps",
+        "75 à 80 % du temps",
+        "97,6 à 99,2 % du temps",
+        "100 % systématiquement"
       ],
-      "correct": 1,
-      "explain": "SAG évite la fragmentation et le coût de maintenance d’un graphe statique en instanciant des hyperarêtes locales à la requête, via des jointures SQL."
+      "correct": 2,
+      "explain": "L'agent devient un perroquet du GNN, d'accord avec l'outil 97,6 à 99,2 % du temps."
     },
     {
-      "q": "Dans MRAgent, à quoi servent les tags du graphe Cue-Tag-Content ?",
+      "q": "Quelle est l'idée centrale de Corpus2Skill (« Don't Retrieve, Navigate ») ?",
       "options": [
-        "Ils indexent les contenus par date de création",
-        "Ils servent de ponts sémantiques entre indices fins et contenus mémorisés",
-        "Ils compressent la mémoire pour réduire l'espace de stockage",
-        "Ils remplacent entièrement les embeddings vectoriels"
+        "Fine-tuner le LLM sur l'intégralité du corpus",
+        "Distiller le corpus en un arbre hiérarchique de résumés navigables par l'agent",
+        "Remplacer les embeddings par un index inversé",
+        "Multiplier les agents récupérateurs en parallèle"
       ],
       "correct": 1,
-      "explain": "Les tags associatifs relient les cues (indices) aux contenus mémorisés, permettant une exploration guidée plutôt qu'une recherche par similarité pure."
+      "explain": "Le corpus est distillé hors-ligne en un répertoire hiérarchique de skills que l'agent explore de haut en bas."
     },
     {
-      "q": "Que désigne la provenance d’exécution selon la survey sur la confiance des agents LLM ?",
+      "q": "Quel bénéfice inattendu LogicalRAG obtient-il en ancrant la recherche dans des requêtes logiques ?",
       "options": [
-        "Le score de confiance final donné par le LLM",
-        "Le graphe typé de toutes les actions effectuées par l’agent",
-        "La liste des prompts utilisés lors du fine-tuning",
-        "Le temps de réponse moyen de l'agent"
+        "Une réduction substantielle des hallucinations",
+        "Un doublement de la vitesse d'entraînement",
+        "La suppression totale du besoin de LLM",
+        "Une meilleure compression des embeddings"
       ],
-      "correct": 1,
-      "explain": "La provenance d’exécution est définie comme le graphe typé de l’exécution complète de l’agent, dont le traçage de preuves est une projection."
+      "correct": 0,
+      "explain": "Au-delà du coût réduit, les requêtes logiques diminuent nettement les hallucinations dans les réponses générées."
     },
     {
-      "q": "Que représente une trace d’orchestration dans le papier sur le RL pour systèmes multi-agents ?",
+      "q": "Quel gain moyen HERA rapporte-t-il face aux baselines récentes de RAG multi-agents ?",
       "options": [
-        "Le journal des erreurs de l'agent principal",
-        "Un graphe d’interaction temporel des événements de coordination (spawn, délégation, agrégation, arrêt)",
-        "L’historique des prompts envoyés au LLM",
-        "Le score final obtenu par le système multi-agent"
+        "+5,2 %",
+        "+18,4 %",
+        "+38,69 %",
+        "+72,1 %"
       ],
-      "correct": 1,
-      "explain": "La trace d'orchestration capture les événements de coordination entre agents dans le temps, et c'est sur ce graphe que le RL optimise."
+      "correct": 2,
+      "explain": "HERA affiche une amélioration moyenne de 38,69 % en faisant co-évoluer orchestration et prompts."
     },
     {
-      "q": "Selon les auteurs d’EA, quel est le principal risque d’entraîner un PNJ uniquement pour maximiser sa performance ?",
+      "q": "Comment TBD-VLA structure-t-il la génération d'actions ?",
       "options": [
-        "Il devient trop lent à s’exécuter en jeu",
-        "Il risque de ne plus être un adversaire intéressant ou amusant pour le joueur",
-        "Il ne peut plus interagir avec d’autres PNJ",
-        "Il consomme plus de mémoire GPU que les systèmes scriptés"
+        "Diffusion continue sur toute la trajectoire d'un seul coup",
+        "Diffusion discrète masquée dans chaque bloc, autorégression entre les blocs",
+        "Autorégression pure, token par token",
+        "Recherche arborescente Monte-Carlo sur les actions"
       ],
       "correct": 1,
-      "explain": "Le papier souligne qu'optimiser uniquement la victoire peut produire un comportement optimal mais peu engageant, ce qui casse l'immersion recherchée."
+      "explain": "Chaque bloc temporel est décodé par diffusion discrète masquée, tandis que l'enchaînement des blocs reste autorégressif."
     },
     {
-      "q": "Comment HumanoidUMI collecte-t-il les données de démonstration ?",
+      "q": "Sur quoi repose GLINTER pour prédire les contacts d'interface entre protéines ?",
       "options": [
-        "Via téléopération d’un robot humanoïde réel par un expert",
-        "Via un casque VR léger et des pinces inspirées d’UMI portés directement par un humain, sans robot",
-        "En simulant intégralement les trajectoires en environnement virtuel",
-        "En rejouant des vidéos YouTube de mouvements humains"
+        "Un réseau de neurones graphes combinant structures des monomères et signaux co-évolutifs",
+        "Une simple régression linéaire sur les séquences",
+        "Un modèle de diffusion d'images",
+        "Un arbre de décision sur les angles dièdres"
       ],
-      "correct": 1,
-      "explain": "Le principe central est justement d’éviter tout robot physique pendant la collecte : un humain équipé de VR et de pinces UMI génère les démonstrations."
+      "correct": 0,
+      "explain": "GLINTER est une méthode à base de GNN mêlant représentations structurales et co-évolution extraite par transformer."
     },
     {
-      "q": "Pourquoi la quantification d’incertitude est-elle centrale dans l’étude sur les matériaux magnétiques ?",
+      "q": "Que génère le LLM dans le cadre PCGRLLM ?",
       "options": [
-        "Parce que le temps de calcul est le seul critère qui compte",
-        "Parce que les données sont rares et les prédictions souvent hors distribution, rendant la confiance du modèle critique",
-        "Parce que les aimants permanents n’ont aucune propriété mesurable",
-        "Parce que la loi impose de publier une incertitude avec chaque résultat"
+        "Directement les niveaux de jeu, pixel par pixel",
+        "Les fonctions de récompense des agents RL, raffinées par feedback",
+        "La politique de l'agent RL de bout en bout",
+        "Les assets graphiques du jeu"
       ],
       "correct": 1,
-      "explain": "La rareté des données et le besoin fréquent de prédire hors distribution rendent l’évaluation de la fiabilité du modèle aussi importante que sa précision brute."
+      "explain": "Le LLM conçoit et raffine itérativement les fonctions de récompense, pas les niveaux ni la politique elle-même."
     }
   ]
 }
