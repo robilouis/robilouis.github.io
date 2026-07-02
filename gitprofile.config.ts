@@ -75,15 +75,13 @@ const CONFIG = {
   },
   skills: [
     'Python',
-    'Julia',
-    'Java',
-    'JavaScript',
-    'C/C++',
-    'MySQL',
-    'PostgreSQL',
-    'Git',
+    'SQL',
+    'Spark',
+    'Machine Learning',
+    'MLOps',
     'Docker',
     'Terraform',
+    'Git',
   ],
   experiences: [
     {
