@@ -4,416 +4,406 @@
       "tag": "pro",
       "tagLabel": "Mémoire d'agents",
       "flames": 3,
-      "title": "Exploring Cross-Scenario Generality of Agentic Memory Systems: Diagnostics and a Strong Baseline",
+      "title": "EMBER: Efficient Memory via Budgeted Evidence Retention for Long-Horizon Agents",
       "teaser": {
-        "fr": "Et si la meilleure mémoire d'agent était juste un fichier texte ?",
-        "en": "What if the best agent memory was just a plain text file?"
+        "fr": "Retenir la bonne preuve maintenant, pas relire tout l'historique plus tard.",
+        "en": "Keep the right evidence now, don't reread the whole history later."
       },
       "summary": {
-        "fr": "Les agents LLM accumulent des historiques qui débordent vite la fenêtre de contexte, d'où la floraison de systèmes de mémoire dédiés. Problème : chaque système est réglé pour un scénario précis, et rien ne prouve qu'il généralise aux trajectoires hétérogènes rencontrées en production. Les auteurs benchmarkent huit systèmes de mémoire plus un harness agentique sur cinq scénarios : QA mono-tour, chat multi-sessions, QA sur trajectoires d'agent, tests de stress mémoire et tâches long-horizon. Surprise : le meilleur classement cross-tâches n'est pas obtenu par une architecture sophistiquée, mais par un harness qui auto-gère un simple stockage en fichiers texte plat via des tool calls. Ils formalisent cette intuition dans AutoMEM, une mémoire agentique où l'agent lit et écrit lui-même ses souvenirs par une interface d'outils. AutoMEM décroche la meilleure généralité cross-scénario, là où les mémoires spécialisées s'effondrent hors de leur domaine d'origine. Message concret : la structure imposée (graphes, résumés hiérarchiques) aide dans un cas et nuit dans un autre. Pour un agent en production qui jongle entre chat, tâches longues et QA, mieux vaut une mémoire souple auto-gérée qu'un système ad hoc. Ça simplifie la stack : moins de composants, plus de contrôle laissé au LLM. Reste que fichier texte plus tool calls scale mal quand la mémoire explose : pas d'index sémantique, coût de relecture qui grimpe.",
-        "en": "LLM agents pile up histories that quickly overflow the context window, hence the bloom of dedicated memory systems. The problem: each system is tuned for a specific scenario, and nothing proves it generalizes to the heterogeneous trajectories seen in production. The authors benchmark eight memory systems plus an agentic harness across five scenarios: single-turn QA, multi-session chat, QA over agent trajectories, memory stress tests and long-horizon tasks. Surprise: the best cross-task ranking isn't achieved by a sophisticated architecture, but by a harness that self-manages a simple flat text-file store via tool calls. They formalize this intuition in AutoMEM, an agentic memory where the agent reads and writes its own memories through a tool interface. AutoMEM takes the best cross-scenario generality, whereas specialized memories collapse outside their home domain. The concrete message: imposed structure (graphs, hierarchical summaries) helps in one case and hurts in another. For a production agent juggling chat, long tasks and QA, a flexible self-managed memory beats an ad hoc system. It simplifies the stack: fewer components, more control left to the LLM. Still, plain text plus tool calls scales poorly when memory explodes: no semantic index, and re-reading costs that climb."
+        "fr": "Un agent qui tourne pendant des heures accumule un historique gigantesque, mais chaque token relu au moment de répondre coûte du contexte et de la latence. EMBER pose la vraie question : quelles preuves faut-il garder récupérables, avant même de connaître la future requête, sous un budget de rétention fixe ? Le système apprend une politique de rétention qui construit un état de preuves compact et ancré à la source. Chaque preuve est stockée sous forme de « capsule » : un extrait verbatim du document source, associé à des clés de récupération et à des métadonnées de mise à jour. Un modèle « rédacteur » décide quoi retenir, et il est entraîné par un signal de résultat post-requête sur toute la chaîne ingestion-récupération-réponse. Sur le benchmark LongMemEval-RR, EMBER-14B atteint 0,3017 de F1 au point de comparaison de 8192 tokens retenus, contre 0,1765 pour le meilleur baseline budgété concurrent. Sur toute la gamme de budgets, EMBER améliore le F1, le Retain-Recall et le Read-Recall. Le message concret : la mémoire long-horizon dépend de la preuve conservée dans le budget, pas du fait de relire des historiques de plus en plus gros. Pour un agent de support ou de recherche en production, ça veut dire une mémoire moins chère à lire et mieux ancrée à ses sources. La limite : entraîner le rédacteur suppose un signal de résultat exploitable, ce qui n'est pas toujours disponible hors benchmark.",
+        "en": "An agent running for hours piles up a huge history, but every token reread at answer time costs context and latency. EMBER asks the real question: which evidence should stay recoverable, before the future query is even known, under a fixed retention budget? The system learns a retention policy that builds a compact, source-grounded evidence state. Each piece of evidence is stored as a \"capsule\": a verbatim excerpt from the source document, paired with retrieval keys and update metadata. A \"writer\" model decides what to keep, and it is trained by a post-query outcome signal across the whole ingestion-retrieval-answer chain. On the LongMemEval-RR benchmark, EMBER-14B reaches 0.3017 F1 at the 8192-token retained comparison point, versus 0.1765 for the strongest competing budgeted baseline. Across the range of budgets, EMBER improves F1, Retain-Recall and Read-Recall. The concrete message: long-horizon memory depends on evidence kept within budget, not on rereading ever-larger histories. For a support or research agent in production, that means memory that is cheaper to read and better grounded in its sources. The limit: training the writer assumes an exploitable outcome signal, which is not always available outside a benchmark."
       },
       "takeaways": {
         "fr": [
-          "Avant d'adopter un système de mémoire, testez-le hors de son scénario d'origine : la plupart généralisent mal.",
-          "Un harness agentique auto-gérant un stockage texte plat bat des architectures mémoire spécialisées au classement cross-tâches.",
-          "La structure (graphe, hiérarchie) est un pari : bénéfique dans un contexte, pénalisante dans un autre, ne l'imposez pas par défaut."
+          "Décider quoi retenir avant de connaître la question bat le fait de tout stocker et relire ensuite.",
+          "Stocker des extraits verbatim avec leurs clés préserve à la fois l'ancrage source et l'accès rapide en lecture.",
+          "EMBER-14B double presque le F1 du meilleur baseline budgété à budget de preuves égal (0,3017 vs 0,1765)."
         ],
         "en": [
-          "Before adopting a memory system, test it outside its home scenario: most generalize poorly.",
-          "An agentic harness self-managing a flat text store beats specialized memory architectures on the cross-task ranking.",
-          "Structure (graph, hierarchy) is a bet: helpful in one context, penalizing in another — don't impose it by default."
+          "Deciding what to retain before the question is known beats storing everything and rereading it later.",
+          "Storing verbatim excerpts with their keys preserves both source grounding and fast read-time access.",
+          "EMBER-14B nearly doubles the best budgeted baseline's F1 at equal evidence budget (0.3017 vs 0.1765)."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.04315",
+      "url": "https://arxiv.org/abs/2606.05894",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Agents · Tool Use",
+      "tagLabel": "RAG · Recherche",
       "flames": 3,
-      "title": "When the Tool Decides: LLM Agents Defer Blindly to Graph Neural Network Tools, and Stronger Backbones Defer More",
+      "title": "A-RAG: Scaling Agentic Retrieval-Augmented Generation via Hierarchical Retrieval Interfaces",
       "teaser": {
-        "fr": "Votre agent n'utilise pas son outil : il lui obéit aveuglément.",
-        "en": "Your agent isn't using its tool — it's blindly obeying it."
+        "fr": "Donnez les outils de recherche au modèle, pas un pipeline figé.",
+        "en": "Hand the search tools to the model, not a frozen pipeline."
       },
       "summary": {
-        "fr": "On suppose qu'un agent LLM exerce son jugement quand il appelle un outil, qu'il décide quand et à quel point s'y fier. Ce papier teste l'hypothèse et la démonte. Les auteurs exposent un GNN gelé comme outil explicite à un agent LLM en style ReAct, sur une tâche de prédiction sur graphe, puis mesurent si l'agent utilise vraiment l'outil ou se contente d'obéir. Verdict : les prédictions de l'agent coïncident avec la sortie brute du GNN 97,6 à 99,2 % du temps. L'agent se transforme en perroquet du GNN : il adopte la sortie de l'outil telle quelle et court-circuite son propre raisonnement. Pire, tester des backbones de capacité croissante (Qwen2.5 de 0,5B à 7B) montre que la déférence n'est pas un défaut des petits modèles ; parmi ceux capables d'appeler l'outil, l'accord augmente avec la capacité. Un oracle par nœud qui choisit la meilleure action bat le perroquet de loin, car la précision du perroquet reste plafonnée par le GNN gelé. Pour quiconque construit des agents multi-outils en production, c'est un signal d'alarme : appeler un outil ne veut pas dire raisonner dessus. Les métriques d'usage d'outils peuvent masquer une abdication totale du jugement. L'étude porte sur un cas précis (GNN sur graphe) ; reste à voir si la déférence persiste avec des outils plus bruités ou contestables, mais l'intuition dérange.",
-        "en": "We assume an LLM agent exercises judgment when it calls a tool — deciding when and how much to trust it. This paper tests the hypothesis and dismantles it. The authors expose a frozen GNN as an explicit tool to a ReAct-style LLM agent on a graph prediction task, then measure whether the agent truly uses the tool or merely obeys. Verdict: the agent's predictions match the GNN's raw output 97.6 to 99.2% of the time. The agent turns into a GNN parrot: it adopts the tool's output as-is and short-circuits its own reasoning. Worse, testing backbones of increasing capacity (Qwen2.5 from 0.5B to 7B) shows deference isn't a flaw of small models; among those able to call the tool, agreement rises with capacity. A per-node oracle that picks the best action beats the parrot by a wide margin, because the parrot's accuracy stays capped by the frozen GNN. For anyone building multi-tool agents in production, this is a red flag: calling a tool doesn't mean reasoning about it. Tool-usage metrics can mask a total abdication of judgment. The study covers a narrow case (GNN on graphs); whether deference persists with noisier or more contestable tools remains to be seen, but the intuition is unsettling."
+        "fr": "Les modèles frontière savent raisonner et enchaîner des appels d'outils sur de longues trajectoires, mais la plupart des systèmes RAG ne l'exploitent pas. Ils reposent sur deux paradigmes : récupérer des passages en un coup puis les concaténer à l'entrée, ou prédéfinir un workflow que le modèle exécute pas à pas. Dans les deux cas, le modèle ne participe pas aux décisions de récupération, ce qui empêche le système de progresser quand le modèle s'améliore. A-RAG expose au contraire trois outils de récupération directement au modèle : recherche par mots-clés, recherche sémantique et lecture de chunk. Comme l'information d'un corpus est organisée à plusieurs granularités, l'agent alterne entre signaux fins au niveau du mot-clé et représentations plus grossières au niveau du chunk. Il décide lui-même quoi chercher, avec quel outil et à quel moment, en boucle. Avec GPT-5-mini, A-RAG atteint 94,5 % sur HotpotQA et 89,7 % sur 2WikiMultiHop, dépassant nettement les méthodes antérieures. Concrètement, c'est un patron de RAG agentique où la qualité monte automatiquement avec la montée en gamme du modèle. Pour un moteur de QA multi-hop en production, ça réduit le prompt-engineering de workflow au profit d'outils réutilisables. Reste que laisser l'agent piloter la recherche multiplie les appels et donc la latence et le coût par requête.",
+        "en": "Frontier models can reason and chain tool calls over long trajectories, but most RAG systems don't exploit that. They rely on two paradigms: retrieve passages in one shot and concatenate them into the input, or predefine a workflow the model executes step by step. In both cases the model doesn't participate in retrieval decisions, which stops the system from improving as the model improves. A-RAG instead exposes three retrieval tools directly to the model: keyword search, semantic search, and chunk read. Because information in a corpus is organized at multiple granularities, the agent alternates between fine keyword-level signals and coarser chunk-level representations. It decides for itself what to search, with which tool, and when, in a loop. With GPT-5-mini, A-RAG reaches 94.5% on HotpotQA and 89.7% on 2WikiMultiHop, clearly beating prior methods. Concretely, it's an agentic RAG pattern where quality rises automatically as the backbone model gets better. For a multi-hop QA engine in production, it trades workflow prompt-engineering for reusable tools. Still, letting the agent drive retrieval multiplies calls, and therefore latency and cost per query."
       },
       "takeaways": {
         "fr": [
-          "Un fort taux d'appel d'outil n'est pas une preuve de raisonnement : l'agent peut simplement recopier sa sortie (97-99 % du temps ici).",
-          "La déférence aveugle croît avec la capacité du modèle : ce n'est pas un bug de petit modèle qu'on corrige en scalant.",
-          "Évaluez toujours l'agent contre un oracle meilleure-action : si l'outil est plafonné, l'agent l'est aussi."
+          "Exposer la recherche comme des outils, plutôt qu'un workflow figé, laisse la qualité progresser avec le modèle.",
+          "Trois outils suffisent : recherche par mots-clés, recherche sémantique et lecture de chunk, à granularités différentes.",
+          "Avec GPT-5-mini, A-RAG monte à 94,5 % sur HotpotQA et 89,7 % sur 2WikiMultiHop."
         ],
         "en": [
-          "A high tool-call rate is not proof of reasoning: the agent may simply copy its output (97-99% of the time here).",
-          "Blind deference grows with model capacity: it's not a small-model bug you fix by scaling.",
-          "Always evaluate the agent against a best-action oracle: if the tool is capped, so is the agent."
+          "Exposing search as tools, rather than a frozen workflow, lets quality scale with the model.",
+          "Three tools are enough: keyword search, semantic search, and chunk read, at different granularities.",
+          "With GPT-5-mini, A-RAG climbs to 94.5% on HotpotQA and 89.7% on 2WikiMultiHop."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.14476",
+      "url": "https://arxiv.org/abs/2602.03442",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "RAG · Enterprise",
-      "flames": 3,
-      "title": "Don't Retrieve, Navigate: Distilling Enterprise Knowledge into Navigable Agent Skills for QA and RAG",
-      "teaser": {
-        "fr": "Et si l'agent explorait la carte du corpus au lieu de piocher à l'aveugle ?",
-        "en": "What if the agent explored the corpus map instead of blindly grabbing?"
-      },
-      "summary": {
-        "fr": "Le RAG classique traite le LLM en consommateur passif de résultats de recherche : il ne voit jamais comment le corpus est organisé, ni ce qu'il n'a pas encore récupéré. D'où sa difficulté à faire marche arrière ou à combiner des preuves éparpillées. Corpus2Skill distille hors-ligne un corpus documentaire en un répertoire hiérarchique de skills. Le pipeline clusterise itérativement les documents, génère des résumés écrits par LLM à chaque niveau, et matérialise le tout en un arbre de fichiers de compétences navigables. Au moment de servir, l'agent reçoit une vue d'ensemble du corpus, plonge dans les branches thématiques via des résumés de plus en plus fins, puis récupère les documents complets par identifiant. Comme la hiérarchie est explicitement visible, l'agent peut raisonner sur où chercher, rebrousser chemin depuis une piste stérile, et croiser des preuves entre branches. Résultat : la méthode bat la recherche dense, RAPTOR et le RAG agentique sur WixQA et sur un macro-F1 moyenné sur 10 jeux de données. Pour un RAG d'entreprise où la connaissance est structurée (wikis, docs produit, procédures), donner à l'agent la carte plutôt que des chunks isolés change la donne. Le coût de compilation est amorti hors-ligne, ce qui colle aux contraintes de latence en production. Reste que l'arbre de skills doit être recompilé quand le corpus évolue ; sur des bases très volatiles, la maintenance de la hiérarchie peut coûter cher.",
-        "en": "Classic RAG treats the LLM as a passive consumer of search results: it never sees how the corpus is organized, nor what it hasn't yet retrieved. Hence its difficulty backtracking or combining scattered evidence. Corpus2Skill distills a document corpus offline into a hierarchical directory of skills. The pipeline iteratively clusters documents, generates LLM-written summaries at every level, and materializes it all as a navigable tree of skill files. At serving time, the agent gets an overview of the corpus, drills into thematic branches through increasingly fine summaries, then retrieves full documents by identifier. Because the hierarchy is explicitly visible, the agent can reason about where to look, backtrack from a dead-end lead, and cross-reference evidence across branches. Result: the method beats dense retrieval, RAPTOR and agentic RAG on WixQA and on a macro-F1 averaged over 10 datasets. For an enterprise RAG where knowledge is structured (wikis, product docs, procedures), giving the agent the map rather than isolated chunks is a game-changer. The compilation cost is amortized offline, which fits production latency constraints. Still, the skill tree must be recompiled when the corpus evolves; on highly volatile bases, maintaining the hierarchy can get expensive."
-      },
-      "takeaways": {
-        "fr": [
-          "Donnez à l'agent une carte navigable du corpus (arbre de résumés hiérarchiques) plutôt que des chunks isolés : il peut backtracker et croiser les preuves.",
-          "La distillation du corpus en skills se fait hors-ligne, donc sans pénaliser la latence au moment de servir.",
-          "Corpus2Skill bat recherche dense, RAPTOR et RAG agentique sur WixQA et un macro-F1 sur 10 datasets : pertinent pour les bases d'entreprise structurées."
-        ],
-        "en": [
-          "Give the agent a navigable map of the corpus (a tree of hierarchical summaries) rather than isolated chunks: it can backtrack and cross evidence.",
-          "Distilling the corpus into skills happens offline, so it doesn't penalize serving latency.",
-          "Corpus2Skill beats dense retrieval, RAPTOR and agentic RAG on WixQA and a macro-F1 over 10 datasets: relevant for structured enterprise bases."
-        ]
-      },
-      "url": "https://arxiv.org/abs/2604.14572",
-      "wildcard": false
-    },
-    {
-      "tag": "pro",
-      "tagLabel": "RAG · Retrieval",
+      "tagLabel": "Graphe · GraphRAG",
       "flames": 2,
-      "title": "Rethinking Agentic RAG: Toward LLM-Driven Logical Retrieval Beyond Embeddings",
+      "title": "RAGA: Reading-And-Graph-building-Agent for Autonomous Knowledge Graph Construction and Retrieval-Augmented Generation",
       "teaser": {
-        "fr": "Rendre la main au LLM : des requêtes logiques plutôt que des embeddings.",
-        "en": "Handing control back to the LLM: logical queries instead of embeddings."
+        "fr": "Un agent qui bâtit son graphe de connaissances et cite ses sources.",
+        "en": "An agent that builds its own knowledge graph and cites its sources."
       },
       "summary": {
-        "fr": "Le RAG agentique fait dialoguer le LLM avec le système de recherche sur plusieurs tours, en raffinant les requêtes au fil des résultats. Les auteurs plaident pour aller plus loin : déléguer davantage de contrôle au LLM tout en gardant une interface de récupération légère. Leur cadre, LogicalRAG, laisse le LLM formuler ses intentions de recherche sous forme d'expressions logiques, tandis que le backend se réduit à un simple système à index inversé. La motivation est fine : les embeddings capturent bien la sémantique abstraite mais ratent des détails lexicaux critiques comme les noms propres ou les entités rares apparaissant dans la requête. Les requêtes logiques réintroduisent ces contraintes lexicales explicites. Résultat : le cadre égale une forte baseline agentique hybride, tout en réduisant nettement le coût de construction et de service. Bonus notable : ancrer la recherche dans des requêtes logiques réduit substantiellement les hallucinations dans les réponses générées. Pour un pipeline RAG en production, c'est séduisant : moins d'infra puisqu'il n'y a pas d'index vectoriel lourd, coût maîtrisé, et des réponses plus fidèles sur les requêtes à entités précises. C'est utile quand vos utilisateurs cherchent des références exactes plutôt que des concepts flous. Reste que les requêtes logiques supposent un LLM assez bon pour les formuler correctement ; sur des corpus très sémantiques et peu lexicaux, l'index inversé seul pourrait montrer ses limites.",
-        "en": "Agentic RAG lets the LLM converse with the search system over several turns, refining queries as results come in. The authors argue for going further: delegating more control to the LLM while keeping a lightweight retrieval interface. Their framework, LogicalRAG, lets the LLM express its search intents as logical expressions, while the backend shrinks to a simple inverted-index system. The motivation is sharp: embeddings capture abstract semantics well but miss critical lexical details like proper nouns or rare entities appearing in the query. Logical queries reintroduce those explicit lexical constraints. Result: the framework matches a strong hybrid agentic baseline while markedly reducing build and serving cost. A notable bonus: grounding search in logical queries substantially reduces hallucinations in generated answers. For a production RAG pipeline, this is appealing: less infrastructure since there's no heavy vector index, controlled cost, and more faithful answers on precise-entity queries. It's useful when your users search for exact references rather than fuzzy concepts. Still, logical queries assume an LLM good enough to formulate them correctly; on highly semantic, low-lexical corpora, the inverted index alone might show its limits."
+        "fr": "Construire un graphe de connaissances à partir de documents avec un LLM se fait aujourd'hui surtout par pipelines batch sans état, qui traitent chaque chunk isolément. Résultat : les relations qui traversent plusieurs chunks sont ratées, les entités mal désambiguïsées, et le processus de construction reste opaque. RAGA transforme cette construction en tâche agentique : un agent dispose d'un jeu d'outils atomiques couvrant tout le cycle de vie du graphe (création, lecture, mise à jour, suppression). Il suit une contrainte cognitive « Lire–Chercher–Vérifier–Construire » intégrée dans une boucle d'outils de type ReAct, ce qui maintient un état cohérent au fil de la lecture. Un mécanisme de synchronisation graphe-vecteur permet une récupération hybride, à la fois symbolique et vectorielle. Surtout, chaque entrée de connaissance est ancrée à son texte source, offrant une provenance auditable — un point clé pour la confiance en entreprise. Sur un sous-ensemble du jeu de QA scientifique QASPER, la récupération par fusion de RAGA dépasse les baselines zéro-shot, et l'intégration du graphe améliore la qualité des réponses et des preuves. En pratique, c'est une brique pour des bases de connaissances qui se construisent seules tout en restant traçables. La limite : les résultats sont préliminaires et sur un sous-ensemble, la généralisation à de gros corpus hétérogènes reste à démontrer.",
+        "en": "Building a knowledge graph from documents with an LLM is mostly done today via stateless batch pipelines that process each chunk in isolation. The result: relations spanning several chunks are missed, entities are poorly disambiguated, and the construction process stays opaque. RAGA turns this construction into an agentic task: an agent wields an atomic toolset covering the graph's full lifecycle (create, read, update, delete). It follows a \"Read–Search–Verify–Construct\" cognitive constraint embedded in a ReAct-style tool loop, which keeps a coherent state as it reads. A graph-vector synchronization mechanism enables hybrid retrieval, both symbolic and vector-based. Above all, every knowledge entry is anchored to its source text, giving auditable provenance — a key point for enterprise trust. On a subset of the QASPER scientific QA dataset, RAGA's fusion retrieval beats zero-shot baselines, and graph integration improves both answer and evidence quality. In practice, it's a building block for knowledge bases that build themselves while staying traceable. The limit: results are preliminary and on a subset, so generalization to large heterogeneous corpora remains to be shown."
       },
       "takeaways": {
         "fr": [
-          "Les embeddings ratent les détails lexicaux (noms propres, entités rares) : des requêtes logiques sur index inversé les rattrapent.",
-          "LogicalRAG égale une baseline agentique hybride forte tout en réduisant le coût de construction et de service.",
-          "Ancrer la récupération dans des requêtes logiques réduit substantiellement les hallucinations : un vrai gain de fidélité."
+          "Traiter la construction de graphe comme une boucle d'agent avec état bat les pipelines batch sans état.",
+          "La contrainte « Lire–Chercher–Vérifier–Construire » et l'ancrage source donnent une provenance auditable.",
+          "La synchronisation graphe-vecteur permet une récupération hybride symbolique et sémantique."
         ],
         "en": [
-          "Embeddings miss lexical details (proper nouns, rare entities): logical queries over an inverted index catch them.",
-          "LogicalRAG matches a strong hybrid agentic baseline while cutting build and serving cost.",
-          "Grounding retrieval in logical queries substantially reduces hallucinations: a real fidelity gain."
+          "Treating graph construction as a stateful agent loop beats stateless batch pipelines.",
+          "The \"Read–Search–Verify–Construct\" constraint plus source anchoring give auditable provenance.",
+          "Graph-vector synchronization enables hybrid symbolic-and-semantic retrieval."
         ]
       },
-      "url": "https://arxiv.org/abs/2605.27123",
+      "url": "https://arxiv.org/abs/2605.17072",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Multi-agents · RAG",
+      "tagLabel": "Data Eng · MLOps",
       "flames": 2,
-      "title": "Experience as a Compass: Multi-agent RAG with Evolving Orchestration and Agent Prompts",
+      "title": "Trustworthy Self-Composable Big-Data-as-a-Service: An LLM-Orchestrated Multi-Agent Framework for Automated Data Engineering, AutoML, MLOps Deployment, and Drift-Aware Lifecycle Optimization",
       "teaser": {
-        "fr": "Un système multi-agents qui réécrit sa propre organisation en apprenant.",
-        "en": "A multi-agent system that rewrites its own organization as it learns."
+        "fr": "Toute la chaîne data, de l'ingestion au drift, orchestrée par des agents.",
+        "en": "The whole data chain, from ingestion to drift, orchestrated by agents."
       },
       "summary": {
-        "fr": "Le RAG multi-agents s'attaque aux requêtes dures qui nécessitent plusieurs étapes et plusieurs sources. Mais les approches existantes reposent sur des comportements d'agents figés et une orchestration fixe, d'où une performance fragile. Deux limites sont pointées : l'absence d'orchestration continûment adaptative, et l'absence d'apprentissage au niveau comportemental des agents individuels. HERA propose un cadre hiérarchique qui fait co-évoluer l'orchestration multi-agents et les prompts spécifiques à chaque rôle. Au niveau global, il optimise des topologies d'agents propres à chaque requête via un échantillonnage guidé par la récompense et l'accumulation d'expérience. Au niveau local, une Role-Aware Prompt Evolution affine les comportements par attribution de crédit et adaptation sur deux axes. Résultat : une amélioration moyenne de 38,69 % sur des baselines récentes, avec une généralisation robuste et une bonne efficacité en tokens. Les analyses topologiques révèlent une auto-organisation émergente, où l'exploration éparse fait émerger des réseaux multi-agents compacts et à forte utilité. Pour qui bâtit des systèmes multi-agents, le message est clair : ne figez ni la topologie ni les prompts, laissez le système apprendre quelle configuration marche pour quel type de requête, comme un playbook qui se remplit avec l'expérience. Reste que l'accumulation d'expérience et l'échantillonnage guidé par récompense ajoutent une boucle de tuning : c'est moins plug-and-play qu'un pipeline statique.",
-        "en": "Multi-agent RAG tackles hard queries that need several steps and several sources. But existing approaches rely on fixed agent behaviors and static orchestration, hence fragile performance. Two limits are pointed out: the absence of continuously adaptive orchestration, and the absence of behavior-level learning for individual agents. HERA proposes a hierarchical framework that co-evolves multi-agent orchestration and role-specific prompts. At the global level, it optimizes per-query agent topologies through reward-guided sampling and experience accumulation. At the local level, a Role-Aware Prompt Evolution refines behaviors through credit assignment and two-axis adaptation. Result: an average improvement of 38.69% over recent baselines, with robust generalization and good token efficiency. Topological analyses reveal emergent self-organization, where sparse exploration gives rise to compact, high-utility multi-agent networks. For anyone building multi-agent systems, the message is clear: freeze neither the topology nor the prompts — let the system learn which configuration works for which query type, like a playbook filled in with experience. Still, experience accumulation and reward-guided sampling add a tuning loop: it's less plug-and-play than a static pipeline."
+        "fr": "Monter une plateforme data de bout en bout — ingestion, nettoyage, features, entraînement, déploiement, monitoring — demande d'assembler beaucoup d'outils et d'expertises, souvent à la main. Ce papier propose un cadre de Big-Data-as-a-Service « auto-composable » où chaque étape du cycle de vie est confiée à un agent spécialisé. On trouve donc des agents dédiés à l'ingestion, au nettoyage, au feature engineering, à l'entraînement AutoML, à l'évaluation, au déploiement MLOps, au monitoring et à la détection de drift. Une couche d'orchestration LLM coordonne ces agents, valide leurs sorties intermédiaires, gère le contexte du workflow et compose dynamiquement le pipeline selon les données et les contraintes. La nouveauté n'est pas un agent isolé mais l'assemblage gouverné de toute la chaîne. Côté confiance, le cadre ajoute des points de validation, un contrôle humain dans la boucle, une gouvernance des artefacts, du support de reproductibilité et des boucles de rétroaction sensibles au drift. C'est une vision architecturale de ce à quoi ressemble un pipeline ML entièrement piloté par agents. Pour une équipe data, l'intérêt est de standardiser les garde-fous plutôt que de recâbler chaque projet. Le revers : c'est surtout un cadre conceptuel, et déléguer autant d'étapes critiques à des agents suppose une confiance que la validation empirique doit encore établir.",
+        "en": "Standing up an end-to-end data platform — ingestion, cleaning, features, training, deployment, monitoring — means assembling many tools and skills, often by hand. This paper proposes a \"self-composable\" Big-Data-as-a-Service framework where each stage of the lifecycle is handed to a specialized agent. So there are dedicated agents for ingestion, cleaning, feature engineering, AutoML training, evaluation, MLOps deployment, monitoring, and drift detection. An LLM orchestration layer coordinates these agents, validates their intermediate outputs, manages the workflow context, and dynamically composes the pipeline based on the data and constraints. The novelty isn't a single agent but the governed assembly of the whole chain. On the trust side, the framework adds validation checkpoints, human-in-the-loop control, artifact governance, reproducibility support, and drift-aware feedback loops. It's an architectural vision of what a fully agent-driven ML pipeline looks like. For a data team, the appeal is standardizing the guardrails rather than rewiring every project. The downside: it's mostly a conceptual framework, and delegating so many critical stages to agents assumes a trust that empirical validation still has to establish."
       },
       "takeaways": {
         "fr": [
-          "Figer topologie et prompts rend un système multi-agents fragile : HERA les fait co-évoluer et gagne +38,69 % en moyenne.",
-          "L'expérience accumulée sert de boussole pour choisir la topologie d'agents adaptée à chaque requête.",
-          "Une exploration éparse fait émerger des réseaux multi-agents compacts et efficaces en tokens : la complexité n'est pas toujours utile."
+          "Un agent par étape (ingestion, features, AutoML, déploiement, drift) sous une couche d'orchestration LLM.",
+          "Les garde-fous — checkpoints, humain dans la boucle, gouvernance d'artefacts — sont intégrés, pas ajoutés après coup.",
+          "C'est une architecture de référence, à confronter à une validation empirique avant mise en production."
         ],
         "en": [
-          "Freezing topology and prompts makes a multi-agent system fragile: HERA co-evolves them and gains +38.69% on average.",
-          "Accumulated experience acts as a compass to choose the agent topology suited to each query.",
-          "Sparse exploration yields compact, token-efficient multi-agent networks: complexity isn't always useful."
+          "One agent per stage (ingestion, features, AutoML, deployment, drift) under an LLM orchestration layer.",
+          "Guardrails — checkpoints, human-in-the-loop, artifact governance — are built in, not bolted on.",
+          "It's a reference architecture, to be tested against empirical validation before production use."
         ]
       },
-      "url": "https://arxiv.org/abs/2604.00901",
+      "url": "https://arxiv.org/abs/2606.17915",
+      "wildcard": false
+    },
+    {
+      "tag": "pro",
+      "tagLabel": "Gouvernance · Sécurité",
+      "flames": 2,
+      "title": "Governing Evolving Memory in LLM Agents: Risks, Mechanisms, and the Stability and Safety Governed Memory (SSGM) Framework",
+      "teaser": {
+        "fr": "La mémoire d'agent qui évolue peut aussi se corrompre : comment la gouverner ?",
+        "en": "Evolving agent memory can also rot: how do you govern it?"
+      },
+      "summary": {
+        "fr": "À mesure que la mémoire des agents passe de bases de récupération statiques à des mécanismes dynamiques qui s'auto-modifient, de nouveaux risques apparaissent, souvent ignorés des surveys récents. Une mémoire qui se réécrit peut être empoisonnée, dériver sémantiquement ou solidifier des données sensibles. Le papier identifie trois points de défaillance critiques : l'empoisonnement de la mémoire lors de l'ingestion, la dérive sémantique lors des consolidations, et les conflits ou hallucinations au moment de la récupération. Pour y répondre, il propose SSGM (Stability and Safety-Governed Memory), une architecture de gouvernance conceptuelle. L'idée centrale est de découpler l'évolution de la mémoire de l'exécution de l'agent. Avant toute consolidation, SSGM impose une vérification de cohérence, une modélisation de la décroissance temporelle et un contrôle d'accès dynamique. Par cette analyse formelle, le cadre montre qu'il peut limiter les fuites de connaissances induites par la topologie, où un contexte sensible finit figé en mémoire long-terme, et prévenir la dérive où le savoir se dégrade au fil des résumés itératifs. Pour quiconque déploie des agents à mémoire persistante, c'est un cadre de menaces utile pour penser sécurité et confidentialité dès la conception. La limite : SSGM reste largement conceptuel, sans validation empirique à grande échelle des mécanismes proposés.",
+        "en": "As agent memory shifts from static retrieval databases to dynamic, self-modifying mechanisms, new risks emerge that recent surveys often overlook. A memory that rewrites itself can be poisoned, drift semantically, or solidify sensitive data. The paper identifies three critical failure points: memory poisoning during ingestion, semantic drift during consolidation, and conflict or hallucination at retrieval time. To address them, it proposes SSGM (Stability and Safety-Governed Memory), a conceptual governance architecture. The core idea is to decouple memory evolution from agent execution. Before any consolidation, SSGM enforces consistency verification, temporal decay modeling, and dynamic access control. Through formal analysis, the framework shows it can limit topology-induced knowledge leakage, where sensitive context ends up frozen into long-term memory, and prevent drift where knowledge degrades through iterative summarization. For anyone deploying agents with persistent memory, it's a useful threat model for thinking about security and privacy by design. The limit: SSGM stays largely conceptual, without large-scale empirical validation of the proposed mechanisms."
+      },
+      "takeaways": {
+        "fr": [
+          "Une mémoire d'agent dynamique a trois failles : empoisonnement à l'ingestion, dérive à la consolidation, conflit à la récupération.",
+          "Découpler l'évolution de la mémoire de l'exécution permet d'y insérer vérification, décroissance et contrôle d'accès.",
+          "Traiter la mémoire persistante comme une surface d'attaque à sécuriser dès la conception, pas après incident."
+        ],
+        "en": [
+          "Dynamic agent memory has three faults: poisoning at ingestion, drift at consolidation, conflict at retrieval.",
+          "Decoupling memory evolution from execution lets you insert verification, decay, and access control.",
+          "Treat persistent memory as an attack surface to secure by design, not after an incident."
+        ]
+      },
+      "url": "https://arxiv.org/abs/2603.11768",
       "wildcard": false
     },
     {
       "tag": "cv",
-      "tagLabel": "Robotique · VLA",
+      "tagLabel": "RL · Récompenses VLM",
       "flames": 2,
-      "title": "TBD-VLA: Temporal Block Diffusion Vision Language Action Model",
+      "title": "VLM-AR3L: Vision-Language Models for Absolute and Relative Rewards in Reinforcement Learning",
       "teaser": {
-        "fr": "Fusionner autorégression et diffusion pour des robots plus rapides et plus fluides.",
-        "en": "Fusing autoregression and diffusion for faster, smoother robots."
+        "fr": "Deux regards d'un VLM sur l'image : « c'est bien ? » et « ça progresse ? »",
+        "en": "Two VLM takes on the frame: is this good, and is it progressing?"
       },
       "summary": {
-        "fr": "Les modèles Vision-Language-Action discrets génèrent l'action comme une prédiction du prochain token sur un espace d'actions discrétisé, chaque token étant conditionné autorégressivement sur le contexte précédent. Efficace, mais lent à l'inférence et largement aveugle à la structure temporelle des trajectoires d'action. TBD-VLA est un cadre VLA discret à base de tokens qui intègre du block diffusion pour générer les actions de façon temporelle. Il découpe la séquence d'actions en blocs temporels, applique une diffusion discrète masquée à l'intérieur de chaque bloc, tout en gardant une génération autorégressive entre les blocs. Cette hybridation unifie autorégression temporelle et décodage parallèle des actions. Le gain est double : forte cohérence temporelle et vitesse d'inférence améliorée. La modélisation temporelle explicite permet même une exécution asynchrone des chunks d'action (type Real-Time Chunking) via de l'in-painting temporel. TBD-VLA dépasse nettement les VLA antérieurs, en simulation comme en manipulation réelle. Pour la robotique en boucle réelle, la latence est le nerf de la guerre : un décodage parallèle par blocs qui reste temporellement cohérent est directement exploitable pour du contrôle temps réel, et le pattern autorégressif-entre-blocs plus diffusion-intra-bloc est transposable au-delà de la robotique. Reste que l'approche opère sur des espaces d'actions discrétisés ; la granularité de la discrétisation et la taille des blocs sont des hyperparamètres qui pilotent le compromis vitesse-précision.",
-        "en": "Discrete Vision-Language-Action models generate action as next-token prediction over a discretized action space, each token conditioned autoregressively on the preceding context. Efficient, but slow at inference and largely blind to the temporal structure of action trajectories. TBD-VLA is a discrete, token-based VLA framework that brings in block diffusion to generate actions temporally. It splits the action sequence into temporal blocks, applies masked discrete diffusion within each block, while keeping autoregressive generation between blocks. This hybridization unifies temporal autoregression and parallel action decoding. The gain is twofold: strong temporal coherence and improved inference speed. Explicit temporal modeling even enables asynchronous execution of action chunks (Real-Time Chunking style) via temporal in-painting. TBD-VLA clearly surpasses prior VLAs, in simulation as in real-world manipulation. For real-loop robotics, latency is the crux: parallel per-block decoding that stays temporally coherent is directly usable for real-time control, and the autoregressive-between-blocks plus diffusion-within-block pattern transfers beyond robotics. Still, the approach operates on discretized action spaces; discretization granularity and block size are hyperparameters that drive the speed-accuracy trade-off."
+        "fr": "Concevoir une fonction de récompense reste l'un des points les plus durs du RL, surtout dans les environnements ouverts où le but est abstrait et difficile à quantifier. VLM-AR3L propose d'utiliser un modèle vision-langage comme juge : il lit les observations visuelles de l'agent à la lumière d'un objectif décrit en langage naturel. À partir de labels de préférence générés par le VLM, il apprend deux récompenses complémentaires. La récompense absolue prédit une évaluation scalaire pour un état donné : à quel point cet état est-il bon ? La récompense relative compare deux observations consécutives pour déduire s'il y a progrès ou régression vers le but. Combiner les deux marie la stabilité de l'évaluation par état et la robustesse de la supervision comparative, moins sensible aux biais d'échelle. Sur des tâches de contrôle classique, de manipulation et d'environnements incarnés en monde ouvert, VLM-AR3L dépasse les méthodes de récompense par VLM antérieures. Concrètement, c'est une façon de démarrer un entraînement RL sans écrire de reward shaping à la main. Pour la robotique et les agents de jeu, ça réduit le coût d'ingénierie de récompense, souvent le vrai goulot. La limite : la qualité dépend entièrement de la fiabilité des préférences du VLM, qui peut halluciner le progrès sur des scènes ambiguës.",
+        "en": "Designing a reward function remains one of the hardest parts of RL, especially in open-ended environments where the goal is abstract and hard to quantify. VLM-AR3L proposes using a vision-language model as a judge: it reads the agent's visual observations in light of a goal described in natural language. From preference labels generated by the VLM, it learns two complementary rewards. The absolute reward predicts a scalar evaluation for a given state: how good is this state? The relative reward compares two consecutive observations to infer whether there is progress or regression toward the goal. Combining the two marries the stability of state-based evaluation with the robustness of comparative supervision, which is less sensitive to scale bias. On classic control, manipulation, and open-world embodied tasks, VLM-AR3L outperforms prior VLM-based reward methods. Concretely, it's a way to bootstrap RL training without hand-writing reward shaping. For robotics and game agents, it cuts the reward-engineering cost, often the real bottleneck. The limit: quality depends entirely on the reliability of the VLM's preferences, which can hallucinate progress on ambiguous scenes."
       },
       "takeaways": {
         "fr": [
-          "TBD-VLA combine diffusion discrète masquée intra-bloc et autorégression inter-blocs pour gagner en vitesse sans perdre la cohérence temporelle.",
-          "La modélisation temporelle explicite autorise l'exécution asynchrone des chunks d'action (Real-Time Chunking) par in-painting.",
-          "Le modèle bat les VLA antérieurs en simulation et en manipulation réelle : la latence n'est plus le point faible."
+          "Un VLM sert de juge de récompense en lisant les images à l'aune d'un but en langage naturel.",
+          "Combiner récompense absolue (état) et relative (progrès entre deux images) stabilise l'apprentissage.",
+          "L'approche évite le reward shaping manuel mais hérite des hallucinations possibles du VLM."
         ],
         "en": [
-          "TBD-VLA combines masked discrete diffusion within blocks and autoregression between blocks to gain speed without losing temporal coherence.",
-          "Explicit temporal modeling allows asynchronous execution of action chunks (Real-Time Chunking) via in-painting.",
-          "The model beats prior VLAs in simulation and real-world manipulation: latency is no longer the weak point."
+          "A VLM acts as a reward judge by reading frames against a natural-language goal.",
+          "Combining absolute (state) and relative (progress between two frames) rewards stabilizes learning.",
+          "The approach avoids manual reward shaping but inherits the VLM's possible hallucinations."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.07895",
+      "url": "https://arxiv.org/abs/2607.00483",
+      "wildcard": false
+    },
+    {
+      "tag": "cv",
+      "tagLabel": "Diffusion · Robotique",
+      "flames": 1,
+      "title": "dVLA-RL: Reinforcement Learning over Denoising Trajectories for Discrete Diffusion Vision-Language-Action Models",
+      "teaser": {
+        "fr": "Faire du RL sur un robot-diffusion en récompensant tout le chemin de débruitage.",
+        "en": "Doing RL on a diffusion robot by rewarding the whole denoising path."
+      },
+      "summary": {
+        "fr": "Les modèles vision-langage-action (VLA) sont devenus un standard pour la manipulation robotique généraliste, en ancrant le contrôle dans le raisonnement d'un VLM. Une variante récente, les VLA à diffusion discrète (dVLA), unifie vision, langage et action dans un même espace de tokens discrets via un modèle génératif masqué, avec un raffinement itératif de l'action. Problème : jusqu'ici ces modèles n'étaient entraînés qu'en fine-tuning supervisé, laissant de côté le potentiel du renforcement pour affiner la politique. Le verrou technique est que la probabilité marginale de l'action finale produite par un dVLA est intractable, ce qui bloque le RL classique. dVLA-RL contourne l'obstacle en changeant d'objectif : au lieu de la probabilité marginale de l'action, on optimise la probabilité jointe de tout le chemin de génération échantillonné. En modélisant le processus de débruitage comme un processus de décision markovien, cette probabilité de chemin devient un simple produit de transitions étape par étape, donc calculable. Résultat : un gain de 30,6 points de pourcentage sur des tâches de manipulation bimanuelle. C'est une brique méthodologique qui débloque le RL pour toute une famille de politiques robotiques à diffusion. Pour la robotique appliquée, ça veut dire des politiques affinées par essais et erreurs au-delà des seules démonstrations. La limite : le gain est montré sur un jeu de tâches précis, et le RL sur trajectoires reste coûteux en échantillons.",
+        "en": "Vision-language-action (VLA) models have become a standard for generalist robotic manipulation, grounding control in a VLM's reasoning. A recent variant, discrete-diffusion VLAs (dVLAs), unifies vision, language, and action in a single discrete-token space via masked generative modeling, with iterative action refinement. The problem: so far these models were only trained with supervised fine-tuning, leaving the potential of reinforcement learning for policy refinement untapped. The technical blocker is that the marginal probability of the final action a dVLA produces is intractable, which stalls classic RL. dVLA-RL sidesteps the obstacle by changing the objective: instead of the action's marginal probability, it optimizes the joint probability of the entire sampled generation path. By modeling the denoising process as a Markov decision process, that path probability becomes a simple product of step-wise transitions, hence computable. The result: a 30.6 percentage-point gain on bimanual manipulation tasks. It's a methodological building block that unlocks RL for a whole family of diffusion-based robotic policies. For applied robotics, it means policies refined by trial and error beyond demonstrations alone. The limit: the gain is shown on a specific task set, and trajectory-level RL stays sample-hungry."
+      },
+      "takeaways": {
+        "fr": [
+          "Optimiser la probabilité du chemin de débruitage complet contourne l'action marginale intractable des dVLA.",
+          "Voir le débruitage comme un MDP rend la probabilité de chemin calculable comme produit de transitions.",
+          "Le RL fait gagner 30,6 points de pourcentage sur la manipulation bimanuelle par rapport au fine-tuning seul."
+        ],
+        "en": [
+          "Optimizing the full denoising-path probability sidesteps the dVLA's intractable marginal action.",
+          "Viewing denoising as an MDP makes the path probability computable as a product of transitions.",
+          "RL yields a 30.6 percentage-point gain on bimanual manipulation over fine-tuning alone."
+        ]
+      },
+      "url": "https://arxiv.org/abs/2606.23623",
       "wildcard": false
     },
     {
       "tag": "wild",
-      "tagLabel": "Biologie computationnelle",
+      "tagLabel": "Algèbre · Biophysique",
       "flames": 1,
-      "title": "Deep Learning for Protein Complex Prediction and Design",
+      "title": "Commutative Algebra Learning for Protein Flexibility Analysis",
       "teaser": {
-        "fr": "Quand GNN et protein language models dessinent l'assemblage des protéines.",
-        "en": "When GNNs and protein language models sketch how proteins assemble."
+        "fr": "De l'algèbre commutative pour prédire comment une protéine vibre.",
+        "en": "Commutative algebra to predict how a protein wiggles."
       },
       "summary": {
-        "fr": "Modéliser et concevoir la structure des complexes protéiques est un problème central de biologie structurale computationnelle, avec des retombées majeures pour comprendre la fonction cellulaire et développer des thérapies. Après AlphaFold pour les monomères, les complexes formés de plusieurs chaînes en interaction restent un défi ouvert. Cette thèse attaque le problème par deux angles deep learning : des architectures spécifiques au domaine qui capturent la nature hiérarchique des structures protéiques, et des algorithmes de recherche qui explorent efficacement les vastes espaces de séquences. Contribution phare : GLINTER, une méthode à base de réseau de neurones graphes qui prédit les contacts interfaciaux entre protéines en combinant représentations structurales des monomères et signaux co-évolutifs extraits par un transformer. Deuxième brique : ESMPair, qui utilise des protein language models pour apparier les homologues des chaînes individuelles. GLINTER surpasse les méthodes existantes sur cibles hétéro- et homo-dimériques et guide efficacement le docking protéine-protéine. Autrement dit : de meilleurs contacts prédits donnent de meilleurs assemblages 3D. Le lien avec notre métier saute aux yeux : on y retrouve les mêmes briques que dans nos stacks, GNN pour la structure relationnelle, language models (ici sur les acides aminés) pour l'appariement, et recherche dans un espace combinatoire géant. Un bel exemple de transfert des idées LLM et graphes vers un domaine étranger. Reste que c'est une thèse centrée sur des méthodes déjà éprouvées plutôt qu'une percée unique, et que la prédiction de complexes demeure plus dure que celle des monomères.",
-        "en": "Modeling and designing the structure of protein complexes is a central problem in computational structural biology, with major implications for understanding cellular function and developing therapies. After AlphaFold for monomers, complexes formed of several interacting chains remain an open challenge. This thesis attacks the problem from two deep-learning angles: domain-specific architectures that capture the hierarchical nature of protein structures, and search algorithms that efficiently explore vast sequence spaces. Flagship contribution: GLINTER, a graph-neural-network method that predicts interfacial contacts between proteins by combining structural representations of the monomers with co-evolutionary signals extracted by a transformer. Second building block: ESMPair, which uses protein language models to pair the homologs of individual chains. GLINTER outperforms existing methods on hetero- and homo-dimeric targets and effectively guides protein-protein docking. In other words: better predicted contacts yield better 3D assemblies. The link to our field is striking: we find the same building blocks as in our stacks — GNN for relational structure, language models (here on amino acids) for pairing, and search over a giant combinatorial space. A fine example of transferring LLM and graph ideas to a foreign domain. Still, it's a thesis centered on already-proven methods rather than a single breakthrough, and complex prediction remains harder than monomer prediction."
+        "fr": "La flexibilité d'une protéine, souvent mesurée par les facteurs B, est étroitement liée à sa structure et à sa fonction. Mais prédire ces facteurs B reste difficile, car les structures protéiques sont multi-échelles et les interactions atomiques complexes. Contrairement à beaucoup de tâches de biologie computationnelle qui s'appuient sur des représentations structurelles globales, la prédiction des facteurs B exige de caractériser finement l'environnement géométrique local autour de chaque atome. Ce papier propose CAL, un cadre d'apprentissage fondé sur l'algèbre commutative — une branche des mathématiques pures rarement croisée avec le deep learning. L'idée est d'utiliser la théorie de l'algèbre commutative pour construire des descripteurs algébriques localisés, à plusieurs échelles spatiales, capturant la géométrie autour de chaque atome. Ces descripteurs servent ensuite d'entrées à un modèle prédictif. Sur un jeu de référence de 364 protéines, CAL améliore la précision de prédiction de 34,5 % par rapport au modèle réseau gaussien (GNM) classique. C'est un bel exemple de transfert d'un outil mathématique inattendu vers un problème biophysique concret. Pour un data scientist, la leçon est que le bon featurage — ici algébrique et multi-échelle — peut battre des baselines établis. La limite : le cadre est spécialisé sur les facteurs B et son coût de calcul face aux méthodes géométriques plus simples reste à évaluer.",
+        "en": "A protein's flexibility, often measured by B-factors, is closely tied to its structure and function. But predicting these B-factors stays hard, because protein structures are multiscale and atomic interactions are complex. Unlike many computational-biology tasks that rely on global structural representations, B-factor prediction requires finely characterizing the local geometric environment around each atom. This paper proposes CAL, a learning framework grounded in commutative algebra — a branch of pure mathematics rarely crossed with deep learning. The idea is to use commutative-algebra theory to build localized algebraic descriptors, at multiple spatial scales, capturing the geometry around each atom. These descriptors then feed a predictive model. On a benchmark of 364 proteins, CAL improves prediction accuracy by 34.5% over the classical Gaussian network model (GNM). It's a fine example of transferring an unexpected mathematical tool to a concrete biophysical problem. For a data scientist, the lesson is that the right featurization — here algebraic and multiscale — can beat established baselines. The limit: the framework is specialized to B-factors, and its compute cost against simpler geometric methods remains to be assessed."
       },
       "takeaways": {
         "fr": [
-          "Les mêmes briques que nos agents, GNN pour le relationnel et language models pour l'appariement, servent à prédire les complexes protéiques.",
-          "GLINTER combine structure des monomères et signaux co-évolutifs (via transformer) pour prédire les contacts d'interface et guider le docking.",
-          "La prédiction de complexes multi-chaînes reste nettement plus dure que celle des monomères façon AlphaFold."
+          "Prédire la flexibilité (facteurs B) exige la géométrie locale autour de chaque atome, pas une vue globale.",
+          "L'algèbre commutative fournit des descripteurs localisés multi-échelles, un featurage inhabituel mais efficace.",
+          "Sur 364 protéines, CAL bat le modèle réseau gaussien classique de 34,5 %."
         ],
         "en": [
-          "The same building blocks as our agents — GNN for the relational, language models for pairing — serve to predict protein complexes.",
-          "GLINTER combines monomer structure and co-evolutionary signals (via transformer) to predict interface contacts and guide docking.",
-          "Multi-chain complex prediction stays markedly harder than AlphaFold-style monomer prediction."
+          "Predicting flexibility (B-factors) needs the local geometry around each atom, not a global view.",
+          "Commutative algebra provides localized multiscale descriptors, an unusual but effective featurization.",
+          "On 364 proteins, CAL beats the classical Gaussian network model by 34.5%."
         ]
       },
-      "url": "https://arxiv.org/abs/2605.11189",
+      "url": "https://arxiv.org/abs/2607.00879",
       "wildcard": true
-    },
-    {
-      "tag": "fun",
-      "tagLabel": "Jeux · PCG",
-      "flames": 1,
-      "title": "PCGRLLM: Large Language Model-Driven Reward Design for Procedural Content Generation Reinforcement Learning",
-      "teaser": {
-        "fr": "Décrivez le niveau voulu ; le LLM écrit la récompense qui l'apprend.",
-        "en": "Describe the level you want; the LLM writes the reward that learns it."
-      },
-      "summary": {
-        "fr": "En génération procédurale de contenu par apprentissage par renforcement, la conception de la récompense est le vrai goulot d'étranglement : elle exige beaucoup de connaissance métier et d'effort humain. Mal réglée, elle produit des niveaux injouables ou insipides. PCGRLLM propose un cadre où un LLM génère et raffine itérativement les fonctions de récompense pour des agents RL chargés de produire du contenu de jeu. Le système s'appuie sur un mécanisme de feedback et plusieurs techniques de prompt engineering basées sur le raisonnement. La tâche testée est un story-to-reward : transformer une description narrative en fonction de récompense, dans un environnement 2D. Évalué avec deux LLM de pointe, le cadre démontre sa généralisabilité, le même pipeline s'adaptant à différents objectifs de génération. La boucle de feedback permet de corriger les récompenses qui dérapent au fil des itérations. Au-delà du jeu, l'idée intéresse tout praticien RL : le reward engineering est partout un point douloureux, et déléguer sa rédaction à un LLM avec boucle de feedback est un pattern réutilisable en robotique, en optimisation ou pour des agents. C'est du LLM comme concepteur de récompense, pas comme politique. Reste que le papier date de début 2025 et s'en tient à des environnements 2D simples ; la fiabilité des récompenses générées sur des jeux complexes ou 3D reste à démontrer.",
-        "en": "In procedural content generation via reinforcement learning, reward design is the real bottleneck: it demands heavy domain knowledge and human effort. Poorly tuned, it produces unplayable or dull levels. PCGRLLM proposes a framework where an LLM iteratively generates and refines reward functions for RL agents tasked with producing game content. The system relies on a feedback mechanism and several reasoning-based prompt-engineering techniques. The tested task is story-to-reward: turning a narrative description into a reward function, in a 2D environment. Evaluated with two state-of-the-art LLMs, the framework demonstrates its generalizability, the same pipeline adapting to different generation objectives. The feedback loop lets it correct rewards that drift over iterations. Beyond games, the idea interests any RL practitioner: reward engineering is a pain point everywhere, and delegating its authoring to an LLM with a feedback loop is a reusable pattern in robotics, optimization or agents. It's the LLM as reward designer, not as policy. Still, the paper dates from early 2025 and sticks to simple 2D environments; the reliability of generated rewards on complex or 3D games remains to be demonstrated."
-      },
-      "takeaways": {
-        "fr": [
-          "PCGRLLM délègue au LLM l'écriture et le raffinement itératif des fonctions de récompense pour des agents RL générateurs de niveaux.",
-          "Une boucle de feedback corrige les récompenses qui dérapent, avec des prompts basés sur le raisonnement.",
-          "Le pattern LLM concepteur de récompense est transposable bien au-delà des jeux : robotique, agents, optimisation."
-        ],
-        "en": [
-          "PCGRLLM delegates to the LLM the writing and iterative refinement of reward functions for level-generating RL agents.",
-          "A feedback loop corrects rewards that drift, with reasoning-based prompts.",
-          "The LLM-as-reward-designer pattern transfers well beyond games: robotics, agents, optimization."
-        ]
-      },
-      "url": "https://arxiv.org/abs/2502.10906",
-      "wildcard": false
     }
   ],
   "quiz": [
     {
       "q": {
-        "fr": "Selon l'étude sur AutoMEM, quel type de système de mémoire obtient le meilleur classement cross-scénario ?",
-        "en": "According to the AutoMEM study, which type of memory system gets the best cross-scenario ranking?"
+        "fr": "Quel F1 EMBER-14B atteint-il au point de 8192 tokens de preuves retenues ?",
+        "en": "What F1 does EMBER-14B reach at the 8192-token retained-evidence point?"
       },
       "options": {
-        "fr": [
-          "Un graphe de connaissances hiérarchique",
-          "Un harness agentique auto-gérant des fichiers texte plats via tool calls",
-          "Une base vectorielle avec re-ranking",
-          "Une mémoire épisodique compressée par RL"
-        ],
-        "en": [
-          "A hierarchical knowledge graph",
-          "An agentic harness self-managing flat text files via tool calls",
-          "A vector database with re-ranking",
-          "An episodic memory compressed by RL"
-        ]
+        "fr": ["0,1765", "0,3017", "0,4500", "0,2500"],
+        "en": ["0.1765", "0.3017", "0.4500", "0.2500"]
       },
       "correct": 1,
       "explain": {
-        "fr": "Le harness qui laisse l'agent gérer lui-même un stockage texte plat généralise mieux que les architectures spécialisées.",
-        "en": "The harness that lets the agent manage a flat text store itself generalizes better than specialized architectures."
+        "fr": "EMBER-14B atteint 0,3017 de F1, contre 0,1765 pour le meilleur baseline budgété concurrent.",
+        "en": "EMBER-14B reaches 0.3017 F1, versus 0.1765 for the strongest competing budgeted baseline."
       }
     },
     {
       "q": {
-        "fr": "Dans « When the Tool Decides », à quelle fréquence les prédictions de l'agent coïncident-elles avec la sortie brute du GNN ?",
-        "en": "In 'When the Tool Decides', how often do the agent's predictions match the GNN's raw output?"
+        "fr": "Quels sont les trois outils de récupération exposés par A-RAG ?",
+        "en": "Which three retrieval tools does A-RAG expose?"
       },
       "options": {
         "fr": [
-          "50 à 60 % du temps",
-          "75 à 80 % du temps",
-          "97,6 à 99,2 % du temps",
-          "100 % systématiquement"
+          "Recherche par mots-clés, recherche sémantique, lecture de chunk",
+          "Recherche web, calculatrice, exécution de code",
+          "Résumé, traduction, classification",
+          "Embedding, reranking, filtrage"
         ],
         "en": [
-          "50 to 60% of the time",
-          "75 to 80% of the time",
-          "97.6 to 99.2% of the time",
-          "100%, systematically"
-        ]
-      },
-      "correct": 2,
-      "explain": {
-        "fr": "L'agent devient un perroquet du GNN, d'accord avec l'outil 97,6 à 99,2 % du temps.",
-        "en": "The agent becomes a GNN parrot, agreeing with the tool 97.6 to 99.2% of the time."
-      }
-    },
-    {
-      "q": {
-        "fr": "Quelle est l'idée centrale de Corpus2Skill (« Don't Retrieve, Navigate ») ?",
-        "en": "What is the core idea of Corpus2Skill ('Don't Retrieve, Navigate')?"
-      },
-      "options": {
-        "fr": [
-          "Fine-tuner le LLM sur l'intégralité du corpus",
-          "Distiller le corpus en un arbre hiérarchique de résumés navigables par l'agent",
-          "Remplacer les embeddings par un index inversé",
-          "Multiplier les agents récupérateurs en parallèle"
-        ],
-        "en": [
-          "Fine-tune the LLM on the entire corpus",
-          "Distill the corpus into a hierarchical tree of summaries the agent navigates",
-          "Replace embeddings with an inverted index",
-          "Multiply retriever agents in parallel"
-        ]
-      },
-      "correct": 1,
-      "explain": {
-        "fr": "Le corpus est distillé hors-ligne en un répertoire hiérarchique de skills que l'agent explore de haut en bas.",
-        "en": "The corpus is distilled offline into a hierarchical directory of skills that the agent explores top-down."
-      }
-    },
-    {
-      "q": {
-        "fr": "Quel bénéfice inattendu LogicalRAG obtient-il en ancrant la recherche dans des requêtes logiques ?",
-        "en": "What unexpected benefit does LogicalRAG gain by grounding search in logical queries?"
-      },
-      "options": {
-        "fr": [
-          "Une réduction substantielle des hallucinations",
-          "Un doublement de la vitesse d'entraînement",
-          "La suppression totale du besoin de LLM",
-          "Une meilleure compression des embeddings"
-        ],
-        "en": [
-          "A substantial reduction in hallucinations",
-          "A doubling of training speed",
-          "The complete removal of the need for an LLM",
-          "Better compression of embeddings"
+          "Keyword search, semantic search, chunk read",
+          "Web search, calculator, code execution",
+          "Summarization, translation, classification",
+          "Embedding, reranking, filtering"
         ]
       },
       "correct": 0,
       "explain": {
-        "fr": "Au-delà du coût réduit, les requêtes logiques diminuent nettement les hallucinations dans les réponses générées.",
-        "en": "Beyond the reduced cost, logical queries markedly reduce hallucinations in generated answers."
+        "fr": "A-RAG donne au modèle trois outils : recherche par mots-clés, recherche sémantique et lecture de chunk.",
+        "en": "A-RAG gives the model three tools: keyword search, semantic search, and chunk read."
       }
     },
     {
       "q": {
-        "fr": "Quel gain moyen HERA rapporte-t-il face aux baselines récentes de RAG multi-agents ?",
-        "en": "What average gain does HERA report over recent multi-agent RAG baselines?"
-      },
-      "options": {
-        "fr": ["+5,2 %", "+18,4 %", "+38,69 %", "+72,1 %"],
-        "en": ["+5.2%", "+18.4%", "+38.69%", "+72.1%"]
-      },
-      "correct": 2,
-      "explain": {
-        "fr": "HERA affiche une amélioration moyenne de 38,69 % en faisant co-évoluer orchestration et prompts.",
-        "en": "HERA shows an average improvement of 38.69% by co-evolving orchestration and prompts."
-      }
-    },
-    {
-      "q": {
-        "fr": "Comment TBD-VLA structure-t-il la génération d'actions ?",
-        "en": "How does TBD-VLA structure action generation?"
+        "fr": "Quelle contrainte cognitive RAGA intègre-t-il dans sa boucle ReAct ?",
+        "en": "Which cognitive constraint does RAGA embed in its ReAct loop?"
       },
       "options": {
         "fr": [
-          "Diffusion continue sur toute la trajectoire d'un seul coup",
-          "Diffusion discrète masquée dans chaque bloc, autorégression entre les blocs",
-          "Autorégression pure, token par token",
-          "Recherche arborescente Monte-Carlo sur les actions"
+          "Plan–Act–Reflect–Repeat",
+          "Lire–Chercher–Vérifier–Construire",
+          "Encoder–Récupérer–Classer–Répondre",
+          "Draft–Critique–Revise–Submit"
         ],
         "en": [
-          "Continuous diffusion over the whole trajectory at once",
-          "Masked discrete diffusion within each block, autoregression between blocks",
-          "Pure autoregression, token by token",
-          "Monte-Carlo tree search over actions"
+          "Plan–Act–Reflect–Repeat",
+          "Read–Search–Verify–Construct",
+          "Encode–Retrieve–Rank–Answer",
+          "Draft–Critique–Revise–Submit"
         ]
       },
       "correct": 1,
       "explain": {
-        "fr": "Chaque bloc temporel est décodé par diffusion discrète masquée, tandis que l'enchaînement des blocs reste autorégressif.",
-        "en": "Each temporal block is decoded by masked discrete diffusion, while the chaining of blocks stays autoregressive."
+        "fr": "RAGA embarque la contrainte « Lire–Chercher–Vérifier–Construire » pour garder un état cohérent.",
+        "en": "RAGA embeds the \"Read–Search–Verify–Construct\" constraint to keep a coherent state."
       }
     },
     {
       "q": {
-        "fr": "Sur quoi repose GLINTER pour prédire les contacts d'interface entre protéines ?",
-        "en": "What does GLINTER rely on to predict interface contacts between proteins?"
+        "fr": "Dans ce cadre BDaaS, comment est structuré le cycle de vie de la donnée ?",
+        "en": "In this BDaaS framework, how is the data lifecycle structured?"
       },
       "options": {
         "fr": [
-          "Un réseau de neurones graphes combinant structures des monomères et signaux co-évolutifs",
-          "Une simple régression linéaire sur les séquences",
-          "Un modèle de diffusion d'images",
-          "Un arbre de décision sur les angles dièdres"
+          "Un seul agent monolithique gère toute la chaîne",
+          "Un agent spécialisé par étape, coordonné par une couche d'orchestration LLM",
+          "Des scripts figés sans intervention de LLM",
+          "Une chaîne de règles SQL sans agents"
         ],
         "en": [
-          "A graph neural network combining monomer structures and co-evolutionary signals",
-          "A simple linear regression on sequences",
-          "An image diffusion model",
-          "A decision tree over dihedral angles"
+          "A single monolithic agent handles the whole chain",
+          "One specialized agent per stage, coordinated by an LLM orchestration layer",
+          "Frozen scripts with no LLM involvement",
+          "A chain of SQL rules without agents"
+        ]
+      },
+      "correct": 1,
+      "explain": {
+        "fr": "Chaque étape (ingestion, features, AutoML, déploiement, drift) a son agent, coordonné par un LLM orchestrateur.",
+        "en": "Each stage (ingestion, features, AutoML, deployment, drift) has its own agent, coordinated by an orchestrating LLM."
+      }
+    },
+    {
+      "q": {
+        "fr": "Quels sont les trois points de défaillance de la mémoire d'agent identifiés par SSGM ?",
+        "en": "What are the three agent-memory failure points identified by SSGM?"
+      },
+      "options": {
+        "fr": [
+          "Surcharge, latence, coût",
+          "Empoisonnement à l'ingestion, dérive à la consolidation, conflit à la récupération",
+          "Fuite réseau, panne disque, corruption d'index",
+          "Biais, variance, sur-apprentissage"
+        ],
+        "en": [
+          "Overload, latency, cost",
+          "Poisoning at ingestion, drift at consolidation, conflict at retrieval",
+          "Network leak, disk failure, index corruption",
+          "Bias, variance, overfitting"
+        ]
+      },
+      "correct": 1,
+      "explain": {
+        "fr": "SSGM cible l'empoisonnement (ingestion), la dérive sémantique (consolidation) et le conflit/hallucination (récupération).",
+        "en": "SSGM targets poisoning (ingestion), semantic drift (consolidation), and conflict/hallucination (retrieval)."
+      }
+    },
+    {
+      "q": {
+        "fr": "Quels deux types de récompense VLM-AR3L apprend-il ?",
+        "en": "Which two reward types does VLM-AR3L learn?"
+      },
+      "options": {
+        "fr": [
+          "Récompense éparse et récompense dense",
+          "Récompense absolue (par état) et récompense relative (progrès entre deux images)",
+          "Récompense intrinsèque et extrinsèque",
+          "Récompense positive et négative"
+        ],
+        "en": [
+          "Sparse reward and dense reward",
+          "Absolute reward (per state) and relative reward (progress between two frames)",
+          "Intrinsic and extrinsic reward",
+          "Positive and negative reward"
+        ]
+      },
+      "correct": 1,
+      "explain": {
+        "fr": "Une récompense absolue évalue un état, une relative compare deux observations pour juger le progrès.",
+        "en": "An absolute reward scores a state; a relative one compares two observations to judge progress."
+      }
+    },
+    {
+      "q": {
+        "fr": "Comment dVLA-RL rend-il le RL calculable sur un modèle à diffusion discrète ?",
+        "en": "How does dVLA-RL make RL tractable on a discrete-diffusion model?"
+      },
+      "options": {
+        "fr": [
+          "En optimisant la probabilité jointe de tout le chemin de génération, vu comme un MDP",
+          "En ignorant complètement la probabilité de l'action",
+          "En repassant à un espace d'action continu",
+          "En n'utilisant que du fine-tuning supervisé"
+        ],
+        "en": [
+          "By optimizing the joint probability of the whole generation path, viewed as an MDP",
+          "By ignoring the action probability entirely",
+          "By switching back to a continuous action space",
+          "By using only supervised fine-tuning"
         ]
       },
       "correct": 0,
       "explain": {
-        "fr": "GLINTER est une méthode à base de GNN mêlant représentations structurales et co-évolution extraite par transformer.",
-        "en": "GLINTER is a GNN-based method blending structural representations and co-evolution extracted by a transformer."
+        "fr": "La probabilité marginale de l'action étant intractable, on optimise la probabilité du chemin, produit de transitions d'un MDP.",
+        "en": "The marginal action probability is intractable, so it optimizes the path probability, a product of MDP transitions."
       }
     },
     {
       "q": {
-        "fr": "Que génère le LLM dans le cadre PCGRLLM ?",
-        "en": "What does the LLM generate in the PCGRLLM framework?"
+        "fr": "De combien CAL améliore-t-il la prédiction des facteurs B par rapport au modèle réseau gaussien ?",
+        "en": "By how much does CAL improve B-factor prediction over the Gaussian network model?"
       },
       "options": {
-        "fr": [
-          "Directement les niveaux de jeu, pixel par pixel",
-          "Les fonctions de récompense des agents RL, raffinées par feedback",
-          "La politique de l'agent RL de bout en bout",
-          "Les assets graphiques du jeu"
-        ],
-        "en": [
-          "Directly the game levels, pixel by pixel",
-          "The reward functions of the RL agents, refined by feedback",
-          "The RL agent's policy end-to-end",
-          "The game's graphical assets"
-        ]
+        "fr": ["+12,5 %", "+34,5 %", "+50,0 %", "+5,0 %"],
+        "en": ["+12.5%", "+34.5%", "+50.0%", "+5.0%"]
       },
       "correct": 1,
       "explain": {
-        "fr": "Le LLM conçoit et raffine itérativement les fonctions de récompense, pas les niveaux ni la politique elle-même.",
-        "en": "The LLM designs and iteratively refines the reward functions, not the levels or the policy itself."
+        "fr": "Sur 364 protéines, CAL améliore la précision de 34,5 % par rapport au GNM classique.",
+        "en": "On 364 proteins, CAL improves accuracy by 34.5% over the classical GNM."
       }
     }
   ]
