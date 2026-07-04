@@ -2,55 +2,27 @@
   "cards": [
     {
       "tag": "pro",
-      "tagLabel": "Mémoire d'agents",
-      "flames": 3,
-      "title": "EMBER: Efficient Memory via Budgeted Evidence Retention for Long-Horizon Agents",
-      "teaser": {
-        "fr": "Retenir la bonne preuve maintenant, pas relire tout l'historique plus tard.",
-        "en": "Keep the right evidence now, don't reread the whole history later."
-      },
-      "summary": {
-        "fr": "Un agent qui tourne pendant des heures accumule un historique gigantesque, mais chaque token relu au moment de répondre coûte du contexte et de la latence. EMBER pose la vraie question : quelles preuves faut-il garder récupérables, avant même de connaître la future requête, sous un budget de rétention fixe ? Le système apprend une politique de rétention qui construit un état de preuves compact et ancré à la source. Chaque preuve est stockée sous forme de « capsule » : un extrait verbatim du document source, associé à des clés de récupération et à des métadonnées de mise à jour. Un modèle « rédacteur » décide quoi retenir, et il est entraîné par un signal de résultat post-requête sur toute la chaîne ingestion-récupération-réponse. Sur le benchmark LongMemEval-RR, EMBER-14B atteint 0,3017 de F1 au point de comparaison de 8192 tokens retenus, contre 0,1765 pour le meilleur baseline budgété concurrent. Sur toute la gamme de budgets, EMBER améliore le F1, le Retain-Recall et le Read-Recall. Le message concret : la mémoire long-horizon dépend de la preuve conservée dans le budget, pas du fait de relire des historiques de plus en plus gros. Pour un agent de support ou de recherche en production, ça veut dire une mémoire moins chère à lire et mieux ancrée à ses sources. La limite : entraîner le rédacteur suppose un signal de résultat exploitable, ce qui n'est pas toujours disponible hors benchmark.",
-        "en": "An agent running for hours piles up a huge history, but every token reread at answer time costs context and latency. EMBER asks the real question: which evidence should stay recoverable, before the future query is even known, under a fixed retention budget? The system learns a retention policy that builds a compact, source-grounded evidence state. Each piece of evidence is stored as a \"capsule\": a verbatim excerpt from the source document, paired with retrieval keys and update metadata. A \"writer\" model decides what to keep, and it is trained by a post-query outcome signal across the whole ingestion-retrieval-answer chain. On the LongMemEval-RR benchmark, EMBER-14B reaches 0.3017 F1 at the 8192-token retained comparison point, versus 0.1765 for the strongest competing budgeted baseline. Across the range of budgets, EMBER improves F1, Retain-Recall and Read-Recall. The concrete message: long-horizon memory depends on evidence kept within budget, not on rereading ever-larger histories. For a support or research agent in production, that means memory that is cheaper to read and better grounded in its sources. The limit: training the writer assumes an exploitable outcome signal, which is not always available outside a benchmark."
-      },
-      "takeaways": {
-        "fr": [
-          "Décider quoi retenir avant de connaître la question bat le fait de tout stocker et relire ensuite.",
-          "Stocker des extraits verbatim avec leurs clés préserve à la fois l'ancrage source et l'accès rapide en lecture.",
-          "EMBER-14B double presque le F1 du meilleur baseline budgété à budget de preuves égal (0,3017 vs 0,1765)."
-        ],
-        "en": [
-          "Deciding what to retain before the question is known beats storing everything and rereading it later.",
-          "Storing verbatim excerpts with their keys preserves both source grounding and fast read-time access.",
-          "EMBER-14B nearly doubles the best budgeted baseline's F1 at equal evidence budget (0.3017 vs 0.1765)."
-        ]
-      },
-      "url": "https://arxiv.org/abs/2606.05894",
-      "wildcard": false
-    },
-    {
-      "tag": "pro",
-      "tagLabel": "RAG · Recherche",
+      "tagLabel": "RAG · Récupération",
       "flames": 3,
       "title": "A-RAG: Scaling Agentic Retrieval-Augmented Generation via Hierarchical Retrieval Interfaces",
       "teaser": {
-        "fr": "Donnez les outils de recherche au modèle, pas un pipeline figé.",
-        "en": "Hand the search tools to the model, not a frozen pipeline."
+        "fr": "Et si le modèle décidait lui-même quoi chercher, à chaque granularité ?",
+        "en": "What if the model itself decided what to search, at every granularity?"
       },
       "summary": {
-        "fr": "Les modèles frontière savent raisonner et enchaîner des appels d'outils sur de longues trajectoires, mais la plupart des systèmes RAG ne l'exploitent pas. Ils reposent sur deux paradigmes : récupérer des passages en un coup puis les concaténer à l'entrée, ou prédéfinir un workflow que le modèle exécute pas à pas. Dans les deux cas, le modèle ne participe pas aux décisions de récupération, ce qui empêche le système de progresser quand le modèle s'améliore. A-RAG expose au contraire trois outils de récupération directement au modèle : recherche par mots-clés, recherche sémantique et lecture de chunk. Comme l'information d'un corpus est organisée à plusieurs granularités, l'agent alterne entre signaux fins au niveau du mot-clé et représentations plus grossières au niveau du chunk. Il décide lui-même quoi chercher, avec quel outil et à quel moment, en boucle. Avec GPT-5-mini, A-RAG atteint 94,5 % sur HotpotQA et 89,7 % sur 2WikiMultiHop, dépassant nettement les méthodes antérieures. Concrètement, c'est un patron de RAG agentique où la qualité monte automatiquement avec la montée en gamme du modèle. Pour un moteur de QA multi-hop en production, ça réduit le prompt-engineering de workflow au profit d'outils réutilisables. Reste que laisser l'agent piloter la recherche multiplie les appels et donc la latence et le coût par requête.",
-        "en": "Frontier models can reason and chain tool calls over long trajectories, but most RAG systems don't exploit that. They rely on two paradigms: retrieve passages in one shot and concatenate them into the input, or predefine a workflow the model executes step by step. In both cases the model doesn't participate in retrieval decisions, which stops the system from improving as the model improves. A-RAG instead exposes three retrieval tools directly to the model: keyword search, semantic search, and chunk read. Because information in a corpus is organized at multiple granularities, the agent alternates between fine keyword-level signals and coarser chunk-level representations. It decides for itself what to search, with which tool, and when, in a loop. With GPT-5-mini, A-RAG reaches 94.5% on HotpotQA and 89.7% on 2WikiMultiHop, clearly beating prior methods. Concretely, it's an agentic RAG pattern where quality rises automatically as the backbone model gets better. For a multi-hop QA engine in production, it trades workflow prompt-engineering for reusable tools. Still, letting the agent drive retrieval multiplies calls, and therefore latency and cost per query."
+        "fr": "Les systèmes RAG classiques récupèrent des passages en un seul coup ou suivent un workflow figé, sans laisser le modèle participer aux décisions de récupération. C'est un vrai problème : les modèles récents savent raisonner sur de longues séquences d'outils, mais le RAG traditionnel n'exploite pas cette capacité et ne progresse pas quand le modèle s'améliore. A-RAG expose directement au modèle une interface de récupération hiérarchique construite sur un index à plusieurs granularités. Trois outils sont offerts : keyword_search pour les signaux fins, semantic_search pour le niveau phrase, et chunk_read pour lire des passages entiers. Une simple boucle d'agent laisse le modèle enchaîner ces appels, décider quoi chercher ensuite et s'arrêter quand il a assez de contexte. Sur plusieurs benchmarks de QA ouverte, A-RAG dépasse les approches existantes à budget de tokens récupérés comparable ou inférieur. Avec GPT-5-mini, il atteint 94,5 % sur HotpotQA et 89,7 % sur 2WikiMultiHop. Concrètement, c'est une recette pour des pipelines RAG qui progressent automatiquement à chaque nouvelle génération de modèle, sans re-tuner un workflow. L'index multi-granularité et les trois outils se branchent sur une base documentaire d'entreprise existante. Reste que la boucle d'agent multiplie les appels au modèle : le gain de qualité se paie en latence et en coût d'inférence à surveiller.",
+        "en": "Classic RAG systems fetch passages in a single shot or follow a fixed workflow, never letting the model take part in retrieval decisions. That's a real problem: recent models can reason over long sequences of tool calls, yet traditional RAG doesn't tap that ability and fails to scale as models improve. A-RAG exposes a hierarchical retrieval interface directly to the model, built on a multi-granularity index. Three tools are offered: keyword_search for fine-grained signals, semantic_search at the sentence level, and chunk_read to read whole passages. A simple agent loop lets the model chain these calls, decide what to search next, and stop once it has enough context. Across several open-domain QA benchmarks, A-RAG beats existing approaches at comparable or lower retrieved-token budgets. With GPT-5-mini it reaches 94.5% on HotpotQA and 89.7% on 2WikiMultiHop. In practice, it's a recipe for RAG pipelines that improve automatically with each new model generation, without re-tuning a workflow. The multi-granularity index and the three tools plug straight into an existing enterprise document store. That said, the agent loop multiplies model calls: the quality gain is paid for in latency and inference cost you'll need to watch."
       },
       "takeaways": {
         "fr": [
-          "Exposer la recherche comme des outils, plutôt qu'un workflow figé, laisse la qualité progresser avec le modèle.",
-          "Trois outils suffisent : recherche par mots-clés, recherche sémantique et lecture de chunk, à granularités différentes.",
-          "Avec GPT-5-mini, A-RAG monte à 94,5 % sur HotpotQA et 89,7 % sur 2WikiMultiHop."
+          "Exposer des outils de récupération (mot-clé, sémantique, lecture de chunk) plutôt qu'un workflow figé laisse le modèle piloter sa propre recherche.",
+          "Un index à plusieurs granularités est la clé : le modèle choisit le bon niveau de détail selon la question.",
+          "94,5 % sur HotpotQA avec GPT-5-mini montre que déléguer la récupération au modèle bat les pipelines pré-câblés à budget de tokens égal."
         ],
         "en": [
-          "Exposing search as tools, rather than a frozen workflow, lets quality scale with the model.",
-          "Three tools are enough: keyword search, semantic search, and chunk read, at different granularities.",
-          "With GPT-5-mini, A-RAG climbs to 94.5% on HotpotQA and 89.7% on 2WikiMultiHop."
+          "Exposing retrieval tools (keyword, semantic, chunk-read) instead of a fixed workflow lets the model drive its own search.",
+          "A multi-granularity index is the key: the model picks the right level of detail for each question.",
+          "94.5% on HotpotQA with GPT-5-mini shows that handing retrieval to the model beats pre-wired pipelines at equal token budget."
         ]
       },
       "url": "https://arxiv.org/abs/2602.03442",
@@ -58,352 +30,400 @@
     },
     {
       "tag": "pro",
-      "tagLabel": "Graphe · GraphRAG",
-      "flames": 2,
-      "title": "RAGA: Reading-And-Graph-building-Agent for Autonomous Knowledge Graph Construction and Retrieval-Augmented Generation",
+      "tagLabel": "Multi-agents · Orchestration",
+      "flames": 3,
+      "title": "Experience as a Compass: Multi-agent RAG with Evolving Orchestration and Agent Prompts",
       "teaser": {
-        "fr": "Un agent qui bâtit son graphe de connaissances et cite ses sources.",
-        "en": "An agent that builds its own knowledge graph and cites its sources."
+        "fr": "Le collectif d'agents qui réécrit sa propre organisation à chaque requête.",
+        "en": "The agent team that rewrites its own org chart for every query."
       },
       "summary": {
-        "fr": "Construire un graphe de connaissances à partir de documents avec un LLM se fait aujourd'hui surtout par pipelines batch sans état, qui traitent chaque chunk isolément. Résultat : les relations qui traversent plusieurs chunks sont ratées, les entités mal désambiguïsées, et le processus de construction reste opaque. RAGA transforme cette construction en tâche agentique : un agent dispose d'un jeu d'outils atomiques couvrant tout le cycle de vie du graphe (création, lecture, mise à jour, suppression). Il suit une contrainte cognitive « Lire–Chercher–Vérifier–Construire » intégrée dans une boucle d'outils de type ReAct, ce qui maintient un état cohérent au fil de la lecture. Un mécanisme de synchronisation graphe-vecteur permet une récupération hybride, à la fois symbolique et vectorielle. Surtout, chaque entrée de connaissance est ancrée à son texte source, offrant une provenance auditable — un point clé pour la confiance en entreprise. Sur un sous-ensemble du jeu de QA scientifique QASPER, la récupération par fusion de RAGA dépasse les baselines zéro-shot, et l'intégration du graphe améliore la qualité des réponses et des preuves. En pratique, c'est une brique pour des bases de connaissances qui se construisent seules tout en restant traçables. La limite : les résultats sont préliminaires et sur un sous-ensemble, la généralisation à de gros corpus hétérogènes reste à démontrer.",
-        "en": "Building a knowledge graph from documents with an LLM is mostly done today via stateless batch pipelines that process each chunk in isolation. The result: relations spanning several chunks are missed, entities are poorly disambiguated, and the construction process stays opaque. RAGA turns this construction into an agentic task: an agent wields an atomic toolset covering the graph's full lifecycle (create, read, update, delete). It follows a \"Read–Search–Verify–Construct\" cognitive constraint embedded in a ReAct-style tool loop, which keeps a coherent state as it reads. A graph-vector synchronization mechanism enables hybrid retrieval, both symbolic and vector-based. Above all, every knowledge entry is anchored to its source text, giving auditable provenance — a key point for enterprise trust. On a subset of the QASPER scientific QA dataset, RAGA's fusion retrieval beats zero-shot baselines, and graph integration improves both answer and evidence quality. In practice, it's a building block for knowledge bases that build themselves while staying traceable. The limit: results are preliminary and on a subset, so generalization to large heterogeneous corpora remains to be shown."
+        "fr": "Les systèmes RAG multi-agents affectent un rôle à chaque agent pour traiter des questions multi-sauts, à plusieurs sources ou au raisonnement complexe. Problème : leurs comportements et leur orchestration sont figés, ce qui les rend fragiles sur des tâches variées. HERA fait évoluer conjointement deux niveaux. Au niveau global, il optimise la topologie des agents propre à chaque requête via un échantillonnage guidé par récompense et l'accumulation d'expérience. Au niveau local, une évolution de prompts consciente du rôle affine chaque agent par attribution de crédit et adaptation sur deux axes, opérationnel et comportemental. Sur six benchmarks à forte intensité de connaissances, HERA gagne en moyenne +38,69 % sur des baselines récentes, tout en gardant efficacité en tokens et généralisation. L'analyse topologique révèle une auto-organisation : l'exploration éparse fait émerger des réseaux d'agents compacts et à haute utilité. Pour un praticien, c'est une piste pour des systèmes multi-agents qui s'améliorent en production sans redessiner à la main la coordination. L'expérience accumulée sert de « boussole » pour router chaque nouvelle requête vers la bonne structure. Mais l'évolution guidée par récompense suppose un signal de reward fiable et un coût d'exploration ; le transfert hors des benchmarks reste à démontrer.",
+        "en": "Multi-agent RAG systems assign each agent a role to tackle multi-hop, multi-source, or complex-reasoning queries. The problem: their behaviors and orchestration are fixed, which makes them brittle across diverse tasks. HERA jointly evolves two levels. At the global level, it optimizes query-specific agent topologies through reward-guided sampling and experience accumulation. At the local level, role-aware prompt evolution refines each agent via credit assignment and dual-axis adaptation, both operational and behavioral. Across six knowledge-intensive benchmarks, HERA gains +38.69% on average over recent baselines while keeping token efficiency and generalization. Topological analysis reveals self-organization: sparse exploration makes compact, high-utility agent networks emerge. For a practitioner, it points toward multi-agent systems that improve in production without hand-redesigning coordination. Accumulated experience acts as a \"compass\" to route each new query to the right structure. But reward-guided evolution assumes a reliable reward signal and an exploration cost; transfer beyond the benchmarks remains to be shown."
       },
       "takeaways": {
         "fr": [
-          "Traiter la construction de graphe comme une boucle d'agent avec état bat les pipelines batch sans état.",
-          "La contrainte « Lire–Chercher–Vérifier–Construire » et l'ancrage source donnent une provenance auditable.",
-          "La synchronisation graphe-vecteur permet une récupération hybride symbolique et sémantique."
+          "HERA évolue à deux niveaux : topologie globale des agents et prompts locaux par rôle.",
+          "L'expérience passée guide la structure choisie pour chaque requête, d'où le gain de +38,69 % en moyenne.",
+          "Une exploration éparse suffit à faire émerger des réseaux d'agents compacts et efficaces en tokens."
         ],
         "en": [
-          "Treating graph construction as a stateful agent loop beats stateless batch pipelines.",
-          "The \"Read–Search–Verify–Construct\" constraint plus source anchoring give auditable provenance.",
-          "Graph-vector synchronization enables hybrid symbolic-and-semantic retrieval."
+          "HERA evolves on two levels: global agent topology and local role-specific prompts.",
+          "Past experience guides the structure chosen for each query, driving the +38.69% average gain.",
+          "Sparse exploration is enough to make compact, token-efficient agent networks emerge."
         ]
       },
-      "url": "https://arxiv.org/abs/2605.17072",
+      "url": "https://arxiv.org/abs/2604.00901",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Data Eng · MLOps",
-      "flames": 2,
-      "title": "Trustworthy Self-Composable Big-Data-as-a-Service: An LLM-Orchestrated Multi-Agent Framework for Automated Data Engineering, AutoML, MLOps Deployment, and Drift-Aware Lifecycle Optimization",
+      "tagLabel": "Mémoire · Budget",
+      "flames": 3,
+      "title": "EMBER: Efficient Memory via Budgeted Evidence Retention for Long-Horizon Agents",
       "teaser": {
-        "fr": "Toute la chaîne data, de l'ingestion au drift, orchestrée par des agents.",
-        "en": "The whole data chain, from ingestion to drift, orchestrated by agents."
+        "fr": "Choisir quelles preuves garder avant même de connaître la question.",
+        "en": "Choosing which evidence to keep before you even know the question."
       },
       "summary": {
-        "fr": "Monter une plateforme data de bout en bout — ingestion, nettoyage, features, entraînement, déploiement, monitoring — demande d'assembler beaucoup d'outils et d'expertises, souvent à la main. Ce papier propose un cadre de Big-Data-as-a-Service « auto-composable » où chaque étape du cycle de vie est confiée à un agent spécialisé. On trouve donc des agents dédiés à l'ingestion, au nettoyage, au feature engineering, à l'entraînement AutoML, à l'évaluation, au déploiement MLOps, au monitoring et à la détection de drift. Une couche d'orchestration LLM coordonne ces agents, valide leurs sorties intermédiaires, gère le contexte du workflow et compose dynamiquement le pipeline selon les données et les contraintes. La nouveauté n'est pas un agent isolé mais l'assemblage gouverné de toute la chaîne. Côté confiance, le cadre ajoute des points de validation, un contrôle humain dans la boucle, une gouvernance des artefacts, du support de reproductibilité et des boucles de rétroaction sensibles au drift. C'est une vision architecturale de ce à quoi ressemble un pipeline ML entièrement piloté par agents. Pour une équipe data, l'intérêt est de standardiser les garde-fous plutôt que de recâbler chaque projet. Le revers : c'est surtout un cadre conceptuel, et déléguer autant d'étapes critiques à des agents suppose une confiance que la validation empirique doit encore établir.",
-        "en": "Standing up an end-to-end data platform — ingestion, cleaning, features, training, deployment, monitoring — means assembling many tools and skills, often by hand. This paper proposes a \"self-composable\" Big-Data-as-a-Service framework where each stage of the lifecycle is handed to a specialized agent. So there are dedicated agents for ingestion, cleaning, feature engineering, AutoML training, evaluation, MLOps deployment, monitoring, and drift detection. An LLM orchestration layer coordinates these agents, validates their intermediate outputs, manages the workflow context, and dynamically composes the pipeline based on the data and constraints. The novelty isn't a single agent but the governed assembly of the whole chain. On the trust side, the framework adds validation checkpoints, human-in-the-loop control, artifact governance, reproducibility support, and drift-aware feedback loops. It's an architectural vision of what a fully agent-driven ML pipeline looks like. For a data team, the appeal is standardizing the guardrails rather than rewiring every project. The downside: it's mostly a conceptual framework, and delegating so many critical stages to agents assumes a trust that empirical validation still has to establish."
+        "fr": "Les agents à long horizon accumulent des historiques massifs, mais tout relire à chaque requête est coûteux et inefficace. Le vrai problème : décider quoi conserver dans un budget de tokens fixe, avant même de connaître la question. EMBER apprend une politique de rétention qui construit un état de preuves compact et adossé aux sources. Il stocke des « capsules de preuve » : extraits verbatim de la source, accompagnés de clés de récupération et de métadonnées de mise à jour. Un retour d'expérience post-requête entraîne l'écrivain à préserver les preuves utiles tout au long de la chaîne ingestion → récupération → réponse. Sur LongMemEval-RR, EMBER-14B atteint 0,3017 de F1 au point de comparaison à 8192 tokens de preuves retenues, contre 0,1765 pour la meilleure baseline budgétée. Sur l'ensemble des budgets, il améliore F1, Retain-Recall et Read-Recall. Le message concret : la mémoire longue dépend de la preuve retenue dans le budget, pas du fait de relire des historiques plus gros. Idéal pour des agents de support, assistants persistants ou pipelines où le contexte coûte cher. Limite : la politique est apprise avec un feedback d'outcome, donc sensible à la qualité de ce signal et au domaine d'entraînement.",
+        "en": "Long-horizon agents accumulate massive histories, but rereading everything at each query is costly and inefficient. The real problem: deciding what to keep within a fixed token budget, before the query is even known. EMBER learns a retention policy that builds a compact, source-backed evidence state. It stores \"evidence capsules\": verbatim source excerpts paired with retrieval keys and update metadata. Post-query outcome feedback trains the writer to preserve useful evidence across the ingestion → retrieval → answer chain. On LongMemEval-RR, EMBER-14B reaches 0.3017 F1 at the 8192-token retained-evidence comparison point, versus 0.1765 for the strongest budgeted baseline. Across budgets, it improves F1, Retain-Recall, and Read-Recall. The concrete message: long-horizon memory depends on the evidence retained within budget, not on rereading larger histories. Ideal for support agents, persistent assistants, or pipelines where context is expensive. Limitation: the policy is learned from outcome feedback, so it's sensitive to the quality of that signal and to the training domain."
       },
       "takeaways": {
         "fr": [
-          "Un agent par étape (ingestion, features, AutoML, déploiement, drift) sous une couche d'orchestration LLM.",
-          "Les garde-fous — checkpoints, humain dans la boucle, gouvernance d'artefacts — sont intégrés, pas ajoutés après coup.",
-          "C'est une architecture de référence, à confronter à une validation empirique avant mise en production."
+          "EMBER stocke des « capsules de preuve » verbatim avec clés de récupération, plutôt que de tout garder.",
+          "À 8192 tokens retenus, il passe de 0,1765 à 0,3017 de F1 sur LongMemEval-RR.",
+          "La mémoire longue tient à ce qu'on retient dans le budget, pas à relire de plus gros historiques."
         ],
         "en": [
-          "One agent per stage (ingestion, features, AutoML, deployment, drift) under an LLM orchestration layer.",
-          "Guardrails — checkpoints, human-in-the-loop, artifact governance — are built in, not bolted on.",
-          "It's a reference architecture, to be tested against empirical validation before production use."
+          "EMBER stores verbatim \"evidence capsules\" with retrieval keys, rather than keeping everything.",
+          "At 8192 retained tokens, it goes from 0.1765 to 0.3017 F1 on LongMemEval-RR.",
+          "Long-horizon memory hinges on what you retain within budget, not on rereading larger histories."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.17915",
+      "url": "https://arxiv.org/abs/2606.05894",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Gouvernance · Sécurité",
+      "tagLabel": "Mémoire · Cohérence",
       "flames": 2,
-      "title": "Governing Evolving Memory in LLM Agents: Risks, Mechanisms, and the Stability and Safety Governed Memory (SSGM) Framework",
+      "title": "TOKI: A Bitemporal Operator Algebra for Contradiction Resolution in LLM-Agent Persistent Memory",
       "teaser": {
-        "fr": "La mémoire d'agent qui évolue peut aussi se corrompre : comment la gouverner ?",
-        "en": "Evolving agent memory can also rot: how do you govern it?"
+        "fr": "Quand une croyance nouvelle en contredit une ancienne, qui gagne — et le prouve-t-on ?",
+        "en": "When a new belief contradicts an old one, who wins and can you prove it?"
       },
       "summary": {
-        "fr": "À mesure que la mémoire des agents passe de bases de récupération statiques à des mécanismes dynamiques qui s'auto-modifient, de nouveaux risques apparaissent, souvent ignorés des surveys récents. Une mémoire qui se réécrit peut être empoisonnée, dériver sémantiquement ou solidifier des données sensibles. Le papier identifie trois points de défaillance critiques : l'empoisonnement de la mémoire lors de l'ingestion, la dérive sémantique lors des consolidations, et les conflits ou hallucinations au moment de la récupération. Pour y répondre, il propose SSGM (Stability and Safety-Governed Memory), une architecture de gouvernance conceptuelle. L'idée centrale est de découpler l'évolution de la mémoire de l'exécution de l'agent. Avant toute consolidation, SSGM impose une vérification de cohérence, une modélisation de la décroissance temporelle et un contrôle d'accès dynamique. Par cette analyse formelle, le cadre montre qu'il peut limiter les fuites de connaissances induites par la topologie, où un contexte sensible finit figé en mémoire long-terme, et prévenir la dérive où le savoir se dégrade au fil des résumés itératifs. Pour quiconque déploie des agents à mémoire persistante, c'est un cadre de menaces utile pour penser sécurité et confidentialité dès la conception. La limite : SSGM reste largement conceptuel, sans validation empirique à grande échelle des mécanismes proposés.",
-        "en": "As agent memory shifts from static retrieval databases to dynamic, self-modifying mechanisms, new risks emerge that recent surveys often overlook. A memory that rewrites itself can be poisoned, drift semantically, or solidify sensitive data. The paper identifies three critical failure points: memory poisoning during ingestion, semantic drift during consolidation, and conflict or hallucination at retrieval time. To address them, it proposes SSGM (Stability and Safety-Governed Memory), a conceptual governance architecture. The core idea is to decouple memory evolution from agent execution. Before any consolidation, SSGM enforces consistency verification, temporal decay modeling, and dynamic access control. Through formal analysis, the framework shows it can limit topology-induced knowledge leakage, where sensitive context ends up frozen into long-term memory, and prevent drift where knowledge degrades through iterative summarization. For anyone deploying agents with persistent memory, it's a useful threat model for thinking about security and privacy by design. The limit: SSGM stays largely conceptual, without large-scale empirical validation of the proposed mechanisms."
+        "fr": "La mémoire persistante d'un agent est un substrat en écriture lourde : chaque mise à jour de croyance est une écriture versionnée, et une nouvelle affirmation peut contredire une affirmation stockée. Problème : les systèmes en production utilisent quatre heuristiques de résolution — dernier écrivain gagne, fusion pondérée par preuve, attente de confirmation, politique par règle — sans jamais déclarer le niveau d'isolation qu'elles supposent ni les anomalies d'écriture qu'elles admettent. TOKI type ces quatre heuristiques comme une même famille d'opérateurs bitemporels sur un schéma à double ligne. Chaque opérateur porte une précondition d'isolation et une annotation de provenance qui conserve le fait « perdant » dans une ligne d'audit. Quatre théorèmes de solidité verrouillent le contrat sur trois axes orthogonaux — isolation, schéma et provenance — et se propagent aux pipelines d'opérateurs et aux ensembles de conflits n-aires. Résultat : toute baseline qui garde un juge LLM sur le chemin d'écriture admet au moins une de trois anomalies — incohérence de rejeu, biais de dérive de croyance, ou effacement d'audit. TOKI est le seul à exclure les trois. Pour qui construit une mémoire d'agent (support, CRM, assistant longue durée), c'est un cadre formel pour raisonner sur « qui gagne » lors des contradictions et garder une piste d'audit. On peut choisir l'heuristique en connaissant précisément ses garanties. C'est un travail surtout théorique : les théorèmes rassurent, mais l'intégration dans un moteur réel et le coût des écritures bitemporelles restent à éprouver.",
+        "en": "An agent's persistent memory is a write-heavy substrate: every belief update is a versioned write, and a new claim may contradict a stored one. The problem: production systems use four resolution heuristics — last-writer-wins, evidence-weighted merge, await-confirmation, per-rule policy — yet none declares the isolation level it assumes or the write-time anomalies it admits. TOKI types these four heuristics as one family of bitemporal operators over a dual-row schema. Each operator carries an isolation precondition and a provenance annotation that preserves the \"losing\" fact in an audit row. Four soundness theorems lock the contract across three orthogonal axes — isolation, schema, and provenance — and lift to operator pipelines and n-ary conflict sets. The result: every baseline that keeps an LLM judge on the write path admits at least one of three anomalies — replay inconsistency, belief-drift skew, or audit erasure. TOKI alone excludes all three. For anyone building agent memory (support, CRM, long-running assistant), it's a formal framework to reason about \"who wins\" during contradictions and keep an audit trail. You can pick a heuristic knowing exactly what it guarantees. It's mostly theoretical work: the theorems are reassuring, but integration into a real memory engine and the cost of bitemporal writes remain to be tested."
       },
       "takeaways": {
         "fr": [
-          "Une mémoire d'agent dynamique a trois failles : empoisonnement à l'ingestion, dérive à la consolidation, conflit à la récupération.",
-          "Découpler l'évolution de la mémoire de l'exécution permet d'y insérer vérification, décroissance et contrôle d'accès.",
-          "Traiter la mémoire persistante comme une surface d'attaque à sécuriser dès la conception, pas après incident."
+          "TOKI unifie quatre heuristiques de résolution de conflits en une algèbre d'opérateurs bitemporels.",
+          "Un schéma à double ligne conserve le fait perdant dans une ligne d'audit, garantissant la traçabilité.",
+          "Toute mémoire gardant un juge LLM sur le chemin d'écriture admet au moins une anomalie ; TOKI les exclut toutes."
         ],
         "en": [
-          "Dynamic agent memory has three faults: poisoning at ingestion, drift at consolidation, conflict at retrieval.",
-          "Decoupling memory evolution from execution lets you insert verification, decay, and access control.",
-          "Treat persistent memory as an attack surface to secure by design, not after an incident."
+          "TOKI unifies four conflict-resolution heuristics into one bitemporal operator algebra.",
+          "A dual-row schema preserves the losing fact in an audit row, guaranteeing traceability.",
+          "Any memory keeping an LLM judge on the write path admits at least one anomaly; TOKI excludes all of them."
         ]
       },
-      "url": "https://arxiv.org/abs/2603.11768",
+      "url": "https://arxiv.org/abs/2606.06240",
+      "wildcard": false
+    },
+    {
+      "tag": "pro",
+      "tagLabel": "Tool use · Éval",
+      "flames": 2,
+      "title": "PlanBench-XL: Evaluating Long-Horizon Planning of LLM Tool-Use Agents in Large-Scale Tool Ecosystems",
+      "teaser": {
+        "fr": "1 665 outils, 327 tâches et des pannes cachées : vos agents tiennent-ils ?",
+        "en": "1,665 tools, 327 tasks, and hidden failures: do your agents hold up?"
+      },
+      "summary": {
+        "fr": "Les agents outillés savent appeler quelques fonctions, mais les environnements réels comptent des milliers d'outils imparfaits. Problème : peut-on planifier sur un long horizon quand il faut d'abord retrouver les bons outils, puis les enchaîner pour révéler des indices intermédiaires ? PlanBench-XL est un benchmark interactif de 327 tâches de e-commerce sur 1 665 outils. L'agent doit récupérer itérativement des outils utilisables, les invoquer pour découvrir des preuves intermédiaires, et inférer des sous-buts implicites vers l'objectif final. Un mécanisme de blocage optionnel simule l'imprévu réel — fonctions manquantes, défaillantes ou distrayantes — forçant l'agent à détecter les chemins rompus et à s'adapter à l'exécution. Sur dix LLM de pointe, la planification à grande échelle reste dure : GPT-5.4 atteint 51,90 % en réglage sans blocage, mais s'effondre à 11,36 % dans la condition de blocage la plus sévère. Les agents sont surtout vulnérables quand les échecs n'émettent pas de signal d'erreur explicite ou quand la reprise exige des chemins d'outils alternatifs plus longs. Pour un praticien qui déploie des agents sur de vrais catalogues d'API, c'est un test de robustesse : vos agents savent-ils récupérer d'une panne silencieuse ? Le repo fournit un cadre pour diagnostiquer les échecs de planification agentique. Le domaine reste le retail : la généralisation à d'autres écosystèmes d'outils est à valider, et 327 tâches restent un échantillon.",
+        "en": "Tool-using agents can call a handful of functions, but real environments have thousands of imperfect tools. The problem: can you plan over a long horizon when you must first retrieve the right tools, then chain them to surface intermediate clues? PlanBench-XL is an interactive benchmark of 327 retail tasks over 1,665 tools. The agent must iteratively retrieve usable tools, invoke them to uncover intermediate evidence, and infer implicit sub-goals toward the final objective. An optional blocking mechanism simulates real-world unpredictability — missing, failing, or distracting functions — forcing the agent to detect broken paths and adapt at runtime. Across ten leading LLMs, massive-tool planning stays hard: GPT-5.4 reaches 51.90% in the block-free setting but collapses to 11.36% under the most severe blocking condition. Agents are especially vulnerable when failures emit no explicit error signal or when recovery requires longer alternative tool-use paths. For a practitioner deploying agents over real API catalogs, it's a robustness test: can your agents recover from a silent failure? The repo provides a framework to diagnose agentic planning failures. The domain stays retail: generalization to other tool ecosystems is still to be validated, and 327 tasks remain a sample."
+      },
+      "takeaways": {
+        "fr": [
+          "PlanBench-XL teste la planification sur 1 665 outils et 327 tâches, avec pannes injectées.",
+          "GPT-5.4 chute de 51,90 % à 11,36 % quand des outils manquent, défaillent ou distraient.",
+          "Les agents cassent surtout quand l'échec n'émet aucun signal d'erreur explicite."
+        ],
+        "en": [
+          "PlanBench-XL tests planning over 1,665 tools and 327 tasks, with injected failures.",
+          "GPT-5.4 drops from 51.90% to 11.36% when tools are missing, failing, or distracting.",
+          "Agents break most when a failure emits no explicit error signal."
+        ]
+      },
+      "url": "https://arxiv.org/abs/2606.22388",
       "wildcard": false
     },
     {
       "tag": "cv",
-      "tagLabel": "RL · Récompenses VLM",
+      "tagLabel": "Vision · RL",
       "flames": 2,
-      "title": "VLM-AR3L: Vision-Language Models for Absolute and Relative Rewards in Reinforcement Learning",
+      "title": "Visually Grounded Self-Reflection for Vision-Language Models via Reinforcement Learning",
       "teaser": {
-        "fr": "Deux regards d'un VLM sur l'image : « c'est bien ? » et « ça progresse ? »",
-        "en": "Two VLM takes on the frame: is this good, and is it progressing?"
+        "fr": "Apprendre à un modèle vision-langage à vraiment regarder l'image quand il se corrige.",
+        "en": "Teaching a vision-language model to actually look at the image when it corrects itself."
       },
       "summary": {
-        "fr": "Concevoir une fonction de récompense reste l'un des points les plus durs du RL, surtout dans les environnements ouverts où le but est abstrait et difficile à quantifier. VLM-AR3L propose d'utiliser un modèle vision-langage comme juge : il lit les observations visuelles de l'agent à la lumière d'un objectif décrit en langage naturel. À partir de labels de préférence générés par le VLM, il apprend deux récompenses complémentaires. La récompense absolue prédit une évaluation scalaire pour un état donné : à quel point cet état est-il bon ? La récompense relative compare deux observations consécutives pour déduire s'il y a progrès ou régression vers le but. Combiner les deux marie la stabilité de l'évaluation par état et la robustesse de la supervision comparative, moins sensible aux biais d'échelle. Sur des tâches de contrôle classique, de manipulation et d'environnements incarnés en monde ouvert, VLM-AR3L dépasse les méthodes de récompense par VLM antérieures. Concrètement, c'est une façon de démarrer un entraînement RL sans écrire de reward shaping à la main. Pour la robotique et les agents de jeu, ça réduit le coût d'ingénierie de récompense, souvent le vrai goulot. La limite : la qualité dépend entièrement de la fiabilité des préférences du VLM, qui peut halluciner le progrès sur des scènes ambiguës.",
-        "en": "Designing a reward function remains one of the hardest parts of RL, especially in open-ended environments where the goal is abstract and hard to quantify. VLM-AR3L proposes using a vision-language model as a judge: it reads the agent's visual observations in light of a goal described in natural language. From preference labels generated by the VLM, it learns two complementary rewards. The absolute reward predicts a scalar evaluation for a given state: how good is this state? The relative reward compares two consecutive observations to infer whether there is progress or regression toward the goal. Combining the two marries the stability of state-based evaluation with the robustness of comparative supervision, which is less sensitive to scale bias. On classic control, manipulation, and open-world embodied tasks, VLM-AR3L outperforms prior VLM-based reward methods. Concretely, it's a way to bootstrap RL training without hand-writing reward shaping. For robotics and game agents, it cuts the reward-engineering cost, often the real bottleneck. The limit: quality depends entirely on the reliability of the VLM's preferences, which can hallucinate progress on ambiguous scenes."
+        "fr": "Les grands modèles vision-langage (LVLM) savent « réfléchir » sur leurs réponses, mais souvent sans re-regarder l'image. Problème : cette réflexion peu ancrée dans le visuel les empêche de transformer un feedback en corrections correctes, surtout sur des images hors distribution. VRRL est un cadre d'apprentissage par renforcement conçu pour susciter une auto-réflexion ancrée dans le visuel. Premier ingrédient : masquer aléatoirement des préfixes de trajectoire à l'entraînement, pour insister sur la récupération après une prédiction intermédiaire fausse plutôt que sur l'évitement d'erreurs précoces. Second ingrédient : des « roll-ins » tamponnés, tirés d'un buffer de rejeu d'expérience, qui exposent le modèle à des états d'échec variés qu'il doit apprendre à corriger. L'idée est d'entraîner le modèle à mieux exploiter l'information visuelle pendant la correction d'erreurs. Les auteurs (UT Austin, NYU) ciblent explicitement la robustesse en réflexion sur des entrées difficiles. En pratique, c'est utile pour tout agent multimodal qui doit se relire — VQA, agents d'interface, inspection visuelle — et corriger une réponse en revenant à l'image. Le buffer de rejeu est une recette réutilisable pour fabriquer des états d'échec d'entraînement. Reste que la stratégie repose sur la génération de trajectoires d'échec : sa portée dépend de la diversité réelle du buffer et du coût d'un entraînement RL.",
+        "en": "Large vision-language models (LVLMs) can \"reflect\" on their answers, but often without looking at the image again. The problem: this poorly grounded reflection stops them from turning feedback into correct fixes, especially on out-of-distribution images. VRRL is a reinforcement learning framework designed to elicit visually grounded self-reflection. First ingredient: randomly masking trajectory prefixes during training, to emphasize recovery after a wrong intermediate prediction rather than avoiding early mistakes. Second ingredient: buffered roll-ins drawn from an experience replay buffer, exposing the model to diverse failure states it must learn to correct. The idea is to train the model to better exploit visual information while correcting errors. The authors (UT Austin, NYU) explicitly target robustness in reflection on hard inputs. In practice, it's useful for any multimodal agent that must re-read itself — VQA, interface agents, visual inspection — and fix an answer by returning to the image. The replay buffer is a reusable recipe for manufacturing training failure states. Still, the strategy relies on generating failure trajectories: its reach depends on the buffer's real diversity and the cost of RL training."
       },
       "takeaways": {
         "fr": [
-          "Un VLM sert de juge de récompense en lisant les images à l'aune d'un but en langage naturel.",
-          "Combiner récompense absolue (état) et relative (progrès entre deux images) stabilise l'apprentissage.",
-          "L'approche évite le reward shaping manuel mais hérite des hallucinations possibles du VLM."
+          "VRRL apprend au LVLM à re-regarder l'image pendant sa phase de correction, pas seulement à générer du texte.",
+          "Masquer des préfixes de trajectoire force le modèle à s'entraîner à récupérer après une erreur intermédiaire.",
+          "Un buffer de rejeu fournit des états d'échec variés à corriger, améliorant la réflexion hors distribution."
         ],
         "en": [
-          "A VLM acts as a reward judge by reading frames against a natural-language goal.",
-          "Combining absolute (state) and relative (progress between two frames) rewards stabilizes learning.",
-          "The approach avoids manual reward shaping but inherits the VLM's possible hallucinations."
+          "VRRL teaches the LVLM to look at the image again during its correction phase, not just to generate text.",
+          "Masking trajectory prefixes forces the model to train on recovering after an intermediate error.",
+          "A replay buffer supplies diverse failure states to correct, improving out-of-distribution reflection."
         ]
       },
-      "url": "https://arxiv.org/abs/2607.00483",
+      "url": "https://arxiv.org/abs/2607.02490",
       "wildcard": false
     },
     {
-      "tag": "cv",
-      "tagLabel": "Diffusion · Robotique",
+      "tag": "fun",
+      "tagLabel": "PCG · Robotique",
       "flames": 1,
-      "title": "dVLA-RL: Reinforcement Learning over Denoising Trajectories for Discrete Diffusion Vision-Language-Action Models",
+      "title": "PhyRoGen: Synthetic Generation of Physical Robot Manipulation Puzzles Using Procedural Content Generation",
       "teaser": {
-        "fr": "Faire du RL sur un robot-diffusion en récompensant tout le chemin de débruitage.",
-        "en": "Doing RL on a diffusion robot by rewarding the whole denoising path."
+        "fr": "Générer à l'infini des casse-tête physiques pour muscler la manipulation robotique.",
+        "en": "Endlessly generating physical puzzles to train robot manipulation."
       },
       "summary": {
-        "fr": "Les modèles vision-langage-action (VLA) sont devenus un standard pour la manipulation robotique généraliste, en ancrant le contrôle dans le raisonnement d'un VLM. Une variante récente, les VLA à diffusion discrète (dVLA), unifie vision, langage et action dans un même espace de tokens discrets via un modèle génératif masqué, avec un raffinement itératif de l'action. Problème : jusqu'ici ces modèles n'étaient entraînés qu'en fine-tuning supervisé, laissant de côté le potentiel du renforcement pour affiner la politique. Le verrou technique est que la probabilité marginale de l'action finale produite par un dVLA est intractable, ce qui bloque le RL classique. dVLA-RL contourne l'obstacle en changeant d'objectif : au lieu de la probabilité marginale de l'action, on optimise la probabilité jointe de tout le chemin de génération échantillonné. En modélisant le processus de débruitage comme un processus de décision markovien, cette probabilité de chemin devient un simple produit de transitions étape par étape, donc calculable. Résultat : un gain de 30,6 points de pourcentage sur des tâches de manipulation bimanuelle. C'est une brique méthodologique qui débloque le RL pour toute une famille de politiques robotiques à diffusion. Pour la robotique appliquée, ça veut dire des politiques affinées par essais et erreurs au-delà des seules démonstrations. La limite : le gain est montré sur un jeu de tâches précis, et le RL sur trajectoires reste coûteux en échantillons.",
-        "en": "Vision-language-action (VLA) models have become a standard for generalist robotic manipulation, grounding control in a VLM's reasoning. A recent variant, discrete-diffusion VLAs (dVLAs), unifies vision, language, and action in a single discrete-token space via masked generative modeling, with iterative action refinement. The problem: so far these models were only trained with supervised fine-tuning, leaving the potential of reinforcement learning for policy refinement untapped. The technical blocker is that the marginal probability of the final action a dVLA produces is intractable, which stalls classic RL. dVLA-RL sidesteps the obstacle by changing the objective: instead of the action's marginal probability, it optimizes the joint probability of the entire sampled generation path. By modeling the denoising process as a Markov decision process, that path probability becomes a simple product of step-wise transitions, hence computable. The result: a 30.6 percentage-point gain on bimanual manipulation tasks. It's a methodological building block that unlocks RL for a whole family of diffusion-based robotic policies. For applied robotics, it means policies refined by trial and error beyond demonstrations alone. The limit: the gain is shown on a specific task set, and trajectory-level RL stays sample-hungry."
+        "fr": "Apprendre à un robot à résoudre des casse-tête physiques — assemblage, désassemblage — demande d'énormes jeux de données, longs et fastidieux à produire. Problème : sans données variées et solubles, difficile de benchmarker les algorithmes de manipulation ou d'entraîner des modèles robustes. PhyRoGen applique la génération procédurale de contenu (PCG) pour fabriquer automatiquement des jeux de casse-tête de manipulation. C'est un générateur généraliste capable de produire des puzzles avec dépendances d'objets imbriquées : un objet articulé doit être manipulé avant qu'un autre puisse bouger. À partir du cadre, six générateurs concrets ont été définis pour créer 24 casse-tête physiques. Via un cadre de benchmark, tous les puzzles ont été résolus en 1 à 300 secondes par des planificateurs par échantillonnage. Chaque puzzle généré est démontré manipulable par un robot KUKA LBR iiwa en simulation physique. Concrètement, c'est un robinet de scénarios uniques et solubles pour évaluer des algorithmes de manipulation et nourrir de futurs modèles de fondation robotiques. La PCG remplace la conception manuelle laborieuse de tâches. Limite : la validation reste en simulation avec des planificateurs classiques ; le transfert vers du hardware réel et l'apprentissage de politiques sur ces données sont l'étape suivante.",
+        "en": "Teaching a robot to solve physical puzzles — assembly, disassembly — requires huge datasets that are slow and tedious to produce. The problem: without diverse, solvable data, it's hard to benchmark manipulation algorithms or train robust models. PhyRoGen applies procedural content generation (PCG) to automatically build datasets of manipulation puzzles. It's a general-purpose generator able to produce puzzles with interlocking object dependencies: one articulated object must be manipulated before another can move. From the framework, six concrete generators were defined to create 24 physical puzzles. Through a benchmarking framework, all puzzles were solved in 1 to 300 seconds by sampling-based planners. Every generated puzzle is shown to be manipulatable by a KUKA LBR iiwa robot in physical simulation. In practice, it's a tap of unique, solvable scenarios to evaluate manipulation algorithms and feed future robotic foundation models. PCG replaces the laborious manual design of tasks. Limitation: validation stays in simulation with classic planners; transfer to real hardware and learning policies on this data are the next step."
       },
       "takeaways": {
         "fr": [
-          "Optimiser la probabilité du chemin de débruitage complet contourne l'action marginale intractable des dVLA.",
-          "Voir le débruitage comme un MDP rend la probabilité de chemin calculable comme produit de transitions.",
-          "Le RL fait gagner 30,6 points de pourcentage sur la manipulation bimanuelle par rapport au fine-tuning seul."
+          "PhyRoGen génère par PCG des casse-tête de manipulation solubles avec dépendances d'objets imbriquées.",
+          "Six générateurs ont produit 24 puzzles, tous résolus en 1 à 300 s par planification par échantillonnage.",
+          "Chaque puzzle est démontré manipulable par un KUKA LBR iiwa en simulation physique."
         ],
         "en": [
-          "Optimizing the full denoising-path probability sidesteps the dVLA's intractable marginal action.",
-          "Viewing denoising as an MDP makes the path probability computable as a product of transitions.",
-          "RL yields a 30.6 percentage-point gain on bimanual manipulation over fine-tuning alone."
+          "PhyRoGen uses PCG to generate solvable manipulation puzzles with interlocking object dependencies.",
+          "Six generators produced 24 puzzles, all solved in 1 to 300 s by sampling-based planning.",
+          "Every puzzle is shown to be manipulatable by a KUKA LBR iiwa in physical simulation."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.23623",
+      "url": "https://arxiv.org/abs/2606.06569",
       "wildcard": false
     },
     {
       "tag": "wild",
-      "tagLabel": "Algèbre · Biophysique",
+      "tagLabel": "Sismologie · Flow Matching",
       "flames": 1,
-      "title": "Commutative Algebra Learning for Protein Flexibility Analysis",
+      "title": "Large-Scale 3D Ground-Motion Synthesis with Physics-Inspired Latent Operator Flow Matching",
       "teaser": {
-        "fr": "De l'algèbre commutative pour prédire comment une protéine vibre.",
-        "en": "Commutative algebra to predict how a protein wiggles."
+        "fr": "Simuler un séisme sur 9 millions de points en quelques secondes, pas en heures.",
+        "en": "Simulating an earthquake over 9 million points in seconds, not hours."
       },
       "summary": {
-        "fr": "La flexibilité d'une protéine, souvent mesurée par les facteurs B, est étroitement liée à sa structure et à sa fonction. Mais prédire ces facteurs B reste difficile, car les structures protéiques sont multi-échelles et les interactions atomiques complexes. Contrairement à beaucoup de tâches de biologie computationnelle qui s'appuient sur des représentations structurelles globales, la prédiction des facteurs B exige de caractériser finement l'environnement géométrique local autour de chaque atome. Ce papier propose CAL, un cadre d'apprentissage fondé sur l'algèbre commutative — une branche des mathématiques pures rarement croisée avec le deep learning. L'idée est d'utiliser la théorie de l'algèbre commutative pour construire des descripteurs algébriques localisés, à plusieurs échelles spatiales, capturant la géométrie autour de chaque atome. Ces descripteurs servent ensuite d'entrées à un modèle prédictif. Sur un jeu de référence de 364 protéines, CAL améliore la précision de prédiction de 34,5 % par rapport au modèle réseau gaussien (GNM) classique. C'est un bel exemple de transfert d'un outil mathématique inattendu vers un problème biophysique concret. Pour un data scientist, la leçon est que le bon featurage — ici algébrique et multi-échelle — peut battre des baselines établis. La limite : le cadre est spécialisé sur les facteurs B et son coût de calcul face aux méthodes géométriques plus simples reste à évaluer.",
-        "en": "A protein's flexibility, often measured by B-factors, is closely tied to its structure and function. But predicting these B-factors stays hard, because protein structures are multiscale and atomic interactions are complex. Unlike many computational-biology tasks that rely on global structural representations, B-factor prediction requires finely characterizing the local geometric environment around each atom. This paper proposes CAL, a learning framework grounded in commutative algebra — a branch of pure mathematics rarely crossed with deep learning. The idea is to use commutative-algebra theory to build localized algebraic descriptors, at multiple spatial scales, capturing the geometry around each atom. These descriptors then feed a predictive model. On a benchmark of 364 proteins, CAL improves prediction accuracy by 34.5% over the classical Gaussian network model (GNM). It's a fine example of transferring an unexpected mathematical tool to a concrete biophysical problem. For a data scientist, the lesson is that the right featurization — here algebraic and multiscale — can beat established baselines. The limit: the framework is specialized to B-factors, and its compute cost against simpler geometric methods remains to be assessed."
+        "fr": "L'analyse du risque sismique et le dimensionnement des infrastructures ont besoin d'historiques de mouvement du sol propres à un scénario, avec un contenu fréquentiel réaliste et une cohérence spatio-temporelle. Problème : produire les grands ensembles nécessaires à la quantification d'incertitude par simulation physique est trop coûteux pour les workflows d'ingénierie. GMFLOW est un cadre de « flow matching » d'opérateur latent, inspiré par la physique, qui génère des séries temporelles de mouvement du sol à grande échelle conditionnées par des paramètres physiques. Il modélise le champ de manière fonctionnelle et agnostique au maillage, ce qui lui permet de produire des sorties cohérentes sur un domaine entier. La génération est conditionnée par le scénario — magnitude, géométrie, site. Validé sur des scénarios simulés dans la baie de San Francisco, GMFLOW génère un mouvement du sol spatialement cohérent sur plus de 9 millions de points de grille en quelques secondes — un facteur d'accélération de 10 000× par rapport au workflow de simulation. Le lien avec le ML/DL : c'est un modèle génératif conditionnel (flow matching) appliqué à un champ physique, exactement le genre de tâche où diffusion et flow matching brillent. Au-delà des séismes, l'approche vise la synthèse de grands champs physiques spatio-temporels dans d'autres domaines scientifiques. C'est un émulateur : rapide et utile pour l'incertitude, mais sa fidélité reste bornée par les simulations d'entraînement et il ne remplace pas une simulation haute-fidélité de référence.",
+        "en": "Seismic hazard analysis and infrastructure design need scenario-specific ground-motion histories with realistic frequency content and spatiotemporal coherence. The problem: producing the large ensembles needed for uncertainty quantification via physics-based simulation is too costly for engineering workflows. GMFLOW is a physics-inspired latent operator flow-matching framework that generates large-scale ground-motion time histories conditioned on physical parameters. It models the field functionally and mesh-agnostically, letting it produce coherent outputs over an entire domain. Generation is conditioned on the scenario — magnitude, geometry, site. Validated on simulated scenarios in the San Francisco Bay Area, GMFLOW generates spatially coherent ground motion across more than 9 million grid points in seconds — a 10,000-fold speedup over the simulation workflow. The ML/DL link: it's a conditional generative model (flow matching) applied to a physical field, exactly the kind of task where diffusion and flow matching shine. Beyond earthquakes, the approach aims at synthesizing large-scale spatiotemporal physical fields in other scientific domains. It's an emulator: fast and useful for uncertainty, but its fidelity stays bounded by the training simulations and it doesn't replace a high-fidelity reference simulation."
       },
       "takeaways": {
         "fr": [
-          "Prédire la flexibilité (facteurs B) exige la géométrie locale autour de chaque atome, pas une vue globale.",
-          "L'algèbre commutative fournit des descripteurs localisés multi-échelles, un featurage inhabituel mais efficace.",
-          "Sur 364 protéines, CAL bat le modèle réseau gaussien classique de 34,5 %."
+          "GMFLOW émule le mouvement du sol sismique par flow matching d'opérateur latent, conditionné par la physique.",
+          "Il couvre plus de 9 millions de points de grille en secondes, soit un gain de vitesse de 10 000×.",
+          "Approche agnostique au maillage, extensible à d'autres grands champs physiques spatio-temporels."
         ],
         "en": [
-          "Predicting flexibility (B-factors) needs the local geometry around each atom, not a global view.",
-          "Commutative algebra provides localized multiscale descriptors, an unusual but effective featurization.",
-          "On 364 proteins, CAL beats the classical Gaussian network model by 34.5%."
+          "GMFLOW emulates seismic ground motion via latent operator flow matching, conditioned on physics.",
+          "It covers more than 9 million grid points in seconds, a 10,000× speedup.",
+          "The mesh-agnostic approach extends to other large-scale spatiotemporal physical fields."
         ]
       },
-      "url": "https://arxiv.org/abs/2607.00879",
+      "url": "https://arxiv.org/abs/2603.17403",
       "wildcard": true
     }
   ],
   "quiz": [
     {
       "q": {
-        "fr": "Quel F1 EMBER-14B atteint-il au point de 8192 tokens de preuves retenues ?",
-        "en": "What F1 does EMBER-14B reach at the 8192-token retained-evidence point?"
-      },
-      "options": {
-        "fr": ["0,1765", "0,3017", "0,4500", "0,2500"],
-        "en": ["0.1765", "0.3017", "0.4500", "0.2500"]
-      },
-      "correct": 1,
-      "explain": {
-        "fr": "EMBER-14B atteint 0,3017 de F1, contre 0,1765 pour le meilleur baseline budgété concurrent.",
-        "en": "EMBER-14B reaches 0.3017 F1, versus 0.1765 for the strongest competing budgeted baseline."
-      }
-    },
-    {
-      "q": {
         "fr": "Quels sont les trois outils de récupération exposés par A-RAG ?",
-        "en": "Which three retrieval tools does A-RAG expose?"
+        "en": "What are the three retrieval tools exposed by A-RAG?"
       },
       "options": {
         "fr": [
-          "Recherche par mots-clés, recherche sémantique, lecture de chunk",
-          "Recherche web, calculatrice, exécution de code",
-          "Résumé, traduction, classification",
-          "Embedding, reranking, filtrage"
+          "keyword_search, semantic_search, chunk_read",
+          "SQL, vecteur, graphe",
+          "embed, rerank, generate",
+          "crawl, index, cache"
         ],
         "en": [
-          "Keyword search, semantic search, chunk read",
-          "Web search, calculator, code execution",
-          "Summarization, translation, classification",
-          "Embedding, reranking, filtering"
+          "keyword_search, semantic_search, chunk_read",
+          "SQL, vector, graph",
+          "embed, rerank, generate",
+          "crawl, index, cache"
         ]
       },
       "correct": 0,
       "explain": {
-        "fr": "A-RAG donne au modèle trois outils : recherche par mots-clés, recherche sémantique et lecture de chunk.",
-        "en": "A-RAG gives the model three tools: keyword search, semantic search, and chunk read."
+        "fr": "A-RAG offre trois outils sur un index hiérarchique : recherche par mot-clé, recherche sémantique et lecture de chunk.",
+        "en": "A-RAG offers three tools over a hierarchical index: keyword search, semantic search, and chunk read."
       }
     },
     {
       "q": {
-        "fr": "Quelle contrainte cognitive RAGA intègre-t-il dans sa boucle ReAct ?",
-        "en": "Which cognitive constraint does RAGA embed in its ReAct loop?"
+        "fr": "Sur combien de benchmarks HERA obtient-il en moyenne +38,69 % ?",
+        "en": "On how many benchmarks does HERA achieve +38.69% on average?"
       },
       "options": {
         "fr": [
-          "Plan–Act–Reflect–Repeat",
-          "Lire–Chercher–Vérifier–Construire",
-          "Encoder–Récupérer–Classer–Répondre",
-          "Draft–Critique–Revise–Submit"
+          "Six benchmarks à forte intensité de connaissances",
+          "Deux benchmarks de code",
+          "Dix benchmarks de vision",
+          "Un seul benchmark de dialogue"
         ],
         "en": [
-          "Plan–Act–Reflect–Repeat",
-          "Read–Search–Verify–Construct",
-          "Encode–Retrieve–Rank–Answer",
-          "Draft–Critique–Revise–Submit"
-        ]
-      },
-      "correct": 1,
-      "explain": {
-        "fr": "RAGA embarque la contrainte « Lire–Chercher–Vérifier–Construire » pour garder un état cohérent.",
-        "en": "RAGA embeds the \"Read–Search–Verify–Construct\" constraint to keep a coherent state."
-      }
-    },
-    {
-      "q": {
-        "fr": "Dans ce cadre BDaaS, comment est structuré le cycle de vie de la donnée ?",
-        "en": "In this BDaaS framework, how is the data lifecycle structured?"
-      },
-      "options": {
-        "fr": [
-          "Un seul agent monolithique gère toute la chaîne",
-          "Un agent spécialisé par étape, coordonné par une couche d'orchestration LLM",
-          "Des scripts figés sans intervention de LLM",
-          "Une chaîne de règles SQL sans agents"
-        ],
-        "en": [
-          "A single monolithic agent handles the whole chain",
-          "One specialized agent per stage, coordinated by an LLM orchestration layer",
-          "Frozen scripts with no LLM involvement",
-          "A chain of SQL rules without agents"
-        ]
-      },
-      "correct": 1,
-      "explain": {
-        "fr": "Chaque étape (ingestion, features, AutoML, déploiement, drift) a son agent, coordonné par un LLM orchestrateur.",
-        "en": "Each stage (ingestion, features, AutoML, deployment, drift) has its own agent, coordinated by an orchestrating LLM."
-      }
-    },
-    {
-      "q": {
-        "fr": "Quels sont les trois points de défaillance de la mémoire d'agent identifiés par SSGM ?",
-        "en": "What are the three agent-memory failure points identified by SSGM?"
-      },
-      "options": {
-        "fr": [
-          "Surcharge, latence, coût",
-          "Empoisonnement à l'ingestion, dérive à la consolidation, conflit à la récupération",
-          "Fuite réseau, panne disque, corruption d'index",
-          "Biais, variance, sur-apprentissage"
-        ],
-        "en": [
-          "Overload, latency, cost",
-          "Poisoning at ingestion, drift at consolidation, conflict at retrieval",
-          "Network leak, disk failure, index corruption",
-          "Bias, variance, overfitting"
-        ]
-      },
-      "correct": 1,
-      "explain": {
-        "fr": "SSGM cible l'empoisonnement (ingestion), la dérive sémantique (consolidation) et le conflit/hallucination (récupération).",
-        "en": "SSGM targets poisoning (ingestion), semantic drift (consolidation), and conflict/hallucination (retrieval)."
-      }
-    },
-    {
-      "q": {
-        "fr": "Quels deux types de récompense VLM-AR3L apprend-il ?",
-        "en": "Which two reward types does VLM-AR3L learn?"
-      },
-      "options": {
-        "fr": [
-          "Récompense éparse et récompense dense",
-          "Récompense absolue (par état) et récompense relative (progrès entre deux images)",
-          "Récompense intrinsèque et extrinsèque",
-          "Récompense positive et négative"
-        ],
-        "en": [
-          "Sparse reward and dense reward",
-          "Absolute reward (per state) and relative reward (progress between two frames)",
-          "Intrinsic and extrinsic reward",
-          "Positive and negative reward"
-        ]
-      },
-      "correct": 1,
-      "explain": {
-        "fr": "Une récompense absolue évalue un état, une relative compare deux observations pour juger le progrès.",
-        "en": "An absolute reward scores a state; a relative one compares two observations to judge progress."
-      }
-    },
-    {
-      "q": {
-        "fr": "Comment dVLA-RL rend-il le RL calculable sur un modèle à diffusion discrète ?",
-        "en": "How does dVLA-RL make RL tractable on a discrete-diffusion model?"
-      },
-      "options": {
-        "fr": [
-          "En optimisant la probabilité jointe de tout le chemin de génération, vu comme un MDP",
-          "En ignorant complètement la probabilité de l'action",
-          "En repassant à un espace d'action continu",
-          "En n'utilisant que du fine-tuning supervisé"
-        ],
-        "en": [
-          "By optimizing the joint probability of the whole generation path, viewed as an MDP",
-          "By ignoring the action probability entirely",
-          "By switching back to a continuous action space",
-          "By using only supervised fine-tuning"
+          "Six knowledge-intensive benchmarks",
+          "Two coding benchmarks",
+          "Ten vision benchmarks",
+          "A single dialogue benchmark"
         ]
       },
       "correct": 0,
       "explain": {
-        "fr": "La probabilité marginale de l'action étant intractable, on optimise la probabilité du chemin, produit de transitions d'un MDP.",
-        "en": "The marginal action probability is intractable, so it optimizes the path probability, a product of MDP transitions."
+        "fr": "HERA rapporte +38,69 % de moyenne sur six benchmarks à forte intensité de connaissances.",
+        "en": "HERA reports a +38.69% average across six knowledge-intensive benchmarks."
       }
     },
     {
       "q": {
-        "fr": "De combien CAL améliore-t-il la prédiction des facteurs B par rapport au modèle réseau gaussien ?",
-        "en": "By how much does CAL improve B-factor prediction over the Gaussian network model?"
+        "fr": "Que stocke une « capsule de preuve » d'EMBER ?",
+        "en": "What does an EMBER \"evidence capsule\" store?"
       },
       "options": {
-        "fr": ["+12,5 %", "+34,5 %", "+50,0 %", "+5,0 %"],
-        "en": ["+12.5%", "+34.5%", "+50.0%", "+5.0%"]
+        "fr": [
+          "Un extrait verbatim de la source, avec clés de récupération et métadonnées",
+          "Un vecteur d'embedding compressé uniquement",
+          "Un résumé génératif de tout l'historique",
+          "Les poids fine-tunés du modèle"
+        ],
+        "en": [
+          "A verbatim source excerpt, with retrieval keys and metadata",
+          "A compressed embedding vector only",
+          "A generative summary of the whole history",
+          "The model's fine-tuned weights"
+        ]
       },
-      "correct": 1,
+      "correct": 0,
       "explain": {
-        "fr": "Sur 364 protéines, CAL améliore la précision de 34,5 % par rapport au GNM classique.",
-        "en": "On 364 proteins, CAL improves accuracy by 34.5% over the classical GNM."
+        "fr": "Chaque capsule associe un extrait verbatim de la source à des clés de récupération et des métadonnées de mise à jour.",
+        "en": "Each capsule pairs a verbatim source excerpt with retrieval keys and update metadata."
+      }
+    },
+    {
+      "q": {
+        "fr": "Que garantit le schéma à double ligne de TOKI lors d'une contradiction ?",
+        "en": "What does TOKI's dual-row schema guarantee during a contradiction?"
+      },
+      "options": {
+        "fr": [
+          "Le fait perdant est conservé dans une ligne d'audit",
+          "Le fait perdant est supprimé définitivement",
+          "Les deux faits sont fusionnés en un seul texte",
+          "Un juge LLM tranche à chaque lecture"
+        ],
+        "en": [
+          "The losing fact is preserved in an audit row",
+          "The losing fact is permanently deleted",
+          "Both facts are merged into a single text",
+          "An LLM judge decides on every read"
+        ]
+      },
+      "correct": 0,
+      "explain": {
+        "fr": "L'annotation de provenance de TOKI préserve le fait perdant dans une ligne d'audit, évitant l'effacement.",
+        "en": "TOKI's provenance annotation preserves the losing fact in an audit row, avoiding erasure."
+      }
+    },
+    {
+      "q": {
+        "fr": "Comment se comporte GPT-5.4 sur PlanBench-XL sous blocage sévère ?",
+        "en": "How does GPT-5.4 perform on PlanBench-XL under severe blocking?"
+      },
+      "options": {
+        "fr": [
+          "Il chute de 51,90 % à 11,36 %",
+          "Il reste stable autour de 50 %",
+          "Il progresse à 70 %",
+          "Il tombe à 0 %"
+        ],
+        "en": [
+          "It drops from 51.90% to 11.36%",
+          "It stays stable around 50%",
+          "It improves to 70%",
+          "It falls to 0%"
+        ]
+      },
+      "correct": 0,
+      "explain": {
+        "fr": "Sans blocage GPT-5.4 fait 51,90 %, mais s'effondre à 11,36 % sous la condition de blocage la plus sévère.",
+        "en": "Block-free, GPT-5.4 scores 51.90%, but collapses to 11.36% under the most severe blocking condition."
+      }
+    },
+    {
+      "q": {
+        "fr": "Quel mécanisme VRRL utilise-t-il pour exposer le modèle à des états d'échec variés ?",
+        "en": "Which mechanism does VRRL use to expose the model to diverse failure states?"
+      },
+      "options": {
+        "fr": [
+          "Des roll-ins tamponnés depuis un buffer de rejeu d'expérience",
+          "Une augmentation de données par rotation d'images",
+          "Un second modèle juge figé",
+          "Une distillation depuis un modèle plus grand"
+        ],
+        "en": [
+          "Buffered roll-ins from an experience replay buffer",
+          "Data augmentation by rotating images",
+          "A second frozen judge model",
+          "Distillation from a larger model"
+        ]
+      },
+      "correct": 0,
+      "explain": {
+        "fr": "VRRL tire des roll-ins d'un buffer de rejeu d'expérience pour confronter le modèle à divers états d'échec à corriger.",
+        "en": "VRRL draws roll-ins from an experience replay buffer to confront the model with diverse failure states to correct."
+      }
+    },
+    {
+      "q": {
+        "fr": "Quelle particularité les puzzles générés par PhyRoGen peuvent-ils avoir ?",
+        "en": "What feature can PhyRoGen-generated puzzles have?"
+      },
+      "options": {
+        "fr": [
+          "Des dépendances imbriquées : un objet doit être bougé avant un autre",
+          "Des règles purement textuelles sans physique",
+          "Un seul objet fixe à saisir",
+          "Aucune solution garantie"
+        ],
+        "en": [
+          "Interlocking dependencies: one object must move before another",
+          "Purely textual rules with no physics",
+          "A single fixed object to grasp",
+          "No guaranteed solution"
+        ]
+      },
+      "correct": 0,
+      "explain": {
+        "fr": "PhyRoGen génère des puzzles à dépendances d'objets imbriquées, où un objet articulé doit être manipulé avant qu'un autre puisse bouger.",
+        "en": "PhyRoGen generates puzzles with interlocking object dependencies, where one articulated object must be manipulated before another can move."
+      }
+    },
+    {
+      "q": {
+        "fr": "Quel facteur d'accélération GMFLOW atteint-il face à la simulation physique ?",
+        "en": "What speedup does GMFLOW achieve over physics-based simulation?"
+      },
+      "options": {
+        "fr": [
+          "10 000×",
+          "10×",
+          "100×",
+          "1 000 000×"
+        ],
+        "en": [
+          "10,000×",
+          "10×",
+          "100×",
+          "1,000,000×"
+        ]
+      },
+      "correct": 0,
+      "explain": {
+        "fr": "GMFLOW génère le mouvement du sol sur plus de 9 millions de points en secondes, soit environ 10 000× plus vite que le workflow de simulation.",
+        "en": "GMFLOW generates ground motion over more than 9 million points in seconds, about 10,000× faster than the simulation workflow."
       }
     }
   ]
