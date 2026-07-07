@@ -2,348 +2,428 @@
   "cards": [
     {
       "tag": "pro",
-      "tagLabel": "Data Engineering · MLOps",
+      "tagLabel": "Mémoire · Agents",
       "flames": 3,
-      "title": "Trustworthy Self-Composable Big-Data-as-a-Service: An LLM-Orchestrated Multi-Agent Framework for Automated Data Engineering, AutoML, MLOps Deployment, and Drift-Aware Lifecycle Optimization",
+      "title": "AutoMem: Automated Learning of Memory as a Cognitive Skill",
       "teaser": {
-        "fr": "Un cabinet d'agents LLM orchestre tout le cycle Big Data, de l'ingestion à la dérive.",
-        "en": "A cabinet of LLM agents runs the whole Big Data cycle, from ingestion to drift."
+        "fr": "Et si l'agent apprenait lui-même à gérer sa mémoire, comme une compétence ?",
+        "en": "What if the agent learned to manage its own memory, as a skill?"
       },
       "summary": {
-        "fr": "Monter une plateforme Big-Data-as-a-Service demande de répéter sans fin ingestion, nettoyage, feature engineering, entraînement, déploiement et monitoring — et chaque étape dépend des autres. Un simple changement de schéma casse le feature engineering en aval, une mise à jour de modèle force une reconfiguration du déploiement. Aujourd'hui ce cycle complet réclame encore beaucoup d'expertise humaine, et les outils existants n'automatisent que des morceaux isolés (AutoML par-ci, nettoyage par-là). Les auteurs proposent un framework multi-agents orchestré par un LLM qui découpe le cycle BDaaS en agents spécialisés : ingestion, nettoyage, feature engineering, entraînement AutoML, évaluation, déploiement MLOps, monitoring et détection de dérive. Une couche d'orchestration centrale coordonne leur exécution et recompose dynamiquement le pipeline quand les conditions changent. L'idée forte est la « self-composabilité » : les agents se reconnectent seuls quand un maillon évolue, plus la « trustworthiness » avec garde-fous et traçabilité. Le système gère l'enchaînement de bout en bout, y compris le réentraînement ou le rollback déclenché par la dérive post-déploiement, ce qui réduit l'intervention manuelle sur les tâches répétitives. Pour une équipe data qui maintient plusieurs pipelines en production, c'est un modèle d'architecture : des agents-métier autour d'un orchestrateur plutôt qu'un mégamodèle monolithique. La boucle de vie consciente de la dérive ferme le cercle et rapproche le MLOps d'une vraie autonomie. Reste que déléguer déploiement et rollback à des agents demande une confiance et une observabilité que le papier esquisse plus qu'il ne prouve à l'échelle industrielle.",
-        "en": "Standing up a Big-Data-as-a-Service platform means endlessly repeating ingestion, cleaning, feature engineering, training, deployment, and monitoring — and every stage depends on the others. A single schema change breaks downstream feature engineering, a model update forces a deployment reconfiguration. Today that full cycle still demands heavy human expertise, and existing tools only automate isolated chunks (AutoML here, cleaning there). The authors propose an LLM-orchestrated multi-agent framework that splits the BDaaS cycle into specialized agents: ingestion, cleaning, feature engineering, AutoML training, evaluation, MLOps deployment, monitoring, and drift detection. A central orchestration layer coordinates their execution and dynamically recomposes the pipeline when conditions shift. The core idea is \"self-composability\" — agents reconnect on their own when a link changes — plus \"trustworthiness\" with guardrails and traceability. The system handles the end-to-end chain, including retraining or rollback triggered by post-deployment drift, cutting manual work on repetitive tasks. For a data team maintaining several production pipelines, it's an architecture blueprint: role-specific agents around an orchestrator rather than one monolithic mega-model. The drift-aware lifecycle closes the loop and pushes MLOps closer to real autonomy. That said, delegating deployment and rollback to agents demands a level of trust and observability the paper sketches more than it proves at industrial scale."
+        "fr": "Sur les tâches longues, un agent LLM se noie vite : il ne sait ni quoi retenir, ni quand relire, ni comment ranger ce qu'il a appris. Les sciences cognitives appellent cette compétence la métamémoire, et jusqu'ici on la codait à la main dans le scaffold de l'agent. AutoMem propose de la faire apprendre à la machine elle-même. L'idée centrale : promouvoir les opérations du système de fichiers (écrire, lire, réorganiser des fichiers) au rang d'actions mémoire de premier plan, au même niveau que les actions de la tâche, et laisser le modèle décider comment gérer ses propres fichiers. AutoMem automatise cet apprentissage de bout en bout avec deux boucles méta-LLM : la boucle 1 optimise la structure de mémoire du scaffold en faisant relire des trajectoires complètes par un LLM fort qui révise itérativement l'organisation, la boucle 2 entraîne un spécialiste mémoire dédié à partir des propres traces de l'agent. Les résultats sont nets : de 1,89× à 3,74× de gain sur le taux de progression des tâches longues, de quoi rendre des modèles open-weight compétitifs avec des systèmes propriétaires de pointe. Les gains se construisent par paliers (v0→v5 sur Crafter, v0→v4 sur MiniHack, v0→v2 sur NetHack), puis l'entraînement du spécialiste ajoute encore une couche de progrès. Concrètement, pour qui bâtit un agent en production, le message est fort : la mémoire n'est pas un module figé qu'on branche, c'est un comportement qui s'optimise avec les données de l'agent. On sort de la mémoire-comme-base-vectorielle pour aller vers la mémoire-comme-politique apprise. Reste que deux boucles méta-LLM coûtent cher en calcul, et qu'il faudra vérifier la stabilité du scaffold optimisé hors des benchmarks de jeu.",
+        "en": "On long-horizon tasks, an LLM agent drowns fast: it doesn't know what to keep, when to reread, or how to file away what it has learned. Cognitive science calls this skill metamemory, and until now it was hand-coded into the agent's scaffold. AutoMem proposes letting the machine learn it itself. The core idea: promote file-system operations (writing, reading, reorganizing files) to first-class memory actions, on par with task actions, and let the model decide how to manage its own files. AutoMem automates this learning end-to-end with two meta-LLM loops: loop 1 optimizes the scaffold's memory structure by having a strong LLM review full trajectories and iteratively revise the organization, loop 2 trains a dedicated memory specialist from the agent's own traces. The results are clear: 1.89x to 3.74x gains in task progression rate on long-horizon tasks, enough to make open-weight models competitive with frontier proprietary systems. Gains build up in stages (v0-v5 on Crafter, v0-v4 on MiniHack, v0-v2 on NetHack), then specialist training adds a further layer of progress. Concretely, for anyone building a production agent, the message is strong: memory is not a frozen module you plug in, it's a behavior that gets optimized with the agent's data. We move from memory-as-vector-store toward memory-as-learned-policy. That said, two meta-LLM loops are compute-heavy, and the stability of the optimized scaffold will need checking beyond game benchmarks."
       },
       "takeaways": {
         "fr": [
-          "Découper le cycle BDaaS en agents spécialisés autour d'un orchestrateur LLM central est plus robuste qu'un pipeline monolithique.",
-          "La vraie valeur est la « self-composition » : quand un schéma ou un modèle change, les agents reconnectent le pipeline sans réécriture manuelle.",
-          "La détection de dérive intégrée qui déclenche réentraînement ou rollback ferme la boucle MLOps, mais exige une observabilité solide pour être digne de confiance."
+          "Traiter la gestion de mémoire comme une compétence entraînable, et non comme un module figé, débloque des gains de 1,89× à 3,74× sur les tâches longues.",
+          "Promouvoir les opérations de système de fichiers au rang d'actions mémoire laisse le modèle décider lui-même quoi encoder, quand relire et comment ranger.",
+          "Deux boucles méta-LLM (optimiser le scaffold, puis entraîner un spécialiste mémoire) rendent des modèles open-weight compétitifs avec des systèmes propriétaires de pointe."
         ],
         "en": [
-          "Splitting the BDaaS cycle into specialized agents around a central LLM orchestrator is more robust than a monolithic pipeline.",
-          "The real value is \"self-composition\": when a schema or model changes, agents reconnect the pipeline without manual rewrites.",
-          "Built-in drift detection that triggers retraining or rollback closes the MLOps loop, but needs solid observability to be trustworthy."
+          "Treating memory management as a trainable skill, not a frozen module, unlocks 1.89x to 3.74x gains on long-horizon tasks.",
+          "Promoting file-system operations to memory actions lets the model itself decide what to encode, when to reread, and how to file it.",
+          "Two meta-LLM loops (optimize the scaffold, then train a memory specialist) make open-weight models competitive with frontier proprietary systems."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.17915",
+      "url": "https://arxiv.org/abs/2607.01224",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "GraphRAG · Mémoire",
+      "tagLabel": "Mémoire · GraphRAG",
       "flames": 3,
-      "title": "MemGraphRAG: Memory-based Multi-Agent System for Graph Retrieval-Augmented Generation",
+      "title": "HAGE: Harnessing Agentic Memory via RL-Driven Weighted Graph Evolution",
       "teaser": {
-        "fr": "Une société d'agents à mémoire partagée construit enfin des graphes de connaissances cohérents.",
-        "en": "A society of shared-memory agents finally builds coherent knowledge graphs."
+        "fr": "La récupération mémoire n'est plus une recherche plate, mais un parcours de graphe appris.",
+        "en": "Memory retrieval stops being flat search and becomes a learned graph traversal."
       },
       "summary": {
-        "fr": "Le RAG classique cale sur les gros corpus non structurés où l'information est éparpillée en fragments. Le GraphRAG ajoute un graphe de connaissances pour capturer les relations et permettre un raisonnement multi-sauts, mais les méthodes actuelles extraient le graphe fragment par fragment, sans vue d'ensemble du corpus. Résultat : des graphes thématiquement incohérents, logiquement contradictoires et structurellement morcelés. MemGraphRAG répond avec un système multi-agents à mémoire partagée : une « société » d'agents collabore autour d'une mémoire commune qui fournit un contexte global unifié tout au long de l'extraction. Cette mémoire permet aux agents de résoudre dynamiquement les conflits logiques et de préserver la connectivité structurelle du graphe. Le framework ajoute un algorithme de récupération hiérarchique conscient de la mémoire, taillé pour le graphe ainsi construit. Sur plusieurs benchmarks, MemGraphRAG dépasse les meilleurs modèles de référence à efficacité comparable. Le papier a été accepté à KDD'26, un gage de sérieux méthodologique. Concrètement, pour qui bâtit un GraphRAG en production, le message est clair : la qualité de la récupération dépend d'abord de la qualité globale du graphe, pas seulement de l'algorithme de retrieval. La limite : orchestrer une société d'agents à mémoire partagée coûte en complexité et en tokens, à peser face au gain de cohérence.",
-        "en": "Plain RAG stalls on large unstructured corpora where information is scattered into fragments. GraphRAG adds a knowledge graph to capture relationships and enable multi-hop reasoning, but current methods extract the graph fragment by fragment, with no global view of the corpus. The result: graphs that are thematically inconsistent, logically conflicting, and structurally fragmented. MemGraphRAG answers with a memory-based multi-agent system: a \"society\" of agents collaborates around shared memory that provides a unified global context throughout extraction. That memory lets agents dynamically resolve logical conflicts and preserve the graph's structural connectivity. The framework adds a memory-aware hierarchical retrieval algorithm tailored to the graph it just built. Across multiple benchmarks, MemGraphRAG outperforms state-of-the-art baselines at comparable efficiency. The paper was accepted at KDD'26, a mark of methodological seriousness. Concretely, for anyone building a production GraphRAG, the message is clear: retrieval quality depends first on the global quality of the graph, not just the retrieval algorithm. The catch: orchestrating a society of shared-memory agents costs complexity and tokens, to weigh against the consistency gain."
+        "fr": "Dans les systèmes d'agents LLM, la récupération de mémoire est souvent traitée comme un simple lookup statique : recherche vectorielle plate ou graphe relationnel binaire figé. Le problème, c'est qu'un graphe figé ne capture ni la force, ni la confiance, ni la pertinence variable d'une relation selon la requête. HAGE reconçoit la récupération comme un parcours séquentiel et conditionné par la requête sur un graphe de mémoire relationnel unifié. La mémoire est organisée en vues de graphe spécifiques à chaque relation, sur des nœuds partagés, où chaque arête porte un vecteur de caractéristiques entraînable qui encode plusieurs signaux relationnels. Concrètement, HAGE représente la mémoire sur quatre graphes orthogonaux — Sémantique, Temporel, Causal et Entité — et calcule les scores de parcours en combinant, de façon apprise, similarité sémantique et représentations d'arêtes conditionnées par la requête. Cela permet au parcours de privilégier les chemins relationnels utiles tout en atténuant en douceur les connexions bruitées ou faiblement pertinentes. Un cadre d'entraînement par renforcement (policy-gradient) co-optimise le routage et les représentations d'arêtes sur des tâches en aval, via un routeur de requête (QueryRouter MLP). Résultat : un meilleur raisonnement long-horizon et un compromis précision/efficacité plus favorable que les systèmes de mémoire agentique de référence. Pour un praticien du RAG, le signal est clair : la qualité ne vient pas seulement de ce qu'on stocke, mais de la politique de parcours qui décide quoi remonter. Le coût : entraîner routage et arêtes par RL ajoute une complexité d'ingénierie et un besoin de tâches en aval bien définies.",
+        "en": "In LLM agent systems, memory retrieval is often treated as a static lookup: flat vector search or a fixed binary relational graph. The problem is that a fixed graph captures neither the strength, nor the confidence, nor the query-dependent relevance of a relationship. HAGE reframes retrieval as a sequential, query-conditioned traversal over a unified relational memory graph. Memory is organized into relation-specific graph views over shared nodes, where each edge carries a trainable feature vector encoding multiple relational signals. Concretely, HAGE represents memory across four orthogonal graphs — Semantic, Temporal, Causal, and Entity — and computes traversal scores through a learned combination of semantic similarity and query-conditioned edge representations. This lets traversal prioritize high-utility relational paths while softly suppressing noisy or weakly relevant connections. A reinforcement learning framework (policy-gradient) jointly optimizes routing and edge representations on downstream tasks, via a query router (QueryRouter MLP). The result: better long-horizon reasoning and a more favorable accuracy-efficiency trade-off than state-of-the-art agentic memory systems. For a RAG practitioner, the signal is clear: quality comes not only from what you store, but from the traversal policy that decides what to surface. The cost: training routing and edges via RL adds engineering complexity and needs well-defined downstream tasks."
       },
       "takeaways": {
         "fr": [
-          "La qualité d'un GraphRAG se joue à la construction du graphe, pas seulement au moment de la récupération.",
-          "Une mémoire partagée entre agents donne le contexte global qui manque à l'extraction fragment par fragment et résout les conflits logiques.",
-          "Le retrieval hiérarchique conscient de la mémoire est co-conçu avec le graphe : les deux ne se pensent pas séparément."
+          "Traiter la récupération mémoire comme un parcours de graphe appris et conditionné par la requête bat la recherche vectorielle plate et les graphes binaires figés.",
+          "Séparer la mémoire en quatre vues relationnelles (Sémantique, Temporelle, Causale, Entité) capture des signaux qu'un graphe unique aplatit.",
+          "Le renforcement co-optimise routage et représentations d'arêtes : la qualité du RAG dépend autant de la politique de parcours que du contenu stocké."
         ],
         "en": [
-          "GraphRAG quality is decided at graph-construction time, not only at retrieval time.",
-          "Shared memory across agents supplies the global context that fragment-by-fragment extraction lacks, and resolves logical conflicts.",
-          "Memory-aware hierarchical retrieval is co-designed with the graph: the two aren't thought of separately."
+          "Treating memory retrieval as a learned, query-conditioned graph traversal beats flat vector search and fixed binary graphs.",
+          "Splitting memory into four relational views (Semantic, Temporal, Causal, Entity) captures signals a single graph flattens.",
+          "Reinforcement learning co-optimizes routing and edge representations: RAG quality depends as much on traversal policy as on stored content."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.00610",
+      "url": "https://arxiv.org/abs/2605.09942",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Multi-agent RAG",
+      "tagLabel": "RAG · Multi-agent",
       "flames": 2,
-      "title": "Experience as a Compass: Multi-agent RAG with Evolving Orchestration and Agent Prompts",
+      "title": "Agri-SAGE: Simulation-Grounded Multi-Agent LLM for Context-Aware Agricultural Advisory Generation",
       "teaser": {
-        "fr": "L'expérience accumulée devient la boussole qui fait évoluer l'orchestration multi-agents.",
-        "en": "Accumulated experience becomes the compass that evolves multi-agent orchestration."
+        "fr": "Un conseil agricole crédible sur le papier peut être absurde sur le terrain : simulez-le.",
+        "en": "Farm advice that reads credible on paper can be absurd in the field: simulate it."
       },
       "summary": {
-        "fr": "Le RAG multi-agents, où chaque agent joue un rôle précis, brille sur les questions dures qui exigent plusieurs étapes, plusieurs sources et du raisonnement. Mais les approches actuelles figent le comportement des agents et la stratégie d'orchestration, ce qui les rend fragiles sur des tâches variées et multi-sauts. Il manque une orchestration qui s'adapte en continu et un apprentissage au niveau du comportement de chaque agent. HERA est un framework hiérarchique qui fait évoluer conjointement l'orchestration et les prompts spécifiques à chaque rôle. Au niveau global, il optimise la topologie d'agents propre à chaque requête par échantillonnage guidé par récompense et accumulation d'expérience. Au niveau local, la « Role-Aware Prompt Evolution » affine le comportement des agents via attribution de crédit et adaptation sur deux axes, opérationnel et comportemental. L'expérience accumulée agit littéralement comme une boussole : elle informe l'orchestrateur pour améliorer la coordination et pousse chaque agent à progresser dans son rôle. Résultat : +38.69 % en moyenne sur des baselines récentes, avec une bonne généralisation et une efficacité en tokens préservée. Pour une équipe qui construit un système RAG à plusieurs rôles, l'idée forte est de traiter l'orchestration comme quelque chose qui s'apprend, pas qui se code en dur. Reste que l'accumulation d'expérience suppose un volume de requêtes suffisant pour que la boussole se calibre.",
-        "en": "Multi-agent RAG, where each agent plays a specific role, shines on hard queries that need several steps, multiple sources, and real reasoning. But current approaches freeze agent behavior and orchestration strategy, making them brittle on diverse, multi-hop tasks. What's missing is continuously adaptive orchestration and behavior-level learning for each agent. HERA is a hierarchical framework that jointly evolves orchestration and role-specific prompts. At the global level, it optimizes a query-specific agent topology through reward-guided sampling and experience accumulation. At the local level, Role-Aware Prompt Evolution refines agent behavior via credit assignment and dual-axis adaptation, operational and behavioral. Accumulated experience acts literally as a compass: it informs the orchestrator to improve coordination and pushes each agent to progress in its role. The result: +38.69% on average over recent baselines, with strong generalization and preserved token efficiency. For a team building a multi-role RAG system, the key idea is to treat orchestration as something learned, not hard-coded. That said, experience accumulation assumes a query volume high enough for the compass to calibrate."
+        "fr": "Le conseil agricole a un dilemme : les guides agronomiques statiques offrent des recommandations cohérentes et fondées, mais restent aveugles à la variabilité en cours de saison et aux incertitudes dynamiques. Les systèmes récents à base de LLM déplacent le risque : ils génèrent des recommandations agronomiquement crédibles mais physiologiquement peu convaincantes — plausibles à la lecture, fausses sur le terrain. Agri-SAGE répond avec un cadre en boucle fermée qui marie un raisonnement multi-agents LLM ancré par récupération (RAG) et une simulation biophysique APSIM. L'idée : les agents LLM produisent une advisory, la simulation APSIM la teste dans un modèle de croissance des cultures, et la boucle valide ou corrige avant de sortir la recommandation. Le RAG fournit le socle documentaire, la simulation fournit le garde-fou physiologique, et la décomposition multi-agents distribue les rôles (analyse du contexte, génération, validation). C'est exactement le motif qu'on retrouve ailleurs : ne pas faire confiance au LLM seul, mais boucler ses sorties sur une source de vérité externe et exécutable. Pour une équipe data hors agriculture, l'architecture se transpose : tout domaine où un simulateur ou un moteur de règles peut jouer le rôle d'oracle bénéficie de ce couplage RAG-plus-vérification. Le gain n'est pas seulement la pertinence, mais la traçabilité : chaque conseil est adossé à une simulation reproductible. La limite : le résultat ne vaut que ce que vaut le modèle APSIM, et brancher un simulateur fidèle dans la boucle reste coûteux et spécifique au domaine.",
+        "en": "Agricultural advisory has a dilemma: static agronomic guides give consistent, evidence-based recommendations but stay blind to in-season variability and dynamic uncertainty. Recent LLM-based systems shift the risk: they generate recommendations that are agronomically credible but physiologically unconvincing — plausible on the page, wrong in the field. Agri-SAGE answers with a closed-loop framework marrying retrieval-grounded multi-agent LLM reasoning (RAG) with APSIM biophysical simulation. The idea: LLM agents produce an advisory, the APSIM simulation tests it in a crop-growth model, and the loop validates or corrects it before emitting the recommendation. RAG provides the documentary foundation, the simulation provides the physiological guardrail, and multi-agent decomposition distributes the roles (context analysis, generation, validation). This is exactly the pattern seen elsewhere: don't trust the LLM alone, but loop its outputs against an external, executable source of truth. For a data team outside agriculture, the architecture transposes: any domain where a simulator or rules engine can act as oracle benefits from this RAG-plus-verification coupling. The gain isn't just relevance, but traceability: every piece of advice is backed by a reproducible simulation. The catch: the output is only as good as the APSIM model, and wiring a faithful simulator into the loop stays costly and domain-specific."
       },
       "takeaways": {
         "fr": [
-          "Traiter l'orchestration multi-agents comme un objet qui s'apprend, plutôt qu'un graphe figé, apporte +38.69 % sur des baselines récentes.",
-          "HERA sépare deux niveaux : topologie d'agents par requête (global) et évolution des prompts par rôle (local).",
-          "L'expérience accumulée sert de signal pour recalibrer coordination et comportements, mais demande un volume de requêtes pour se stabiliser."
+          "Un conseil LLM peut être crédible à la lecture mais faux physiologiquement : boucler ses sorties sur une simulation exécutable comble ce trou.",
+          "Le motif RAG (socle documentaire) + simulation (garde-fou) + multi-agents (rôles séparés) se transpose à tout domaine doté d'un oracle simulable.",
+          "Le vrai bénéfice est la traçabilité : chaque recommandation est adossée à une simulation reproductible, pas seulement à un prompt."
         ],
         "en": [
-          "Treating multi-agent orchestration as something learned, rather than a frozen graph, yields +38.69% over recent baselines.",
-          "HERA separates two levels: per-query agent topology (global) and per-role prompt evolution (local).",
-          "Accumulated experience is the signal that recalibrates coordination and behavior, but needs query volume to stabilize."
+          "An LLM advisory can read credible yet be physiologically wrong: looping its outputs against an executable simulation fills that gap.",
+          "The pattern RAG (documentary base) + simulation (guardrail) + multi-agents (separate roles) transposes to any domain with a simulatable oracle.",
+          "The real benefit is traceability: every recommendation is backed by a reproducible simulation, not just a prompt."
         ]
       },
-      "url": "https://arxiv.org/abs/2604.00901",
+      "url": "https://arxiv.org/abs/2607.00454",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Mémoire · Data Science",
+      "tagLabel": "RAG · Observabilité",
       "flames": 2,
-      "title": "Towards Persistent Case-Based Memory for Autonomous Data Science: A CBR-Augmented R&D-Agent with a Locally Deployable Small Language Model",
+      "title": "Bayesian Uncertainty Propagation for Agentic RAG Pipelines: A Proof-of-Concept Study on Multi-Hop Question Answering",
       "teaser": {
-        "fr": "Un agent data science qui se souvient, tourne en local et se passe du cloud.",
-        "en": "A data-science agent that remembers, runs locally, and skips the cloud."
+        "fr": "Et si votre pipeline RAG vous disait à quelle étape il commence à douter ?",
+        "en": "What if your RAG pipeline told you exactly which stage it started doubting?"
       },
       "summary": {
-        "fr": "La plupart des agents de data science autonomes les plus performants s'appuient sur des modèles cloud de frontière et n'ont aucune mémoire persistante d'une session à l'autre. Le papier attaque deux angles morts : l'usage de bases de cas structurées et contrôlées en qualité (Case-Based Reasoning), et la viabilité de petits modèles (SLM) déployables en local comme cerveau de l'agent. Il greffe une couche CBR persistante sur le framework R&D-Agent de Microsoft, avec un backend qui rend Gemma 4 31B Dense opérationnel comme backbone. La couche CBR surcharge trois phases de la boucle — génération d'hypothèses, génération de code, rétention de cas — via un simple sous-classement activé par une variable d'environnement. Les cas sont stockés comme des enregistrements structurés avec instantané de code exécutable et métadonnées de qualité ; un filtre à cinq portes et une détection heuristique de réutilisation évaluent la plausibilité du transfert en combinant similarité d'embedding, empreinte de code et provenance. Évalué sur deux compétitions Kaggle (NOMAD 2018, Spaceship Titanic), quatre graines, huit boucles d'amélioration chacune, le CBR fait mieux que la baseline sans mémoire sur Spaceship Titanic (0.8147 contre 0.8098) avec surtout une variance nettement plus faible. Le gain de précision reste directionnel, mais la stabilité accrue est un vrai atout en pratique. Pour une équipe soucieuse de coûts ou de confidentialité, la promesse est double : mémoire réutilisable entre projets et exécution locale sans dépendre d'une API cloud. La limite : les gains restent modestes et testés sur peu de compétitions, à confirmer à plus grande échelle.",
-        "en": "Most top-performing autonomous data-science agents lean on frontier cloud models and have no persistent, cross-session memory. The paper tackles two blind spots: the use of formally structured, quality-controlled Case-Based Reasoning (CBR) case bases, and the viability of Small Language Models (SLMs) deployable locally as the agent's brain. It grafts a persistent CBR layer onto Microsoft's R&D-Agent framework, with a backend that makes Gemma 4 31B Dense operational as the backbone. The CBR layer overrides three loop phases — hypothesis generation, code generation, and case retention — via a surgical subclass toggled by a single environment variable. Cases are stored as structured records with executable code snapshots and quality metadata; a five-gate quality filter and a heuristic reuse-detection mechanism assess transfer plausibility by combining embedding similarity, code fingerprint, and provenance. Evaluated on two Kaggle competitions (NOMAD 2018, Spaceship Titanic), four seeds, eight improvement loops each, CBR beats the memory-less baseline on Spaceship Titanic (0.8147 vs 0.8098) with, above all, substantially lower variance. The accuracy gain stays directional, but the added stability is a real practical asset. For a team worried about cost or privacy, the promise is twofold: memory reusable across projects and local execution without depending on a cloud API. The catch: gains remain modest and tested on few competitions, to be confirmed at larger scale."
+        "fr": "Un pipeline RAG agentique enchaîne plusieurs étapes — planification, récupération, évaluation, génération — et une erreur en amont se propage silencieusement jusqu'à la réponse finale. Le vrai manque en production n'est pas seulement la précision, c'est l'observabilité : savoir où le système commence à dériver. Ce papier propose un cadre RAG agentique conscient de l'incertitude, où les étapes planner, evaluator et generator produisent chacune des signaux d'incertitude dérivés de la divergence sémantique et de l'auto-évaluation du générateur. Ces signaux sont ensuite propagés à travers un réseau bayésien qui estime une incertitude au niveau système et fournit des indicateurs par nœud pointant les points de défaillance potentiels dans le workflow. L'approche est testée sur StrategyQA et HotpotQA avec GPT-3.5-Turbo et GPT-4.1-Nano. Le résultat le plus parlant : la propagation bayésienne est plus efficace sur HotpotQA, précisément parce que l'incertitude s'y accumule à travers les étapes de raisonnement multi-sauts. À l'inverse, StrategyQA expose les limites de la méthode : mauvaise calibration et signaux amont peu fiables cassent la chaîne. Pour un praticien, l'intérêt est direct : au lieu d'un score de confiance opaque en sortie, on obtient une carte de l'incertitude étape par étape, exploitable pour du monitoring ou du garde-fou automatique. Les auteurs restent honnêtes : c'est un proof-of-concept prometteur mais préliminaire, à valider sur des domaines industriels — ils citent la maintenance de l'éolien offshore. Le socle bayésien ne vaut que si les signaux d'incertitude par étape sont eux-mêmes bien calibrés, ce qui n'est pas garanti.",
+        "en": "An agentic RAG pipeline chains several stages — planning, retrieval, evaluation, generation — and an upstream error propagates silently to the final answer. The real gap in production isn't just accuracy, it's observability: knowing where the system starts to drift. This paper proposes an uncertainty-aware agentic RAG framework, where the planner, evaluator, and generator stages each produce uncertainty signals derived from semantic divergence and generator self-evaluation. These signals are then propagated through a Bayesian network that estimates system-level uncertainty and provides node-level indicators pointing to potential failure points in the workflow. The approach is tested on StrategyQA and HotpotQA with GPT-3.5-Turbo and GPT-4.1-Nano. The most telling result: Bayesian propagation is more effective on HotpotQA, precisely because uncertainty accumulates there across multi-hop reasoning stages. Conversely, StrategyQA exposes the method's limits: miscalibration and unreliable upstream signals break the chain. For a practitioner, the appeal is direct: instead of an opaque confidence score at the output, you get a stage-by-stage map of uncertainty, usable for monitoring or automatic guardrails. The authors stay honest: it's a promising but preliminary proof-of-concept, to be validated on industrial domains — they cite offshore wind maintenance. The Bayesian backbone is only as good as the per-stage uncertainty signals are calibrated, which is not guaranteed."
       },
       "takeaways": {
         "fr": [
-          "Une mémoire de cas persistante (CBR) réutilisable entre sessions réduit surtout la variance des résultats, plus qu'elle n'augmente la précision brute.",
-          "Un petit modèle local comme Gemma 4 31B peut servir de backbone d'agent data science, une piste sérieuse pour le coût et la confidentialité.",
-          "Le filtre qualité à cinq portes combinant embedding, empreinte de code et provenance décide quels cas méritent d'être réutilisés."
+          "En RAG agentique, l'observabilité compte autant que la précision : savoir à quelle étape le système dérive change la donne en production.",
+          "Propager des signaux d'incertitude (divergence sémantique + auto-évaluation) via un réseau bayésien donne des indicateurs de défaillance par nœud.",
+          "La méthode brille quand l'incertitude s'accumule sur du multi-sauts (HotpotQA) mais casse si les signaux amont sont mal calibrés (StrategyQA)."
         ],
         "en": [
-          "A persistent case memory (CBR) reusable across sessions mainly cuts result variance, more than it raises raw accuracy.",
-          "A small local model like Gemma 4 31B can serve as a data-science agent backbone, a serious lead for cost and privacy.",
-          "The five-gate quality filter combining embedding, code fingerprint, and provenance decides which cases are worth reusing."
+          "In agentic RAG, observability matters as much as accuracy: knowing which stage drifts is a production game-changer.",
+          "Propagating uncertainty signals (semantic divergence + self-evaluation) through a Bayesian network yields per-node failure indicators.",
+          "The method shines when uncertainty accumulates over multi-hop reasoning (HotpotQA) but breaks if upstream signals are miscalibrated (StrategyQA)."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.05250",
+      "url": "https://arxiv.org/abs/2607.00972",
       "wildcard": false
     },
     {
       "tag": "pro",
-      "tagLabel": "Knowledge Graph · RAG",
+      "tagLabel": "Multi-agent · Code",
       "flames": 2,
-      "title": "RAGA: Reading-And-Graph-building-Agent for Autonomous Knowledge Graph Construction and Retrieval-Augmented Generation",
+      "title": "Leveraging LLM-Based Agentic Systems to Generate Quantum Applications for Test Optimization",
       "teaser": {
-        "fr": "Un agent lit, cherche, vérifie, construit : le graphe de connaissances se bâtit tout seul.",
-        "en": "An agent reads, searches, verifies, builds: the knowledge graph builds itself."
+        "fr": "Décrivez le problème en langage naturel, une équipe d'agents en sort une appli quantique exécutable.",
+        "en": "Describe the problem in plain language, an agent team ships an executable quantum app."
       },
       "summary": {
-        "fr": "Construire un graphe de connaissances avec un LLM se fait aujourd'hui surtout par traitement batch « sans état », qui capture mal les relations entre chunks, peine à désambiguïser les entités et laisse le processus de construction opaque. RAGA (Reading-And-Graph-building-Agent) transforme la construction en boucle cognitive plutôt qu'en pipeline figé. L'agent suit un cycle Read-Search-Verify-Construct embarqué dans une boucle d'outils ReAct : il lit le prochain signal, cherche dans le graphe existant le contexte pertinent, vérifie les triplets candidats contre le signal et le graphe, puis seulement construit la mise à jour. Un jeu d'outils atomiques couvre tout le cycle de vie CRUD du graphe. Un mécanisme de synchronisation graphe-vecteur permet une récupération hybride symbolique et vectorielle. Chaque entrée de connaissance est ancrée à son texte source, ce qui donne une provenance auditable — un point clé pour la confiance. Sur un sous-ensemble du jeu de QA scientifique QASPER, la récupération par fusion de RAGA bat les baselines zero-shot, l'intégration du graphe améliorant à la fois la qualité des réponses et des preuves. Pour qui construit une base de connaissances d'entreprise, l'apport est l'auditabilité : on sait d'où vient chaque fait. La limite : les résultats sont préliminaires et sur un seul corpus, la scalabilité de la boucle agentique reste à démontrer.",
-        "en": "Building a knowledge graph with an LLM today mostly happens via \"stateless\" batch processing, which poorly captures cross-chunk relations, struggles to disambiguate entities, and leaves the construction process opaque. RAGA (Reading-And-Graph-building-Agent) turns construction into a cognitive loop rather than a frozen pipeline. The agent follows a Read-Search-Verify-Construct cycle embedded in a ReAct tool loop: it reads the next signal, searches the existing graph for relevant context, verifies candidate triples against both the signal and the graph, and only then constructs the update. An atomic toolset covers the graph's full CRUD lifecycle. A graph-vector synchronization mechanism enables hybrid symbolic-and-vector retrieval. Every knowledge entry is anchored to its source text, giving auditable provenance — a key point for trust. On a subset of the QASPER scientific QA dataset, RAGA's fusion retrieval beats zero-shot baselines, with graph integration improving both answer and evidence quality. For anyone building an enterprise knowledge base, the payoff is auditability: you know where each fact comes from. The catch: results are preliminary and on a single corpus, and the agentic loop's scalability remains to be shown."
+        "fr": "Écrire une application quantique reste un métier d'expert : traduire un besoin métier en circuit exécutable demande de maîtriser à la fois le domaine et un formalisme aride. Ce papier présente QPipe, une architecture multi-agents à base de LLM qui transforme de façon autonome des exigences en langage naturel en workflows d'application quantique traçables. Le pipeline découpe le travail en agents spécialisés : analyse de l'exigence, formulation, génération de code, revue, exécution et vérification — chacun avec un rôle net et des passes de feedback. Les auteurs évaluent QPipe sur 20 exigences en langage naturel, chacune adossée à un benchmark réel et à un problème d'optimisation de test. Les chiffres sont solides : 100 % de compilation du code en moyenne et 96,7 % d'exécution et de recombinaison du résultat final, pour un coût moyen de 260,1 s et 1,89 M tokens par exigence. Mieux, parmi les applications quantiques générées qui s'exécutent, les solutions renvoyées battent une baseline d'algorithme génétique hors-ligne dans la plupart des cas. L'ablation est instructive : l'avantage de QPipe dépend du maintien des compétences de génération de code, de la connaissance de la tâche, du feedback de revue et de la décomposition multi-agents — retirer l'un de ces piliers dégrade le résultat. Le message dépasse le quantique : la coordination agentique, avec revue et décomposition, sait produire du code exécutable pour des problèmes durs. Pour un praticien, c'est un cas d'école du motif générer-réviser-vérifier appliqué à un domaine de niche. La limite : 1,89 M tokens par exigence, c'est cher, et l'échantillon (20 exigences) reste modeste pour conclure à l'échelle.",
+        "en": "Writing a quantum application is still expert work: turning a business need into an executable circuit requires mastering both the domain and an unforgiving formalism. This paper presents QPipe, an LLM-based multi-agent architecture that autonomously turns natural-language requirements into traceable quantum-application workflows. The pipeline splits the work into specialized agents: requirement parsing, formulation, code generation, review, execution, and verification — each with a clear role and feedback passes. The authors evaluate QPipe on 20 natural-language requirements, each tied to a real-world benchmark and a test-optimization problem. The numbers are solid: 100% code compilation on average and 96.7% for execution and final-result recombination, at an average cost of 260.1s and 1.89M tokens per requirement. Better still, among the generated quantum applications that execute, the returned solutions beat an offline genetic-algorithm baseline in most cases. The ablation is instructive: QPipe's advantage depends on retaining code-generation skills, task knowledge, review feedback, and multi-agent decomposition — removing any one pillar degrades the result. The message goes beyond quantum: agentic coordination, with review and decomposition, can produce executable code for hard problems. For a practitioner, it's a textbook case of the generate-review-verify pattern applied to a niche domain. The catch: 1.89M tokens per requirement is expensive, and the sample (20 requirements) stays modest for scale-level conclusions."
       },
       "takeaways": {
         "fr": [
-          "Traiter la construction de graphe comme une boucle Read-Search-Verify-Construct, et non un batch sans état, améliore la cohérence inter-chunks et la désambiguïsation.",
-          "Ancrer chaque triplet à son texte source donne une provenance auditable, décisive pour la confiance en entreprise.",
-          "La synchronisation graphe-vecteur permet une récupération hybride symbolique-vectorielle sur le graphe construit."
+          "Un pipeline multi-agents (analyse, formulation, code, revue, exécution, vérification) transforme des exigences en langage naturel en applis quantiques exécutables.",
+          "Résultats concrets : 100 % de compilation, 96,7 % d'exécution, et des solutions qui battent une baseline d'algorithme génétique dans la plupart des cas.",
+          "L'ablation prouve que revue de code et décomposition multi-agents sont des piliers, pas des ornements — le motif générer-réviser-vérifier se transpose hors du quantique."
         ],
         "en": [
-          "Treating graph construction as a Read-Search-Verify-Construct loop, not a stateless batch, improves cross-chunk consistency and disambiguation.",
-          "Anchoring every triple to its source text gives auditable provenance, decisive for enterprise trust.",
-          "Graph-vector synchronization enables hybrid symbolic-and-vector retrieval over the constructed graph."
+          "A multi-agent pipeline (parse, formulate, code, review, execute, verify) turns natural-language requirements into executable quantum apps.",
+          "Concrete results: 100% compilation, 96.7% execution, and solutions that beat a genetic-algorithm baseline in most cases.",
+          "The ablation proves code review and multi-agent decomposition are pillars, not ornaments — the generate-review-verify pattern transposes beyond quantum."
         ]
       },
-      "url": "https://arxiv.org/abs/2605.17072",
+      "url": "https://arxiv.org/abs/2607.00939",
       "wildcard": false
     },
     {
       "tag": "cv",
-      "tagLabel": "VLA · Robotique",
+      "tagLabel": "Diffusion · Génération",
       "flames": 2,
-      "title": "UniviewVLA: A Unified Multiview Vision-Language-Action Model with World Modeling",
+      "title": "AsyncPatch Diffusion: spatially-flexible image generation",
       "teaser": {
-        "fr": "Un robot qui imagine ses vues futures avant d'agir, vue au poignet comprise.",
-        "en": "A robot that imagines its future views before acting, wrist view included."
+        "fr": "Et si chaque zone de l'image se débruitait à son propre rythme ?",
+        "en": "What if every region of the image denoised on its own schedule?"
       },
       "summary": {
-        "fr": "Les modèles vision-langage-action (VLA) pilotent des robots directement à partir d'images et d'instructions, mais exploitent mal la cohérence entre plusieurs points de vue et l'évolution du monde dans le temps. UniviewVLA reprend le paradigme autorégressif à tokens discrets de UniVLA : langage, vue agent standard, vues auxiliaires et actions sont tous représentés comme des séquences de tokens modélisées par un transformeur autorégressif. L'entraînement se fait en deux temps : post-entraînement d'un modèle du monde, puis fine-tuning de l'action. Concrètement, à partir de l'instruction, de la vue frontale et de la vue au poignet, le modèle génère de façon autorégressive les images multivues futures, incorporant l'information multivue et l'évolution du monde. Autrement dit, il « imagine » ce qu'il va voir avant d'agir, ce qui ancre mieux la politique dans la géométrie de la scène. Le socle UniVLA atteint l'état de l'art sur CALVIN, LIBERO et Simplenv-Bridge, avec 95.5% de taux de succès moyen sur LIBERO contre 85.5% pour π₀-FAST. Il se transfère aussi à des tâches réelles de manipulation ALOHA et à des scénarios de conduite autonome. Pour la robotique appliquée, le message est qu'un modèle du monde multivue améliore nettement la fiabilité des politiques. La limite : générer des images futures multivues alourdit le calcul, un frein pour le temps réel embarqué.",
-        "en": "Vision-language-action (VLA) models drive robots straight from images and instructions, but poorly exploit consistency across viewpoints and the world's evolution over time. UniviewVLA follows UniVLA's discrete-token autoregressive paradigm: language, standard agent view, auxiliary views, and actions are all represented as token sequences modeled by an autoregressive transformer. Training happens in two stages: world-model post-training, then action fine-tuning. Concretely, from the instruction, the front view, and the wrist view, the model autoregressively generates future multiview images, incorporating multiview information and world evolution. In other words, it \"imagines\" what it will see before acting, which better anchors the policy in the scene's geometry. The UniVLA backbone reaches state of the art on CALVIN, LIBERO, and Simplenv-Bridge, with a 95.5% average success rate on LIBERO versus 85.5% for π₀-FAST. It also transfers to real ALOHA manipulation tasks and autonomous-driving scenarios. For applied robotics, the message is that a multiview world model markedly improves policy reliability. The catch: generating future multiview images inflates compute, a hurdle for embedded real-time use."
+        "fr": "La diffusion standard corrompt tout l'échantillon avec un unique niveau de bruit partagé, puis le débruite de façon homogène. C'est simple, mais rigide : impossible de traiter différemment le centre net d'une image et ses bords à générer. AsyncPatch Diffusion casse cette contrainte avec un cadre de diffusion jointe qui assigne des niveaux de bruit distincts à chaque dimension d'entrée — pixels d'image ou tokens latents. Cette corruption asynchrone définit un processus génératif valide (les auteurs prouvent un ELBO valable) tout en supportant une famille bien plus riche de trajectoires de débruitage spatialement hétérogènes. Un seul modèle pré-entraîné peut alors faire de la génération spatialement adaptative, où différentes régions suivent des calendriers de débruitage différents. La contribution technique clé est un échantillonneur de niveau de bruit contrôlé qui règle à la fois le niveau moyen de corruption et sa variabilité spatiale, ce qui stabilise l'entraînement. Côté résultats, AsyncPatch atteint une qualité comparable à la diffusion classique sur ImageNet 256 et LSUN, tout en étant nativement taillé pour l'inpainting sans fine-tuning spécifique à la tâche. Le cadre introduit aussi un guidage par l'entrée qui utilise des régions propres ou partiellement corrompues pour orienter la génération, plus des stratégies adaptatives comme l'accélération guidée par l'incertitude et l'échantillonnage autorégressif. Pour un praticien vision, l'intérêt est l'unification : un modèle qui gère génération, inpainting et remplissage conditionnel sans multiplier les têtes spécialisées. La limite : la qualité est comparable, pas supérieure, à la diffusion standard — le gain est la flexibilité, pas le SOTA brut.",
+        "en": "Standard diffusion corrupts the whole sample with a single shared noise level, then denoises it uniformly. It's simple but rigid: you can't treat a sharp image center differently from edges to be generated. AsyncPatch Diffusion breaks that constraint with a joint-diffusion framework that assigns distinct noise levels to each input dimension — image pixels or latent tokens. This asynchronous corruption defines a valid generative process (the authors prove a valid ELBO) while supporting a far richer family of spatially heterogeneous denoising trajectories. A single pretrained model can then do spatially adaptive generation, where different regions follow different denoising schedules. The key technical contribution is a controlled noise-level sampler that regulates both the average corruption level and its spatial variability, stabilizing training. On results, AsyncPatch reaches quality comparable to conventional diffusion on ImageNet 256 and LSUN, while being natively suited to inpainting without task-specific fine-tuning. The framework also introduces input guidance that uses clean or partially corrupted regions to steer generation, plus adaptive strategies like uncertainty-guided acceleration and autoregressive sampling. For a vision practitioner, the appeal is unification: one model that handles generation, inpainting, and conditional filling without multiplying specialized heads. The catch: quality is comparable, not superior, to standard diffusion — the gain is flexibility, not raw SOTA."
       },
       "takeaways": {
         "fr": [
-          "Prédire les vues futures multivues (dont la vue au poignet) avant d'agir ancre la politique dans l'évolution réelle de la scène.",
-          "Le socle UniVLA atteint 95.5% de succès sur LIBERO, loin devant les 85.5% de π₀-FAST.",
-          "Le tout-token discret autorégressif unifie langage, vues et actions dans un seul transformeur, au prix d'un calcul plus lourd."
+          "Assigner un niveau de bruit distinct par pixel ou token (corruption asynchrone) débloque des trajectoires de débruitage spatialement hétérogènes.",
+          "Un seul modèle pré-entraîné gère génération et inpainting sans fine-tuning spécifique, grâce au guidage par régions propres ou partiellement corrompues.",
+          "Le gain est la flexibilité, pas le SOTA brut : qualité comparable à la diffusion standard sur ImageNet 256 et LSUN, avec un ELBO prouvé valable."
         ],
         "en": [
-          "Predicting future multiview images (including the wrist view) before acting anchors the policy in the scene's real evolution.",
-          "The UniVLA backbone hits a 95.5% success rate on LIBERO, well ahead of π₀-FAST's 85.5%.",
-          "Fully discrete autoregressive tokens unify language, views, and actions in a single transformer, at the cost of heavier compute."
+          "Assigning a distinct noise level per pixel or token (asynchronous corruption) unlocks spatially heterogeneous denoising trajectories.",
+          "A single pretrained model handles generation and inpainting with no task-specific fine-tuning, thanks to guidance from clean or partially corrupted regions.",
+          "The gain is flexibility, not raw SOTA: quality comparable to standard diffusion on ImageNet 256 and LSUN, with a provably valid ELBO."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.21501",
+      "url": "https://arxiv.org/abs/2606.07079",
       "wildcard": false
     },
     {
       "tag": "fun",
-      "tagLabel": "Game AI · RL",
-      "flames": 1,
-      "title": "Augmenting Game AI with Deep Reinforcement Learning",
+      "tagLabel": "RL · Robotique",
+      "flames": 2,
+      "title": "dVLA-RL: Reinforcement Learning over Denoising Trajectories for Discrete Diffusion Vision-Language-Action Models",
       "teaser": {
-        "fr": "Electronic Arts explique comment livrer des PNJ crédibles dopés au reinforcement learning.",
-        "en": "Electronic Arts explains how to ship believable NPCs powered by reinforcement learning."
+        "fr": "99,7 % sur LIBERO : le RL récompense le chemin de débruitage, pas l'action finale.",
+        "en": "99.7% on LIBERO: RL rewards the denoising path, not just the final action."
       },
       "summary": {
-        "fr": "L'immersion d'un jeu tient beaucoup à la qualité de ses personnages, et fabriquer une IA de jeu crédible reste difficile : la complexité comportementale se code mal à la main, ce qui casse vite l'illusion et frustre le joueur. Des chercheurs d'Electronic Arts (Stockholm) défendent l'idée que le machine learning peut créer des personnages plus crédibles, qui apprennent en interagissant avec le jeu ou à partir de données de joueurs pour développer un comportement humain. Le papier propose un framework d'entraînement de modèles de reinforcement learning avec des contraintes propres à l'IA de jeu et au développement de jeux. Il présente des exemples concrets de jeux dont l'IA a été augmentée par RL et détaille les aspects pratiques du déploiement d'agents ML face au joueur. Surtout, il identifie les goulets d'étranglement et les problèmes durs qui freinent l'adoption du RL dans l'industrie. C'est donc autant un retour d'expérience industriel qu'une contribution technique. Pour un studio, l'intérêt est de voir ce qui bloque réellement en production, pas seulement en labo. Le message pratique : le RL ne remplace pas le scripting mais l'augmente là où le comportement à la main atteint ses limites. La limite : le papier reste au niveau du cadre et des retours d'expérience, sans benchmark quantitatif partagé. À lire comme une feuille de route plus que comme un résultat mesurable.",
-        "en": "A game's immersion hinges heavily on character quality, and crafting believable game AI stays hard: behavioral complexity is tough to hand-code, which quickly breaks the illusion and frustrates players. Researchers from Electronic Arts (Stockholm) argue that machine learning can create more believable characters that learn by interacting with the game or from player data to develop human-like behavior. The paper proposes a framework for training reinforcement learning models with constraints specific to game AI and game development. It presents concrete examples of games whose AI was RL-augmented and details the practicalities of deploying player-facing ML agents. Above all, it identifies the bottlenecks and hard problems that slow RL adoption in the industry. It is therefore as much an industrial field report as a technical contribution. For a studio, the value is seeing what actually blocks in production, not just in the lab. The practical message: RL doesn't replace scripting but augments it where hand-authored behavior hits its limits. The catch: the paper stays at the framework-and-experience level, with no shared quantitative benchmark. Read it as a roadmap rather than a measurable result."
+        "fr": "Les modèles Vision-Language-Action (VLA) ancrent le contrôle robotique dans le raisonnement sémantique des VLM, et sont devenus le paradigme dominant de la manipulation généraliste. Une variante récente, les VLA à diffusion discrète (dVLA), unifie vision, langage et action dans un même espace de tokens discrets via de la modélisation générative masquée. Problème : leur entraînement s'est jusqu'ici limité au fine-tuning supervisé (SFT), laissant inexploré le potentiel du renforcement pour affiner la politique. dVLA-RL comble ce vide avec un cadre de RL natif pour ces politiques à diffusion discrète. L'astuce centrale : au lieu d'approximer la vraisemblance marginale de l'action finale, on fait du RL en ligne façon PPO en optimisant la probabilité des chemins de débruitage échantillonnés — donc au niveau de la trajectoire, pas seulement du résultat. Les résultats sont forts : dVLA-RL améliore systématiquement son backbone dVLA entraîné en SFT seul, atteint l'état de l'art sur LIBERO avec un taux de succès de 99,7 %, et livre un gain de +30,6 % sur la baseline SFT MM-ACT sur RoboTwin 2.0, tout en restant compétitif face à de solides World-Action Models. Les analyses montrent la nécessité de modéliser la probabilité au niveau trajectoire, et qu'une stratégie hybride sur les étapes de débruitage améliore l'efficacité sans sacrifier le raffinement multi-étapes de l'action. Pour qui suit la robotique apprenante, le signal est clair : le RL n'est pas réservé aux politiques continues, il transfère à la génération discrète par diffusion. La limite : ces gains sont mesurés en simulation (LIBERO, RoboTwin), et le passage au réel garde ses propres embûches.",
+        "en": "Vision-Language-Action (VLA) models ground robotic control in the semantic reasoning of VLMs, and have become the dominant paradigm for generalist manipulation. A recent variant, discrete diffusion VLAs (dVLAs), unifies vision, language, and action in a single discrete token space via masked generative modeling. The problem: their training has so far been limited to supervised fine-tuning (SFT), leaving the potential of reinforcement learning for policy refinement unexplored. dVLA-RL fills that gap with a native RL framework for these discrete diffusion policies. The core trick: instead of approximating the marginal likelihood of the final action, it does PPO-style online RL by optimizing the probability of sampled denoising paths — that is, at the trajectory level, not just the outcome. The results are strong: dVLA-RL consistently improves its SFT-only dVLA backbone, reaches state-of-the-art on LIBERO with a 99.7% success rate, and delivers a +30.6% gain over the MM-ACT SFT baseline on RoboTwin 2.0, while staying competitive with strong World-Action Models. Analyses show the necessity of trajectory-level probability modeling, and that a hybrid denoising-step strategy improves efficiency without sacrificing multi-step action refinement. For anyone following learning-based robotics, the signal is clear: RL isn't reserved for continuous policies, it transfers to discrete diffusion generation. The catch: these gains are measured in simulation (LIBERO, RoboTwin), and the jump to the real world keeps its own pitfalls."
       },
       "takeaways": {
         "fr": [
-          "Le RL augmente l'IA de jeu là où le scripting manuel plafonne, sans forcément le remplacer.",
-          "Le vrai apport du papier est la liste des goulets d'étranglement du déploiement d'agents ML face au joueur, vue de l'intérieur d'EA.",
-          "C'est une feuille de route industrielle plutôt qu'un benchmark : peu de chiffres, beaucoup de retour d'expérience."
+          "Le RL transfère aux VLA à diffusion discrète : on optimise la probabilité des chemins de débruitage, pas la vraisemblance marginale de l'action finale.",
+          "Résultats forts en simulation : 99,7 % de succès sur LIBERO et +30,6 % sur la baseline SFT MM-ACT de RoboTwin 2.0.",
+          "Modéliser la probabilité au niveau trajectoire est nécessaire, et une stratégie hybride sur les étapes de débruitage gagne en efficacité sans perdre le raffinement multi-étapes."
         ],
         "en": [
-          "RL augments game AI where hand-authored scripting plateaus, without necessarily replacing it.",
-          "The paper's real contribution is its list of bottlenecks in deploying player-facing ML agents, seen from inside EA.",
-          "It's an industrial roadmap rather than a benchmark: few numbers, lots of field experience."
+          "RL transfers to discrete diffusion VLAs: you optimize the probability of denoising paths, not the marginal likelihood of the final action.",
+          "Strong results in simulation: 99.7% success on LIBERO and +30.6% over the MM-ACT SFT baseline on RoboTwin 2.0.",
+          "Trajectory-level probability modeling is necessary, and a hybrid denoising-step strategy gains efficiency without losing multi-step refinement."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.20210",
+      "url": "https://arxiv.org/abs/2606.23623",
       "wildcard": false
     },
     {
       "tag": "wild",
-      "tagLabel": "Biologie · Foundation Model",
-      "flames": 2,
-      "title": "BioMatrix: Towards a Comprehensive Biological Foundation Model Spanning the Modality Matrix of Sequences, Structures, and Language",
+      "tagLabel": "Cosmologie · SBI",
+      "flames": 1,
+      "title": "Field-level weak lensing cosmology with <100 simulations using multifidelity simulation-based inference",
       "teaser": {
-        "fr": "Un seul modèle avale séquences, structures 3D et langage, pour molécules et protéines.",
-        "en": "One model swallows sequences, 3D structures, and language, for molecules and proteins."
+        "fr": "Cartographier la matière noire avec moins de 100 simulations : le transfer learning en cosmologie.",
+        "en": "Mapping dark matter with under 100 simulations: transfer learning applied to cosmology."
       },
       "summary": {
-        "fr": "Les modèles de fondation biologiques progressent, mais poursuivent séparément deux objectifs : soit ils fusionnent plusieurs modalités mais restent cantonnés à un seul type d'entité, soit ils couvrent plusieurs entités mais sans vraie modélisation structurelle ou via des adaptateurs. BioMatrix est le premier modèle de fondation multimodal qui intègre nativement séquences, structures et langage, à la fois pour les molécules et les protéines, dans une seule architecture décodeur. La clé : séquences moléculaires (notations SMILES et SELFIES), structures moléculaires, séquences et structures protéiques, et langage naturel sont tous projetés dans un espace de tokens discrets partagé via une tokenisation unifiée. Les structures 3D passent par des tokeniseurs appris de type VQ-VAE. Tout est ainsi consommé et produit uniformément sous un unique objectif de prédiction du prochain token, sans encodeurs externes, adaptateurs de projection ni têtes de sortie spécifiques. Le modèle est bâti sur Qwen3 en 1.7B et 4B de paramètres, entraîné sur 304 milliards de tokens toutes modalités confondues. Résultat : état de l'art ou performance compétitive sur 77 des 80 tâches aval, de la prédiction de propriétés à la génération de molécules, au repliement de protéines, à la description et à l'affinité de liaison. La leçon transposable pour les data scientists : une tokenisation partagée peut unifier des modalités hétérogènes sous un seul objectif next-token, sans architecture sur-mesure. La limite : à 4B de paramètres, la couverture est impressionnante mais la profondeur sur chaque tâche pointue reste à éprouver face aux modèles spécialisés.",
-        "en": "Biological foundation models keep improving, but pursue two goals separately: either they fuse several modalities yet stay confined to a single entity type, or they span multiple entities but without real structural modeling or via adapters. BioMatrix is the first multimodal foundation model that natively integrates sequences, structures, and language, for both molecules and proteins, within a single decoder-only architecture. The key: molecular sequences (SMILES and SELFIES notations), molecular structures, protein sequences and structures, and natural language are all mapped into a shared discrete token space via unified tokenization. 3D structures go through learned VQ-VAE-style tokenizers. Everything is thus consumed and produced uniformly under a single next-token prediction objective, with no external encoders, projection adapters, or modality-specific output heads. The model is built on Qwen3 at 1.7B and 4B parameters, trained on 304 billion tokens across all modalities. The result: state-of-the-art or competitive performance on 77 of 80 downstream tasks, from property prediction to molecule generation, protein folding, captioning, and binding affinity. The transferable lesson for data scientists: shared tokenization can unify heterogeneous modalities under a single next-token objective, without bespoke architecture. The catch: at 4B parameters the coverage is impressive, but depth on each specialized task remains to be proven against dedicated models."
+        "fr": "La pièce du cabinet nous emmène en cosmologie, mais la mécanique parlera à tout data scientist. Pour inférer les paramètres cosmologiques à partir du weak lensing — la déformation subtile des galaxies par la matière noire —, l'inférence au niveau du champ est très précise mais gourmande : elle réclame des milliers de simulations N-corps coûteuses pour entraîner les modèles. C'est la tension classique réalisme physique contre budget de calcul. Ce papier propose une inférence par simulation (SBI) multifidélité qui la dénoue par un transfer learning élégant. L'idée : pré-entraîner des modèles de compression neuronale et d'inférence sur des simulations rapides et approximatives (des mocks log-normaux GLASS de type KiDS-Legacy), puis les affiner sur un tout petit lot de simulations N-corps haute-fidélité. Résultat marquant : entre 60 et 100 simulations haute-fidélité suffisent à obtenir des posteriors cosmologiques informatifs et bien calibrés, soit une réduction d'un ordre de grandeur du coût de simulation pour une inférence au niveau du champ réaliste. C'est exactement le motif pré-entraîner-sur-le-cheap, fine-tuner-sur-le-cher que les praticiens ML connaissent bien, transposé à un pipeline scientifique où chaque échantillon d'entraînement est une simulation physique de plusieurs heures. Pour un data scientist, la leçon est directe : quand les données haute-qualité sont hors de prix, une source basse-fidélité abondante peut porter l'essentiel de l'apprentissage. La limite : la fidélité du transfert dépend de la proximité entre le simulateur bon marché et le vrai, et la calibration reste à surveiller de près. Une jolie preuve que le fine-tuning multifidélité déborde largement du NLP.",
+        "en": "The cabinet's wildcard takes us to cosmology, but the mechanics will speak to any data scientist. To infer cosmological parameters from weak lensing — the subtle warping of galaxy shapes by dark matter — field-level inference is highly accurate but hungry: it demands thousands of costly N-body simulations to train the models. It's the classic tension of physical realism versus compute budget. This paper proposes a multifidelity simulation-based inference (SBI) that unties it through elegant transfer learning. The idea: pretrain neural compression and inference models on fast, approximate simulations (KiDS-Legacy-like log-normal GLASS mocks), then fine-tune them on a tiny batch of high-fidelity N-body simulations. The striking result: between 60 and 100 high-fidelity simulations suffice to obtain informative, well-calibrated cosmological posteriors — an order-of-magnitude reduction in simulation cost for realistic field-level inference. This is exactly the pretrain-on-the-cheap, fine-tune-on-the-expensive pattern ML practitioners know well, transposed to a scientific pipeline where each training sample is a multi-hour physical simulation. For a data scientist, the lesson is direct: when high-quality data is prohibitively expensive, an abundant low-fidelity source can carry most of the learning. The catch: transfer fidelity depends on how close the cheap simulator is to the real one, and calibration needs close watching. A neat proof that multifidelity fine-tuning reaches far beyond NLP."
       },
       "takeaways": {
         "fr": [
-          "Un espace de tokens discrets partagé permet de traiter séquences, structures 3D et langage sous un seul objectif next-token, sans adaptateurs.",
-          "Bâti sur Qwen3 (1.7B et 4B) et 304 milliards de tokens, BioMatrix atteint l'état de l'art ou fait jeu égal sur 77 des 80 tâches.",
-          "La recette — tokeniser l'hétérogène dans un espace commun — est transposable bien au-delà de la biologie."
+          "Le motif ML pré-entraîner sur du basse-fidélité abondant, fine-tuner sur du haute-fidélité rare s'applique à un pipeline scientifique coûteux.",
+          "Entre 60 et 100 simulations N-corps haute-fidélité suffisent à des posteriors cosmologiques bien calibrés, un ordre de grandeur de coût en moins.",
+          "Quand chaque échantillon d'entraînement coûte des heures de calcul, la multifidélité fait passer le transfer learning du confort au facteur décisif."
         ],
         "en": [
-          "A shared discrete token space lets sequences, 3D structures, and language be handled under a single next-token objective, without adapters.",
-          "Built on Qwen3 (1.7B and 4B) and 304 billion tokens, BioMatrix reaches state of the art or ties on 77 of 80 tasks.",
-          "The recipe — tokenizing the heterogeneous into a common space — transfers well beyond biology."
+          "The ML pattern pretrain on abundant low-fidelity, fine-tune on scarce high-fidelity applies to a costly scientific pipeline.",
+          "Between 60 and 100 high-fidelity N-body simulations suffice for well-calibrated cosmological posteriors, an order of magnitude cheaper.",
+          "When each training sample costs hours of compute, multifidelity turns transfer learning from a convenience into a decisive factor."
         ]
       },
-      "url": "https://arxiv.org/abs/2606.22138",
+      "url": "https://arxiv.org/abs/2606.23346",
       "wildcard": true
     }
   ],
   "quiz": [
     {
       "q": {
-        "fr": "Dans le framework BDaaS, que déclenche la détection de dérive post-déploiement ?",
-        "en": "In the BDaaS framework, what does post-deployment drift detection trigger?"
+        "fr": "Dans AutoMem, quelles opérations sont promues au rang d'actions mémoire de premier plan ?",
+        "en": "In AutoMem, which operations are promoted to first-class memory actions?"
       },
       "options": {
-        "fr": ["Un réentraînement ou un rollback", "Une alerte email uniquement", "L'arrêt définitif du pipeline", "Un changement de fournisseur cloud"],
-        "en": ["Retraining or rollback", "An email alert only", "Permanent shutdown of the pipeline", "A change of cloud provider"]
+        "fr": [
+          "Les opérations du système de fichiers (écrire, lire, réorganiser)",
+          "Les appels réseau vers une API externe",
+          "Les requêtes SQL vers une base relationnelle",
+          "Les calculs matriciels sur GPU"
+        ],
+        "en": [
+          "File-system operations (writing, reading, reorganizing)",
+          "Network calls to an external API",
+          "SQL queries against a relational database",
+          "Matrix computations on GPU"
+        ]
       },
       "correct": 0,
       "explain": {
-        "fr": "La boucle de vie consciente de la dérive déclenche réentraînement ou rollback pour fermer le cycle MLOps.",
-        "en": "The drift-aware lifecycle triggers retraining or rollback to close the MLOps loop."
+        "fr": "AutoMem élève les opérations de système de fichiers au même rang que les actions de la tâche, laissant le modèle gérer ses propres fichiers-mémoire.",
+        "en": "AutoMem raises file-system operations to the same level as task actions, letting the model manage its own memory files."
       }
     },
     {
       "q": {
-        "fr": "Quel est le principal défaut des GraphRAG existants selon MemGraphRAG ?",
-        "en": "What is the main flaw of existing GraphRAG methods according to MemGraphRAG?"
+        "fr": "Sur combien de vues relationnelles orthogonales HAGE organise-t-il la mémoire ?",
+        "en": "Across how many orthogonal relational views does HAGE organize memory?"
       },
       "options": {
-        "fr": ["Ils sont trop lents", "L'extraction fragment par fragment produit des graphes incohérents", "Ils ignorent les vecteurs", "Ils exigent trop de mémoire GPU"],
-        "en": ["They are too slow", "Fragment-by-fragment extraction produces incoherent graphs", "They ignore vectors", "They require too much GPU memory"]
+        "fr": [
+          "Quatre : Sémantique, Temporelle, Causale et Entité",
+          "Une seule vue vectorielle plate",
+          "Deux : positive et négative",
+          "Sept vues thématiques"
+        ],
+        "en": [
+          "Four: Semantic, Temporal, Causal, and Entity",
+          "A single flat vector view",
+          "Two: positive and negative",
+          "Seven thematic views"
+        ]
       },
-      "correct": 1,
+      "correct": 0,
       "explain": {
-        "fr": "Sans vue globale, l'extraction fragmentée donne des graphes incohérents et morcelés ; la mémoire partagée y remédie.",
-        "en": "Without a global view, fragmented extraction yields incoherent, broken graphs; shared memory fixes this."
+        "fr": "HAGE répartit la mémoire sur quatre graphes orthogonaux — Sémantique, Temporel, Causal, Entité — parcourus de façon conditionnée par la requête.",
+        "en": "HAGE spreads memory across four orthogonal graphs — Semantic, Temporal, Causal, Entity — traversed in a query-conditioned way."
       }
     },
     {
       "q": {
-        "fr": "Quelle amélioration moyenne HERA obtient-il sur les baselines récentes ?",
-        "en": "What average improvement does HERA achieve over recent baselines?"
+        "fr": "Sur quoi Agri-SAGE ancre-t-il le raisonnement de ses agents LLM pour valider un conseil ?",
+        "en": "What does Agri-SAGE ground its LLM agents' reasoning on to validate advice?"
       },
       "options": {
-        "fr": ["+12,50 %", "+25,00 %", "+38.69 %", "+50,00 %"],
-        "en": ["+12.50%", "+25.00%", "+38.69%", "+50.00%"]
+        "fr": [
+          "Une simulation biophysique APSIM des cultures",
+          "Un modèle de langage plus gros",
+          "Un vote humain d'experts en direct",
+          "Un moteur de rendu 3D"
+        ],
+        "en": [
+          "An APSIM biophysical crop simulation",
+          "A larger language model",
+          "A live human expert vote",
+          "A 3D rendering engine"
+        ]
       },
-      "correct": 2,
+      "correct": 0,
       "explain": {
-        "fr": "HERA rapporte +38.69 % en moyenne tout en préservant l'efficacité en tokens.",
-        "en": "HERA reports +38.69% on average while preserving token efficiency."
+        "fr": "Agri-SAGE boucle les advisories des agents sur une simulation biophysique APSIM, qui sert de garde-fou physiologique avant la sortie.",
+        "en": "Agri-SAGE loops the agents' advisories through an APSIM biophysical simulation, acting as a physiological guardrail before output."
       }
     },
     {
       "q": {
-        "fr": "Sur Spaceship Titanic, quel est le principal bénéfice observé de la couche CBR ?",
-        "en": "On Spaceship Titanic, what is the main observed benefit of the CBR layer?"
+        "fr": "Sur quel benchmark la propagation bayésienne de l'incertitude est-elle la plus efficace, et pourquoi ?",
+        "en": "On which benchmark is Bayesian uncertainty propagation most effective, and why?"
       },
       "options": {
-        "fr": ["Une précision doublée", "Une variance nettement plus faible", "Un temps d'entraînement divisé par dix", "Aucune différence"],
-        "en": ["Doubled accuracy", "Substantially lower variance", "Training time cut tenfold", "No difference"]
+        "fr": [
+          "HotpotQA, car l'incertitude s'y accumule sur du raisonnement multi-sauts",
+          "StrategyQA, grâce à des signaux amont parfaitement calibrés",
+          "ImageNet, car les images réduisent l'incertitude",
+          "LIBERO, un benchmark de manipulation robotique"
+        ],
+        "en": [
+          "HotpotQA, because uncertainty accumulates there over multi-hop reasoning",
+          "StrategyQA, thanks to perfectly calibrated upstream signals",
+          "ImageNet, because images reduce uncertainty",
+          "LIBERO, a robotic manipulation benchmark"
+        ]
       },
-      "correct": 1,
+      "correct": 0,
       "explain": {
-        "fr": "Le gain de précision (0.8147 vs 0.8098) reste directionnel ; c'est surtout la variance qui chute.",
-        "en": "The accuracy gain (0.8147 vs 0.8098) stays directional; it's mainly the variance that drops."
+        "fr": "La propagation bayésienne brille sur HotpotQA, où l'incertitude s'accumule à travers les étapes multi-sauts ; StrategyQA en expose au contraire les limites de calibration.",
+        "en": "Bayesian propagation shines on HotpotQA, where uncertainty accumulates across multi-hop stages; StrategyQA instead exposes its calibration limits."
       }
     },
     {
       "q": {
-        "fr": "Quelle est la boucle cognitive au cœur de RAGA ?",
-        "en": "What is the cognitive loop at the heart of RAGA?"
+        "fr": "Quel taux de compilation du code QPipe atteint-il en moyenne sur les 20 exigences testées ?",
+        "en": "What average code compilation rate does QPipe reach across the 20 tested requirements?"
       },
       "options": {
-        "fr": ["Plan-Execute-Reflect", "Read-Search-Verify-Construct", "Retrieve-Rank-Generate", "Map-Reduce-Merge"],
-        "en": ["Plan-Execute-Reflect", "Read-Search-Verify-Construct", "Retrieve-Rank-Generate", "Map-Reduce-Merge"]
+        "fr": [
+          "100 %",
+          "96,7 %",
+          "70 %",
+          "50 %"
+        ],
+        "en": [
+          "100%",
+          "96.7%",
+          "70%",
+          "50%"
+        ]
       },
-      "correct": 1,
+      "correct": 0,
       "explain": {
-        "fr": "RAGA embarque un cycle Read-Search-Verify-Construct dans une boucle d'outils ReAct.",
-        "en": "RAGA embeds a Read-Search-Verify-Construct cycle in a ReAct tool loop."
+        "fr": "QPipe atteint 100 % de compilation en moyenne ; 96,7 % correspond au taux d'exécution et de recombinaison du résultat final, un distracteur proche.",
+        "en": "QPipe reaches 100% compilation on average; 96.7% is the execution-and-final-result rate, a close distractor."
       }
     },
     {
       "q": {
-        "fr": "Que génère UniviewVLA avant d'agir ?",
-        "en": "What does UniviewVLA generate before acting?"
+        "fr": "Qu'est-ce qui distingue AsyncPatch Diffusion de la diffusion standard ?",
+        "en": "What sets AsyncPatch Diffusion apart from standard diffusion?"
       },
       "options": {
-        "fr": ["Un plan textuel étape par étape", "Les images multivues futures", "Une seule carte de profondeur", "Un graphe de scène symbolique"],
-        "en": ["A step-by-step textual plan", "Future multiview images", "A single depth map", "A symbolic scene graph"]
+        "fr": [
+          "Des niveaux de bruit distincts par pixel ou token (corruption asynchrone)",
+          "Un unique niveau de bruit partagé sur tout l'échantillon",
+          "L'absence totale de bruit pendant l'entraînement",
+          "Un entraînement purement adversarial de type GAN"
+        ],
+        "en": [
+          "Distinct noise levels per pixel or token (asynchronous corruption)",
+          "A single shared noise level over the whole sample",
+          "No noise at all during training",
+          "A purely adversarial GAN-style training"
+        ]
       },
-      "correct": 1,
+      "correct": 0,
       "explain": {
-        "fr": "Le modèle génère de façon autorégressive les images multivues futures, incorporant l'évolution du monde.",
-        "en": "The model autoregressively generates future multiview images, incorporating world evolution."
+        "fr": "AsyncPatch assigne un niveau de bruit distinct à chaque dimension d'entrée, permettant des trajectoires de débruitage spatialement hétérogènes avec un ELBO prouvé valable.",
+        "en": "AsyncPatch assigns a distinct noise level to each input dimension, enabling spatially heterogeneous denoising trajectories with a provably valid ELBO."
       }
     },
     {
       "q": {
-        "fr": "Quelle est la nature principale du papier d'Electronic Arts sur l'IA de jeu ?",
-        "en": "What is the main nature of the Electronic Arts paper on game AI?"
+        "fr": "Quel taux de succès dVLA-RL atteint-il sur le benchmark LIBERO ?",
+        "en": "What success rate does dVLA-RL reach on the LIBERO benchmark?"
       },
       "options": {
-        "fr": ["Un nouveau benchmark chiffré", "Un framework et un retour d'expérience de déploiement", "Un dataset de replays", "Un moteur de rendu"],
-        "en": ["A new quantitative benchmark", "A framework and a deployment field report", "A dataset of replays", "A rendering engine"]
+        "fr": [
+          "99,7 %",
+          "30,6 %",
+          "80,0 %",
+          "50,0 %"
+        ],
+        "en": [
+          "99.7%",
+          "30.6%",
+          "80.0%",
+          "50.0%"
+        ]
       },
-      "correct": 1,
+      "correct": 0,
       "explain": {
-        "fr": "Le papier propose un framework et détaille les goulets d'étranglement du déploiement d'agents RL, sans benchmark quantitatif partagé.",
-        "en": "The paper proposes a framework and details the bottlenecks of deploying RL agents, with no shared quantitative benchmark."
+        "fr": "dVLA-RL atteint 99,7 % de succès sur LIBERO ; +30,6 % est le gain sur la baseline SFT MM-ACT de RoboTwin 2.0, un distracteur.",
+        "en": "dVLA-RL reaches 99.7% success on LIBERO; +30.6% is the gain over the MM-ACT SFT baseline on RoboTwin 2.0, a distractor."
       }
     },
     {
       "q": {
-        "fr": "Comment BioMatrix unifie-t-il molécules, protéines et langage ?",
-        "en": "How does BioMatrix unify molecules, proteins, and language?"
+        "fr": "Combien de simulations N-corps haute-fidélité suffisent, dans ce travail, pour des posteriors cosmologiques bien calibrés ?",
+        "en": "How many high-fidelity N-body simulations suffice, in this work, for well-calibrated cosmological posteriors?"
       },
       "options": {
-        "fr": ["Via des adaptateurs de projection par modalité", "Via des encodeurs externes séparés", "Via un espace de tokens discrets partagé et un objectif next-token", "Via une architecture encodeur-décodeur avec têtes spécifiques"],
-        "en": ["Via per-modality projection adapters", "Via separate external encoders", "Via a shared discrete token space and a next-token objective", "Via an encoder-decoder architecture with specific heads"]
+        "fr": [
+          "Entre 60 et 100",
+          "Plus de 10 000",
+          "Exactement une seule",
+          "Environ 5 000"
+        ],
+        "en": [
+          "Between 60 and 100",
+          "More than 10,000",
+          "Exactly one",
+          "About 5,000"
+        ]
       },
-      "correct": 2,
+      "correct": 0,
       "explain": {
-        "fr": "Toutes les modalités sont projetées dans un espace de tokens discrets partagé, sous un unique objectif next-token, sans adaptateurs ni têtes spécifiques.",
-        "en": "All modalities are mapped into a shared discrete token space under a single next-token objective, with no adapters or specific heads."
+        "fr": "Grâce au pré-entraînement sur des mocks log-normaux GLASS bon marché puis au fine-tuning, 60 à 100 simulations haute-fidélité suffisent — un ordre de grandeur de coût en moins.",
+        "en": "Thanks to pretraining on cheap log-normal GLASS mocks then fine-tuning, 60 to 100 high-fidelity simulations suffice — an order of magnitude cheaper."
       }
     }
   ]
